@@ -58,34 +58,34 @@ uv run pytest --cov=src --cov-report=html
 
 ### Code Quality
 
-#### 🔧 Pre-commit Hooks (自动化)
+#### 🔧 Pre-commit Hooks (Automated)
 ```bash
-# hooks 会在 uv sync 时自动安装并配置
-# 每次 git commit 时自动运行，确保代码质量
+# Hooks will be automatically installed and configured when running uv sync
+# Automatically run on each git commit to ensure code quality
 
-# 手动运行所有检查
+# Manually run all checks
 uv run pre-commit run --all-files
 
-# 禁用 hooks (如不需要)
+# Disable hooks (if not needed)
 uv run pre-commit uninstall
 
-# 跳过单次检查 (紧急提交)
+# Skip single check (urgent commit)
 git commit --no-verify -m "urgent fix"
 ```
 
-#### ⚙️ 手动检查命令
+#### ⚙️ Manual Check Commands
 ```bash
-# 代码检查和自动修复 (替代 black + isort)
+# Code checking and auto-fix (replaces black + isort)
 uv run ruff check --fix src/
 
-# 代码格式化
+# Code formatting
 uv run ruff format src/
 
-# 类型检查 (可选)
+# Type checking (optional)
 uv run mypy src/
 ```
 
-📖 **详细配置**: 查看 [docs/pre-commit-guide.md](docs/pre-commit-guide.md)
+📖 **Detailed Configuration**: See [docs/pre-commit-guide.md](docs/pre-commit-guide.md)
 
 ### Docker Operations
 ```bash

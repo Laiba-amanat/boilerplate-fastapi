@@ -13,13 +13,13 @@ class DeptRepository(CRUDBase[Dept, DeptCreate, DeptUpdate]):
 
     async def get_dept_tree(self, name):
         q = Q()
-        # 获取所有未被软删除的部门
+        # Get all departments that are not soft deleted
         q &= Q(is_deleted=False)
         if name:
             q &= Q(name__contains=name)
         all_depts = await self.model.filter(q).order_by("order")
 
-        # 辅助函数，用于递归构建部门树
+        # Helper function to recursively build department tree
         def build_tree(parent_id):
             return [
                 {
@@ -28,13 +28,13 @@ class DeptRepository(CRUDBase[Dept, DeptCreate, DeptUpdate]):
                     "desc": dept.desc,
                     "order": dept.order,
                     "parent_id": dept.parent_id,
-                    "children": build_tree(dept.id),  # 递归构建子部门
+                    "children": build_tree(dept.id),  # Recursively build child departments
                 }
                 for dept in all_depts
                 if dept.parent_id == parent_id
             ]
 
-        # 从顶级部门（parent_id=0）开始构建部门树
+        # Build department tree starting from top-level departments (parent_id=0)
         dept_tree = build_tree(0)
         return dept_tree
 
@@ -48,7 +48,7 @@ class DeptRepository(CRUDBase[Dept, DeptCreate, DeptUpdate]):
                 f"Processing dept closure: ancestor={i.ancestor}, descendant={i.descendant}"
             )
         dept_closure_objs: list[DeptClosure] = []
-        # 插入父级关系
+        # Insert parent relationships
         for item in parent_depts:
             dept_closure_objs.append(
                 DeptClosure(
@@ -57,16 +57,16 @@ class DeptRepository(CRUDBase[Dept, DeptCreate, DeptUpdate]):
                     level=item.level + 1,
                 )
             )
-        # 插入自身x
+        # Insert self relationship
         dept_closure_objs.append(
             DeptClosure(ancestor=obj.id, descendant=obj.id, level=0)
         )
-        # 创建关系
+        # Create relationships
         await DeptClosure.bulk_create(dept_closure_objs)
 
     @atomic()
     async def create_dept(self, obj_in: DeptCreate):
-        # 创建
+        # Create
         if obj_in.parent_id != 0:
             await self.get(id=obj_in.parent_id)
         new_obj = await self.create(obj_in=obj_in)
@@ -75,22 +75,22 @@ class DeptRepository(CRUDBase[Dept, DeptCreate, DeptUpdate]):
     @atomic()
     async def update_dept(self, obj_in: DeptUpdate):
         dept_obj = await self.get(id=obj_in.id)
-        # 更新部门关系
+        # Update department relationships
         if dept_obj.parent_id != obj_in.parent_id:
             await DeptClosure.filter(ancestor=dept_obj.id).delete()
             await DeptClosure.filter(descendant=dept_obj.id).delete()
             await self.update_dept_closure(dept_obj)
-        # 更新部门信息
+        # Update department information
         dept_obj.update_from_dict(obj_in.model_dump(exclude_unset=True))
         await dept_obj.save()
 
     @atomic()
     async def delete_dept(self, dept_id: int):
-        # 删除部门
+        # Delete department
         obj = await self.get(id=dept_id)
         obj.is_deleted = True
         await obj.save()
-        # 删除关系
+        # Delete relationships
         await DeptClosure.filter(descendant=dept_id).delete()
 
 

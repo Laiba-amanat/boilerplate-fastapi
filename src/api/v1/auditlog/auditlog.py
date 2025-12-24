@@ -11,17 +11,17 @@ from schemas.response import AuditLogListResponse
 router = APIRouter()
 
 
-@router.get("/list", summary="查看操作日志", response_model=AuditLogListResponse)
+@router.get("/list", summary="Get audit log list", response_model=AuditLogListResponse)
 async def get_audit_log_list(
-    page: int = Query(1, description="页码"),
-    page_size: int = Query(10, description="每页数量"),
-    username: str = Query("", description="操作人名称"),
-    module: str = Query("", description="功能模块"),
-    method: str = Query("", description="请求方法"),
-    summary: str = Query("", description="接口描述"),
-    status: int = Query(None, description="状态码"),
-    start_time: datetime = Query("", description="开始时间"),
-    end_time: datetime = Query("", description="结束时间"),
+    page: int = Query(1, description="Page number"),
+    page_size: int = Query(10, description="Items per page"),
+    username: str = Query("", description="Operator name"),
+    module: str = Query("", description="Function module"),
+    method: str = Query("", description="Request method"),
+    summary: str = Query("", description="Interface description"),
+    status: int = Query(None, description="Status code"),
+    start_time: datetime = Query("", description="Start time"),
+    end_time: datetime = Query("", description="End time"),
 ):
     q = Q()
     if username:

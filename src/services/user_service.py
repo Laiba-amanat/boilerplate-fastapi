@@ -1,4 +1,4 @@
-"""用户服务层 - 统一用户业务逻辑"""
+"""User service layer - unified user business logic"""
 
 from tortoise.expressions import Q
 
@@ -11,7 +11,7 @@ from utils.cache import cached, clear_user_cache
 
 
 class UserService(BaseService):
-    """用户服务类 - 专门处理用户相关业务逻辑"""
+    """User service class - specifically handles user-related business logic"""
 
     def __init__(self):
         super().__init__(user_repository)
@@ -24,14 +24,14 @@ class UserService(BaseService):
         email: str = "",
         dept_id: int | None = None,
     ) -> SuccessExtra:
-        """获取用户列表 - 包含搜索过滤和部门信息关联"""
+        """Get user list - includes search filtering and department information association"""
         try:
-            # 构建搜索过滤条件
+            # Build search filter conditions
             search_filters = self._build_user_search_filters(
                 username=username, email=email, dept_id=dept_id
             )
 
-            # 获取分页数据
+            # Get paginated data
             total, items = await self.repository.list(
                 page=page,
                 page_size=page_size,
@@ -39,34 +39,34 @@ class UserService(BaseService):
                 order=["-created_at"],
             )
 
-            # 转换数据并关联部门信息
+            # Transform data and associate department information
             data = await self._transform_user_list_with_dept(items)
 
             return SuccessExtra(data=data, total=total, page=page, page_size=page_size)
 
         except Exception as e:
-            self.logger.error(f"获取用户列表失败: {str(e)}")
-            return Fail(msg="获取用户列表失败")
+            self.logger.error(f"Failed to get user list: {str(e)}")
+            return Fail(msg="Failed to get user list")
 
     @cached("user_detail", ttl=300)
     async def get_user_detail(self, user_id: int) -> Success:
-        """获取用户详情 - 带缓存"""
+        """Get user details - with cache"""
         try:
             user_obj = await user_repository.get(id=user_id)
             if not user_obj:
-                return Fail(msg="用户不存在")
+                return Fail(msg="User does not exist")
 
             user_dict = await user_obj.to_dict(m2m=True, exclude_fields=["password"])
             return Success(data=user_dict)
 
         except Exception as e:
-            self.logger.error(f"获取用户详情失败: {str(e)}")
-            return Fail(msg="获取用户详情失败")
+            self.logger.error(f"Failed to get user details: {str(e)}")
+            return Fail(msg="Failed to get user details")
 
     async def create_user(self, user_in: UserCreate) -> Success:
-        """创建用户 - 包含邮箱唯一性检查和角色分配"""
+        """Create user - includes email uniqueness check and role assignment"""
         try:
-            # 检查邮箱是否已存在
+            # Check if email already exists
             existing_user = await user_repository.get_by_email(user_in.email)
             if existing_user:
                 return Fail(
@@ -74,59 +74,59 @@ class UserService(BaseService):
                     msg="The user with this email already exists in the system.",
                 )
 
-            # 创建用户
+            # Create user
             new_user = await user_repository.create_user(obj_in=user_in)
 
-            # 更新用户角色
+            # Update user roles
             await user_repository.update_roles(new_user, user_in.role_ids)
 
             return Success(msg="Created Successfully")
 
         except Exception as e:
-            self.logger.error(f"创建用户失败: {str(e)}")
-            return Fail(msg="创建用户失败")
+            self.logger.error(f"Failed to create user: {str(e)}")
+            return Fail(msg="Failed to create user")
 
     async def update_user(self, user_in: UserUpdate) -> Success:
-        """更新用户 - 包含角色更新和缓存清理"""
+        """Update user - includes role update and cache cleanup"""
         try:
-            # 更新用户基础信息
+            # Update user basic information
             user = await user_repository.update(id=user_in.id, obj_in=user_in)
 
-            # 更新用户角色
+            # Update user roles
             await user_repository.update_roles(user, user_in.role_ids)
 
-            # 清除相关缓存
+            # Clear related cache
             await clear_user_cache(user_in.id)
 
             return Success(msg="Updated Successfully")
 
         except Exception as e:
-            self.logger.error(f"更新用户失败: {str(e)}")
-            return Fail(msg="更新用户失败")
+            self.logger.error(f"Failed to update user: {str(e)}")
+            return Fail(msg="Failed to update user")
 
     async def delete_user(self, user_id: int) -> Success:
-        """删除用户 - 包含缓存清理"""
+        """Delete user - includes cache cleanup"""
         try:
             await user_repository.remove(id=user_id)
 
-            # 清除相关缓存
+            # Clear related cache
             await clear_user_cache(user_id)
 
             return Success(msg="Deleted Successfully")
 
         except Exception as e:
-            self.logger.error(f"删除用户失败: {str(e)}")
-            return Fail(msg="删除用户失败")
+            self.logger.error(f"Failed to delete user: {str(e)}")
+            return Fail(msg="Failed to delete user")
 
     async def reset_user_password(self, user_id: int) -> Success:
-        """重置用户密码"""
+        """Reset user password"""
         try:
             await user_repository.reset_password(user_id)
-            return Success(msg="密码已重置")
+            return Success(msg="Password has been reset")
 
         except Exception as e:
-            self.logger.error(f"重置密码失败: {str(e)}")
-            return Fail(msg="重置密码失败")
+            self.logger.error(f"Failed to reset password: {str(e)}")
+            return Fail(msg="Failed to reset password")
 
     def _build_user_search_filters(
         self,
@@ -134,7 +134,7 @@ class UserService(BaseService):
         email: str = "",
         dept_id: int | None = None,
     ) -> Q:
-        """构建用户搜索过滤条件"""
+        """Build user search filter conditions"""
         filters = Q()
 
         if username:
@@ -149,14 +149,14 @@ class UserService(BaseService):
         return filters
 
     async def _transform_user_list_with_dept(self, items) -> list[dict]:
-        """转换用户列表数据并关联部门信息"""
+        """Transform user list data and associate department information"""
         data = []
 
         for obj in items:
-            # 转换用户数据，排除密码字段
+            # Transform user data, exclude password field
             user_dict = await obj.to_dict(m2m=True, exclude_fields=["password"])
 
-            # 关联部门信息
+            # Associate department information
             dept_id = user_dict.pop("dept_id", None)
             if dept_id:
                 dept_obj = await dept_repository.get(id=dept_id)
@@ -169,5 +169,5 @@ class UserService(BaseService):
         return data
 
 
-# 全局实例
+# Global instance
 user_service = UserService()

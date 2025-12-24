@@ -1,21 +1,21 @@
-# 🚀 企业级FastAPI后端模板
+# 🚀 Enterprise-Grade FastAPI Backend Template
 
 <div align="center">
 
-**一个功能完整、架构清晰的企业级FastAPI后端模板，专为团队开发设计，开箱即用**
+**A production-ready FastAPI backend template with clean architecture, built-in RBAC, and enterprise features - ready to use out of the box**
 
-**简体中文** | [English](README.en.md)
+[English](README.en.md)
 
-<!-- 点赞区域 -->
+<!-- Star Area -->
 <div align="center">
   <a href="https://github.com/JiayuXu0/FastAPI-Template" target="_blank">
-    <img src="https://img.shields.io/badge/⭐_给个Star-支持项目-FFD700?style=for-the-badge&logo=github&logoColor=white&labelColor=FF6B6B&color=FFD700" alt="给个Star">
+    <img src="https://img.shields.io/badge/⭐_Give_a_Star-Support_Project-FFD700?style=for-the-badge&logo=github&logoColor=white&labelColor=FF6B6B&color=FFD700" alt="Give a Star">
   </a>
 </div>
 
-<!-- 互动提示 -->
+<!-- Interaction Prompt -->
 <p align="center">
-  ⭐ <strong>喜欢这个项目？点个Star支持一下！</strong> ⭐
+  ⭐ <strong>Like this project? Give it a star!</strong> ⭐
 </p>
 
 [![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/downloads/)
@@ -24,282 +24,282 @@
 [![Stars](https://img.shields.io/github/stars/JiayuXu0/FastAPI-Template?style=social)](https://github.com/JiayuXu0/FastAPI-Template/stargazers)
 [![Forks](https://img.shields.io/github/forks/JiayuXu0/FastAPI-Template?style=social)](https://github.com/JiayuXu0/FastAPI-Template/network/members)
 
-[![UV](https://img.shields.io/badge/📦_依赖管理-UV-blueviolet.svg)](https://github.com/astral-sh/uv)
-[![Architecture](https://img.shields.io/badge/🏗️_架构-三层架构-orange.svg)](#)
-[![RBAC](https://img.shields.io/badge/🔐_权限-RBAC-red.svg)](#)
-[![Docker](https://img.shields.io/badge/🐳_容器-Docker-blue.svg)](https://www.docker.com/)
+[![UV](https://img.shields.io/badge/📦_Package_Manager-UV-blueviolet.svg)](https://github.com/astral-sh/uv)
+[![Architecture](https://img.shields.io/badge/🏗️_Architecture-3_Layer-orange.svg)](#)
+[![RBAC](https://img.shields.io/badge/🔐_Security-RBAC-red.svg)](#)
+[![Docker](https://img.shields.io/badge/🐳_Docker-Ready-blue.svg)](https://www.docker.com/)
 
-[📖 快速开始](#-快速开始) • [🏗️ 架构说明](#-架构说明) • [📚 开发指南](CLAUDE.md) • [🌐 官网文档](http://fastapi.infyai.cn/) • [🤝 贡献指南](CONTRIBUTING.md) • [🌟 给个Star!](https://github.com/JiayuXu0/FastAPI-Template)
-
-</div>
-
----
-
-## 📸 项目预览
-
-<div align="center">
-
-### ✨ 核心特性
-<img src="docs/images/features-overview.svg" alt="核心特性" width="700">
-
-### 🛠️ 技术栈
-<img src="docs/images/tech-stack.svg" alt="技术栈" width="700">
+[📖 Quick Start](#-quick-start) • [🏗️ Architecture](#-architecture) • [📚 Development Guide](CLAUDE.md) • [🌐 Website](http://fastapi.infyai.cn/) • [🤝 Contributing](CONTRIBUTING.md) • [🌟 Give a Star!](https://github.com/JiayuXu0/FastAPI-Template)
 
 </div>
 
 ---
 
-## 🌟 为什么选择这个模板？
+## 📸 Project Preview
 
 <div align="center">
 
-| 🎯 **企业级标准** | ⚡ **开箱即用** | 🛡️ **安全可靠** | 📈 **性能优秀** |
+### ✨ Core Features
+<img src="docs/images/features-overview.svg" alt="Core Features" width="700">
+
+### 🛠️ Tech Stack
+<img src="docs/images/tech-stack.svg" alt="Tech Stack" width="700">
+
+</div>
+
+---
+
+## 🌟 Why Choose This Template?
+
+<div align="center">
+
+| 🎯 **Enterprise Ready** | ⚡ **Developer Friendly** | 🛡️ **Secure by Default** | 📈 **High Performance** |
 |:---:|:---:|:---:|:---:|
-| 三层架构设计<br/>规范清晰 | 5分钟启动项目<br/>零配置烦恼 | RBAC权限控制<br/>多重安全防护 | 异步高并发<br/>现代化技术栈 |
+| Clean 3-layer architecture<br/>Production tested | 5-minute setup<br/>Zero configuration hassle | RBAC, JWT, Rate limiting<br/>Security best practices | Async/await throughout<br/>Redis caching built-in |
 
 </div>
 
-## ✨ 核心特性
+## ✨ Core Features
 
-### 🔐 认证与权限
-- **JWT身份认证** - 基于HS256算法的安全token认证，支持刷新令牌机制
-- **RBAC权限控制** - 角色基础访问控制，支持细粒度API权限
-- **用户管理** - 完整的用户注册、登录、权限分配功能
-- **角色管理** - 灵活的角色定义和权限分配
+### 🔐 Authentication & Authorization
+- **JWT Authentication** - Secure token authentication based on HS256 algorithm with refresh token mechanism
+- **RBAC Permission Control** - Role-based access control with fine-grained API permissions
+- **User Management** - Complete user registration, login, and permission assignment functionality
+- **Role Management** - Flexible role definition and permission assignment
 
-### 🗂️ 数据管理
-- **菜单管理** - 动态菜单配置，支持多级菜单结构
-- **API管理** - 自动化API权限配置和管理
-- **部门管理** - 组织架构管理，支持层级结构
-- **文件管理** - 安全的文件上传、下载、存储功能
+### 🗂️ Data Management
+- **Menu Management** - Dynamic menu configuration with multi-level menu structure support
+- **API Management** - Automated API permission configuration and management
+- **Department Management** - Organizational structure management with hierarchical support
+- **File Management** - Secure file upload, download, and storage functionality
 
-### 🛡️ 安全防护
-- **登录限流** - 基于slowapi的智能限流，防暴力破解攻击（5次/分钟）
-- **令牌刷新限流** - 刷新令牌接口限流保护（10次/分钟）
-- **密码强度** - 强制复杂密码策略（8位+字母数字组合）
-- **JWT安全** - 4小时访问令牌+7天刷新令牌机制，自动令牌轮换
-- **文件安全** - 文件类型验证、大小限制、恶意文件检测
-- **安全头** - 自动XSS、CSRF、点击劫持防护
-- **CORS配置** - 严格的跨域访问控制
-- **环境验证** - 生产环境配置安全检查
-- **审计日志** - 完整的用户操作记录和追踪
+### 🛡️ Security Protection
+- **Login Rate Limiting** - Intelligent rate limiting based on slowapi to prevent brute force attacks (5 attempts/minute)
+- **Token Refresh Rate Limiting** - Rate limiting protection for refresh token endpoints (10 attempts/minute)
+- **Password Strength** - Enforced complex password policy (8+ characters with alphanumeric combination)
+- **JWT Security** - 4-hour access token + 7-day refresh token mechanism with automatic token rotation
+- **File Security** - File type validation, size limits, and malicious file detection
+- **Security Headers** - Automatic XSS, CSRF, and clickjacking protection
+- **CORS Configuration** - Strict cross-origin access control
+- **Environment Validation** - Production environment configuration security checks
+- **Audit Logging** - Complete user operation records and tracking
 
-### 🏗️ 架构设计
-- **三层架构** - API → Service → Repository → Model 清晰分层
-- **异步支持** - 全异步设计，高性能处理
-- **健康检查** - 系统状态监控和版本信息接口
-- **数据库迁移** - 基于Aerich的版本化数据库管理
-- **类型安全** - 完整的Python类型注解
+### 🏗️ Architecture Design
+- **Three-Layer Architecture** - Clear separation: API → Service → Repository → Model
+- **Async Support** - Fully asynchronous design for high-performance processing
+- **Health Checks** - System status monitoring and version information endpoints
+- **Database Migrations** - Versioned database management based on Aerich
+- **Type Safety** - Complete Python type annotations
 
-### ⚡ 性能优化
-- **连接池优化** - 数据库连接池配置，提升并发性能（20连接池+超时控制）
-- **缓存系统** - Redis集成，智能缓存策略和用户缓存管理
-- **异步架构** - 全异步设计，支持高并发访问
-- **性能监控** - 慢查询告警和性能指标追踪
+### ⚡ Performance Optimization
+- **Connection Pool Optimization** - Database connection pool configuration for improved concurrency (20 connections + timeout control)
+- **Caching System** - Redis integration with intelligent caching strategies and user cache management
+- **Async Architecture** - Fully asynchronous design supporting high-concurrency access
+- **Performance Monitoring** - Slow query alerts and performance metrics tracking
 
-## 🛠️ 技术栈
+## 🛠️ Tech Stack
 
-| 组件 | 技术选型 | 版本要求 |
-|------|----------|----------|
-| **语言** | Python | 3.11+ |
-| **Web框架** | FastAPI | 0.100+ |
-| **数据库ORM** | Tortoise ORM | 0.20+ |
-| **数据库** | SQLite/PostgreSQL | - |
-| **身份认证** | PyJWT | 2.8+ |
-| **数据验证** | Pydantic | 2.0+ |
-| **数据库迁移** | Aerich | 0.7+ |
-| **包管理** | UV | latest |
-| **日志** | Loguru | 0.7+ |
-| **限流** | SlowAPI | 0.1.9+ |
-| **缓存** | Redis | 4.5+ |
+| Component | Technology | Version Requirement |
+|-----------|------------|---------------------|
+| **Language** | Python | 3.11+ |
+| **Web Framework** | FastAPI | 0.100+ |
+| **Database ORM** | Tortoise ORM | 0.20+ |
+| **Database** | SQLite/PostgreSQL | - |
+| **Authentication** | PyJWT | 2.8+ |
+| **Data Validation** | Pydantic | 2.0+ |
+| **Database Migration** | Aerich | 0.7+ |
+| **Package Manager** | UV | latest |
+| **Logging** | Loguru | 0.7+ |
+| **Rate Limiting** | SlowAPI | 0.1.9+ |
+| **Cache** | Redis | 4.5+ |
 
-## 📁 项目结构
+## 📁 Project Structure
 
 ```
 evoai-backend-template/
-├── src/                          # 📦 源代码目录
-│   ├── api/v1/                   # 🌐 API路由层 (轻量化路由)
-│   │   ├── users/               # 👥 用户管理API
-│   │   ├── roles/               # 👑 角色管理API
-│   │   ├── menus/               # 📋 菜单管理API
-│   │   ├── files/               # 📁 文件管理API
+├── src/                          # 📦 Source code directory
+│   ├── api/v1/                   # 🌐 API routing layer (lightweight routes)
+│   │   ├── users/               # 👥 User management API
+│   │   ├── roles/               # 👑 Role management API
+│   │   ├── menus/               # 📋 Menu management API
+│   │   ├── files/               # 📁 File management API
 │   │   └── ...
-│   ├── services/                 # 🔧 业务逻辑层 (核心业务)
-│   │   ├── base_service.py      # 🏗️ 服务基类和权限服务
-│   │   ├── user_service.py      # 👤 用户业务逻辑
-│   │   ├── file_service.py      # 📄 文件业务逻辑
+│   ├── services/                 # 🔧 Business logic layer (core business)
+│   │   ├── base_service.py      # 🏗️ Service base class and permission service
+│   │   ├── user_service.py      # 👤 User business logic
+│   │   ├── file_service.py      # 📄 File business logic
 │   │   └── ...
-│   ├── repositories/             # 🗄️ 数据访问层 (CRUD操作)
-│   ├── models/                   # 📊 数据模型层
-│   │   ├── admin.py             # 👨‍💼 用户角色模型
-│   │   ├── base.py              # 🔷 基础模型类
-│   │   └── enums.py             # 📝 枚举定义
-│   ├── schemas/                  # ✅ 数据验证层
-│   ├── core/                     # ⚙️ 核心功能
-│   │   ├── dependency.py        # 🔗 依赖注入
-│   │   ├── middlewares.py       # 🛡️ 中间件
-│   │   └── init_app.py          # 🚀 应用初始化
-│   ├── utils/                    # 🔧 工具函数
-│   └── settings/                 # ⚙️ 配置管理
-├── migrations/                   # 📈 数据库迁移文件
-├── tests/                        # 🧪 测试文件
-├── uploads/                      # 📂 文件上传目录
-├── logs/                         # 📋 日志文件
-├── pyproject.toml               # 📦 UV项目配置
-├── .env                         # 🔐 环境变量配置
-└── CLAUDE.md                    # 🤖 Claude开发指南
+│   ├── repositories/             # 🗄️ Data access layer (CRUD operations)
+│   ├── models/                   # 📊 Data model layer
+│   │   ├── admin.py             # 👨‍💼 User role models
+│   │   ├── base.py              # 🔷 Base model class
+│   │   └── enums.py             # 📝 Enum definitions
+│   ├── schemas/                  # ✅ Data validation layer
+│   ├── core/                     # ⚙️ Core functionality
+│   │   ├── dependency.py        # 🔗 Dependency injection
+│   │   ├── middlewares.py       # 🛡️ Middlewares
+│   │   └── init_app.py          # 🚀 Application initialization
+│   ├── utils/                    # 🔧 Utility functions
+│   └── settings/                 # ⚙️ Configuration management
+├── migrations/                   # 📈 Database migration files
+├── tests/                        # 🧪 Test files
+├── uploads/                      # 📂 File upload directory
+├── logs/                         # 📋 Log files
+├── pyproject.toml               # 📦 UV project configuration
+├── .env                         # 🔐 Environment variable configuration
+└── CLAUDE.md                    # 🤖 Claude development guide
 ```
 
-## 🚀 快速开始
+## 🚀 Quick Start
 
-### ⚡ 一键创建项目 (推荐)
+### ⚡ One-Click Project Creation (Recommended)
 
-**🎉 全新脚手架工具 `create-fastapi-app` 已发布！**
+**🎉 New scaffolding tool `create-fastapi-app` has been released!**
 
 <div align="center">
 
 <a href="https://github.com/JiayuXu0/create-fastapi-app" target="_blank">
-  <img src="https://img.shields.io/badge/🚀_create--fastapi--app-一键创建FastAPI项目-00D8FF?style=for-the-badge&logo=fastapi&logoColor=white&labelColor=009688&color=00D8FF" alt="create-fastapi-app">
+  <img src="https://img.shields.io/badge/🚀_create--fastapi--app-One-Click_Create_FastAPI_Project-00D8FF?style=for-the-badge&logo=fastapi&logoColor=white&labelColor=009688&color=00D8FF" alt="create-fastapi-app">
 </a>
 
 <a href="https://github.com/JiayuXu0/create-fastapi-app" target="_blank">
-  <img src="https://img.shields.io/badge/⭐_Star项目-支持开发-FFD700?style=for-the-badge&logo=github&logoColor=white&labelColor=FF6B6B&color=FFD700" alt="Star create-fastapi-app">
+  <img src="https://img.shields.io/badge/⭐_Star_Project-Support_Development-FFD700?style=for-the-badge&logo=github&logoColor=white&labelColor=FF6B6B&color=FFD700" alt="Star create-fastapi-app">
 </a>
 
-**⭐ 如果觉得有用，请给 [create-fastapi-app](https://github.com/JiayuXu0/create-fastapi-app) 点个 Star 支持一下！⭐**
+**⭐ If you find it useful, please give [create-fastapi-app](https://github.com/JiayuXu0/create-fastapi-app) a star! ⭐**
 
 </div>
 
 ```bash
-# 🚀 使用 npx (推荐)
+# 🚀 Using npx (Recommended)
 npx create-fastapi-app@latest my-awesome-backend
 
-# 🚀 使用 npm
+# 🚀 Using npm
 npm create fastapi-app@latest my-awesome-backend
 
-# 🚀 使用 yarn
+# 🚀 Using yarn
 yarn create fastapi-app my-awesome-backend
 
-# 🚀 使用 pnpm
+# 🚀 Using pnpm
 pnpm create fastapi-app my-awesome-backend
 ```
 
-**✨ 脚手架优势：**
-- 🎯 **交互式创建** - 友好的命令行界面，一步步引导配置
-- 🔧 **智能配置** - 自动生成 `.env` 文件和数据库配置
-- 📦 **模板丰富** - 基础版、完整版、微服务版等多种选择
-- 🚀 **开箱即用** - 生成后立即可运行，零配置启动
-- 🛠️ **工具集成** - 预配置代码检查、格式化、测试等开发工具
+**✨ Scaffolding Advantages:**
+- 🎯 **Interactive Creation** - Friendly command-line interface with step-by-step configuration guidance
+- 🔧 **Smart Configuration** - Automatically generates `.env` files and database configuration
+- 📦 **Rich Templates** - Multiple options: basic, full, microservice versions, etc.
+- 🚀 **Ready to Use** - Run immediately after generation with zero configuration
+- 🛠️ **Tool Integration** - Pre-configured code checking, formatting, testing, and other development tools
 
-> 💡 **强烈推荐使用脚手架工具！比手动配置快 10 倍！**
+> 💡 **Strongly recommend using the scaffolding tool! 10x faster than manual configuration!**
 >
-> 🔗 **项目地址**：https://github.com/JiayuXu0/create-fastapi-app
+> 🔗 **Project URL**: https://github.com/JiayuXu0/create-fastapi-app
 >
-> ⭐ **别忘了给脚手架项目点个 Star 哦！你的支持是我们持续改进的动力！**
+> ⭐ **Don't forget to give the scaffolding project a star! Your support is our motivation for continuous improvement!**
 
 ---
 
-### 💻 手动安装 (传统方式)
+### 💻 Manual Installation (Traditional Method)
 
-如果你更喜欢手动配置或需要深度自定义：
+If you prefer manual configuration or need deep customization:
 
-#### 1. 环境准备
+#### 1. Environment Setup
 
 ```bash
-# 安装UV包管理器
+# Install UV package manager
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# 克隆项目
+# Clone the project
 git clone <your-repo-url>
 cd evoai-backend-template
 
-# 安装依赖
+# Install dependencies
 uv sync
 ```
 
-### 2. 🔐 环境配置
+### 2. 🔐 Environment Configuration
 
-**复制环境配置文件：**
+**Copy environment configuration file:**
 ```bash
 cp .env.example .env
 ```
 
-**⚠️ 必须修改的安全配置：**
+**⚠️ Security configurations that must be modified:**
 
-| 配置项 | 说明 | 生成方式 |
-|--------|------|----------|
-| `SECRET_KEY` | JWT签名密钥 | `openssl rand -hex 32` |
-| `SWAGGER_UI_PASSWORD` | API文档访问密码 | 设置强密码 |
-| `DB_PASSWORD` | 数据库密码 | 设置强密码 |
+| Configuration Item | Description | Generation Method |
+|-------------------|-------------|-------------------|
+| `SECRET_KEY` | JWT signing key | `openssl rand -hex 32` |
+| `SWAGGER_UI_PASSWORD` | API documentation access password | Set a strong password |
+| `DB_PASSWORD` | Database password | Set a strong password |
 
-**配置示例：**
+**Configuration Example:**
 ```bash
-# 基础配置
+# Basic configuration
 SECRET_KEY=your_generated_secret_key_here
-APP_TITLE=你的项目名称
+APP_TITLE=Your Project Name
 PROJECT_NAME=YourProject
 
-# 数据库配置 (开发环境推荐SQLite)
+# Database configuration (SQLite recommended for development)
 DB_ENGINE=sqlite
 DB_PASSWORD=your_strong_password
 
-# API文档保护
+# API documentation protection
 SWAGGER_UI_USERNAME=admin
 SWAGGER_UI_PASSWORD=your_strong_password
 
-# CORS配置
+# CORS configuration
 CORS_ORIGINS=http://localhost:3000,http://localhost:8080
 ```
 
-### 3. 数据库初始化
+### 3. Database Initialization
 
 ```bash
 uv run aerich init-db
 ```
 
-### 4. 启动服务
+### 4. Start Service
 
 ```bash
-# 开发模式
+# Development mode
 uv run uvicorn src:app --reload --host 0.0.0.0 --port 8000
 
-# 生产模式
+# Production mode
 uv run uvicorn src:app --host 0.0.0.0 --port 8000 --workers 4
 ```
 
-### 🐳 使用 Docker 运行项目
+### 🐳 Run Project with Docker
 
 ```bash
-# 构建镜像（在项目根目录执行）
+# Build image (execute in project root directory)
 docker build -t fastapi-template .
 
-# 启动容器并映射端口，可选加载环境变量
+# Start container and map ports, optionally load environment variables
 docker run --rm -p 8000:8000 --env-file .env fastapi-template
 ```
 
-镜像启动后即可访问 http://localhost:8000/docs 验证服务是否正常，或使用 `curl http://localhost:8000/api/v1/base/health` 进行健康检查。
+After the image starts, you can access http://localhost:8000/docs to verify the service is running, or use `curl http://localhost:8000/api/v1/base/health` for health check.
 
-### 5. 访问服务
+### 5. Access Service
 
-- **🌐 官网文档**: http://fastapi.infyai.cn/
-- **API文档**: http://localhost:8000/docs
-- **替代文档**: http://localhost:8000/redoc
-- **健康检查**: http://localhost:8000/api/v1/base/health
-- **版本信息**: http://localhost:8000/api/v1/base/version
-- **系统状态**: 实时监控系统运行状态
+- **🌐 Official Documentation**: http://fastapi.infyai.cn/
+- **API Documentation**: http://localhost:8000/docs
+- **Alternative Documentation**: http://localhost:8000/redoc
+- **Health Check**: http://localhost:8000/api/v1/base/health
+- **Version Information**: http://localhost:8000/api/v1/base/version
+- **System Status**: Real-time system status monitoring
 
-### 6. 默认账号
+### 6. Default Account
 
 ```
-用户名: admin
-密码: abcd1234
+Username: admin
+Password: abcd1234
 ```
 
-**🚨 首次登录后立即修改密码！**
+**🚨 Change password immediately after first login!**
 
 ---
 
-## 📊 项目统计
+## 📊 Project Statistics
 
 <div align="center">
 
@@ -310,384 +310,384 @@ docker run --rm -p 8000:8000 --env-file .env fastapi-template
 
 </div>
 
-## 🎉 成功案例
+## 🎉 Success Stories
 
-> 💡 **已有多个团队使用此模板快速搭建生产级后端服务**
+> 💡 **Multiple teams have used this template to quickly build production-grade backend services**
 
-- 🏢 **企业管理系统** - 支持10万+用户的权限管理平台
-- 🛒 **电商后台** - 高并发订单处理系统
-- 📱 **移动应用API** - 微服务架构的用户中心
-- 🎯 **SaaS平台** - 多租户权限隔离系统
+- 🏢 **Enterprise Management System** - Permission management platform supporting 100,000+ users
+- 🛒 **E-commerce Backend** - High-concurrency order processing system
+- 📱 **Mobile App API** - Microservice architecture user center
+- 🎯 **SaaS Platform** - Multi-tenant permission isolation system
 
-**👥 如果你也在使用这个模板，[告诉我们](https://github.com/JiayuXu0/FastAPI-Template/discussions)你的使用案例！**
+**👥 If you're also using this template, [tell us](https://github.com/JiayuXu0/FastAPI-Template/discussions) your use case!**
 
-## 🏗️ 架构说明
+## 🏗️ Architecture
 
-### 三层架构模式
+### Three-Layer Architecture Pattern
 
 ```
 ┌─────────────────┐
-│   API Layer     │  ← 路由分发、参数验证
+│   API Layer     │  ← Route distribution, parameter validation
 │  (api/v1/)      │
 ├─────────────────┤
-│  Service Layer  │  ← 业务逻辑、权限检查
+│  Service Layer  │  ← Business logic, permission checks
 │  (services/)    │
 ├─────────────────┤
-│Repository Layer │  ← 数据库操作、CRUD
+│Repository Layer │  ← Database operations, CRUD
 │ (repositories/) │
 ├─────────────────┤
-│  Model Layer    │  ← 数据模型定义
+│  Model Layer    │  ← Data model definitions
 │   (models/)     │
 └─────────────────┘
 ```
 
-### 核心设计原则
+### Core Design Principles
 
-1. **单一职责** - 每层只处理自己的逻辑
-2. **依赖注入** - 通过FastAPI依赖系统管理
-3. **类型安全** - 完整的Python类型注解
-4. **异步优先** - 全异步设计，高并发支持
-5. **安全第一** - 内置多重安全防护机制
+1. **Single Responsibility** - Each layer only handles its own logic
+2. **Dependency Injection** - Managed through FastAPI dependency system
+3. **Type Safety** - Complete Python type annotations
+4. **Async First** - Fully asynchronous design with high-concurrency support
+5. **Security First** - Built-in multiple security protection mechanisms
 
-## 📚 开发指南
+## 📚 Development Guide
 
-### 添加新功能
+### Adding New Features
 
-1. **定义数据模型** (`models/`)
-2. **创建数据Schema** (`schemas/`)
-3. **实现Repository** (`repositories/`)
-4. **编写Service业务逻辑** (`services/`)
-5. **添加API路由** (`api/v1/`)
-6. **生成数据库迁移** (`aerich migrate`)
+1. **Define Data Models** (`models/`)
+2. **Create Data Schemas** (`schemas/`)
+3. **Implement Repository** (`repositories/`)
+4. **Write Service Business Logic** (`services/`)
+5. **Add API Routes** (`api/v1/`)
+6. **Generate Database Migrations** (`aerich migrate`)
 
-详细步骤请参考 [CLAUDE.md](CLAUDE.md) 开发指南。
+For detailed steps, refer to the [CLAUDE.md](CLAUDE.md) development guide.
 
-### 📖 文档系统
+### 📖 Documentation System
 
-本项目集成了强大的文档系统，基于 **MkDocs Material** 构建，提供美观且功能完整的项目文档。
+This project integrates a powerful documentation system built on **MkDocs Material**, providing beautiful and feature-complete project documentation.
 
-#### ✨ 文档特性
-- **🤖 自动API文档生成** - 从FastAPI代码自动提取API信息
-- **📝 详细的参数说明** - 包含请求参数、响应格式、使用示例
-- **🎨 Material Design** - 现代化的UI设计，支持暗黑模式
-- **🔍 全文搜索** - 快速查找文档内容
-- **📱 响应式设计** - 完美支持移动端访问
-- **🌐 多语言支持** - 中英文文档
+#### ✨ Documentation Features
+- **🤖 Automatic API Documentation Generation** - Automatically extracts API information from FastAPI code
+- **📝 Detailed Parameter Descriptions** - Includes request parameters, response formats, and usage examples
+- **🎨 Material Design** - Modern UI design with dark mode support
+- **🔍 Full-Text Search** - Quickly find documentation content
+- **📱 Responsive Design** - Perfect mobile access support
+- **🌐 Multi-Language Support** - English and Chinese documentation
 
-#### 📂 文档结构
+#### 📂 Documentation Structure
 ```
 docs/
-├── index.md              # 📋 项目主页
-├── guide/                 # 🚀 快速开始指南
-├── architecture/          # 🏗️ 架构设计文档
-├── api/                   # 📚 API接口文档
-│   ├── index.md          # API总览
-│   ├── base.md           # 认证授权 (自动生成)
-│   ├── users.md          # 用户管理 (自动生成)
-│   ├── role.md           # 角色管理 (自动生成)
-│   └── ...               # 其他API模块
-├── changelog.md           # 📝 更新日志
-├── faq.md                # ❓ 常见问题
-└── gen_pages.py          # 🔧 文档生成脚本
+├── index.md              # 📋 Project homepage
+├── guide/                 # 🚀 Quick start guide
+├── architecture/          # 🏗️ Architecture design documentation
+├── api/                   # 📚 API interface documentation
+│   ├── index.md          # API overview
+│   ├── base.md           # Authentication & Authorization (auto-generated)
+│   ├── users.md          # User Management (auto-generated)
+│   ├── role.md           # Role Management (auto-generated)
+│   └── ...               # Other API modules
+├── changelog.md           # 📝 Changelog
+├── faq.md                # ❓ FAQ
+└── gen_pages.py          # 🔧 Documentation generation script
 ```
 
-#### 🚀 启动文档服务
+#### 🚀 Start Documentation Service
 ```bash
-# 安装文档依赖
+# Install documentation dependencies
 uv sync --group docs
 
-# 启动开发服务器 (支持热重载)
+# Start development server (supports hot reload)
 uv run mkdocs serve
 
-# 构建静态文档
+# Build static documentation
 uv run mkdocs build
 
-# 部署到GitHub Pages
+# Deploy to GitHub Pages
 uv run mkdocs gh-deploy
 ```
 
-#### 🔄 自动生成API文档
+#### 🔄 Automatic API Documentation Generation
 ```bash
-# 手动生成API文档 (通常自动执行)
+# Manually generate API documentation (usually automatic)
 uv run python docs/gen_pages.py
 ```
 
-#### 📋 API文档包含内容
-- **完整的参数表格** - 参数名、类型、是否必填、默认值、描述
-- **请求体结构** - Pydantic模型字段详情和JSON示例
-- **响应格式说明** - 成功/错误响应示例
-- **实用的代码示例** - cURL和Python requests使用示例
-- **认证要求** - Bearer Token使用说明
+#### 📋 API Documentation Contents
+- **Complete Parameter Tables** - Parameter name, type, required, default value, description
+- **Request Body Structure** - Pydantic model field details and JSON examples
+- **Response Format Description** - Success/error response examples
+- **Practical Code Examples** - cURL and Python requests usage examples
+- **Authentication Requirements** - Bearer Token usage instructions
 
-#### 🌐 在线访问
-- **🌐 官网文档**: http://fastapi.infyai.cn/
-- **本地文档**: http://localhost:8000 (mkdocs serve)
+#### 🌐 Online Access
+- **🌐 Official Documentation**: http://fastapi.infyai.cn/
+- **Local Documentation**: http://localhost:8000 (mkdocs serve)
 - **Swagger UI**: http://localhost:8000/docs
 - **ReDoc**: http://localhost:8000/redoc
 
-> 💡 **提示**: API文档会随代码变更自动更新，确保文档与代码始终保持同步！
+> 💡 **Tip**: API documentation automatically updates with code changes, ensuring documentation stays in sync with code!
 
-### 数据库操作
+### Database Operations
 
 ```bash
-# 生成迁移文件
+# Generate migration file
 uv run aerich migrate --name "add_new_feature"
 
-# 应用迁移
+# Apply migrations
 uv run aerich upgrade
 
-# 查看迁移历史
+# View migration history
 uv run aerich history
 ```
 
-### 测试
+### Testing
 
 ```bash
-# 运行所有测试
+# Run all tests
 uv run pytest
 
-# 运行特定测试
+# Run specific test
 uv run pytest tests/test_users.py
 
-# 生成覆盖率报告
+# Generate coverage report
 uv run pytest --cov=src --cov-report=html
 ```
 
-## 🔒 安全最佳实践
+## 🔒 Security Best Practices
 
-### 生产环境安全检查
+### Production Environment Security Checks
 
-#### ✅ 自动检查项
-- [x] **SECRET_KEY** 自动生成安全密钥，至少32字符
-- [x] **密码强度** 强制8位+字母数字组合
-- [x] **登录限流** 自动防暴力破解攻击
-- [x] **JWT安全** 4小时过期+刷新机制
-- [x] **环境验证** 生产环境配置自动检查
-- [x] **错误保护** 生产环境隐藏技术细节
+#### ✅ Automatic Checks
+- [x] **SECRET_KEY** Automatically generates secure key, at least 32 characters
+- [x] **Password Strength** Enforced 8+ characters with alphanumeric combination
+- [x] **Login Rate Limiting** Automatic brute force attack prevention
+- [x] **JWT Security** 4-hour expiration + refresh mechanism
+- [x] **Environment Validation** Automatic production environment configuration checks
+- [x] **Error Protection** Hide technical details in production environment
 
-#### 📋 手动检查项
-- [ ] **DEBUG模式** 生产环境设置 `DEBUG=False`
-- [ ] **数据库** 使用PostgreSQL而非SQLite
-- [ ] **CORS配置** 设置具体域名，移除localhost
-- [ ] **HTTPS** 生产环境启用HTTPS
-- [ ] **数据库安全** 使用独立数据库账号，限制权限
-- [ ] **Swagger密码** 设置强密码保护API文档
+#### 📋 Manual Checks
+- [ ] **DEBUG Mode** Set `DEBUG=False` in production environment
+- [ ] **Database** Use PostgreSQL instead of SQLite
+- [ ] **CORS Configuration** Set specific domains, remove localhost
+- [ ] **HTTPS** Enable HTTPS in production environment
+- [ ] **Database Security** Use independent database account with limited permissions
+- [ ] **Swagger Password** Set strong password to protect API documentation
 
-### 文件上传安全
+### File Upload Security
 
-- 支持的文件类型白名单验证
-- 文件大小限制 (默认500MB)
-- 危险文件类型黑名单检测
-- 安全的文件名生成机制
-- 本地文件存储 (可扩展至云存储)
+- Whitelist validation for supported file types
+- File size limits (default 500MB)
+- Dangerous file type blacklist detection
+- Secure filename generation mechanism
+- Local file storage (extensible to cloud storage)
 
-## 🔧 配置说明
+## 🔧 Configuration
 
-### 环境变量
+### Environment Variables
 
-| 变量名 | 必填 | 默认值 | 说明 |
-|--------|------|--------|------|
-| `SECRET_KEY` | ✅ | 自动生成 | JWT签名密钥（至少32字符） |
-| `SWAGGER_UI_PASSWORD` | ✅ | - | API文档访问密码（至少8位） |
-| `JWT_ACCESS_TOKEN_EXPIRE_MINUTES` | ❌ | 240 | JWT访问令牌过期时间（分钟） |
-| `JWT_REFRESH_TOKEN_EXPIRE_DAYS` | ❌ | 7 | JWT刷新令牌过期时间（天） |
-| `APP_TITLE` | ❌ | Vue FastAPI Admin | 应用标题 |
-| `DB_ENGINE` | ❌ | postgres | 数据库类型 |
-| `DB_HOST` | ❌ | localhost | 数据库主机 |
-| `DB_PASSWORD` | ⚠️ | - | 数据库密码（生产环境必填） |
-| `CORS_ORIGINS` | ❌ | localhost:3000 | 允许的CORS源 |
-| `DEBUG` | ❌ | True | 调试模式 |
-| `APP_ENV` | ❌ | development | 应用环境（development/production） |
+| Variable Name | Required | Default Value | Description |
+|--------------|----------|---------------|-------------|
+| `SECRET_KEY` | ✅ | Auto-generated | JWT signing key (at least 32 characters) |
+| `SWAGGER_UI_PASSWORD` | ✅ | - | API documentation access password (at least 8 characters) |
+| `JWT_ACCESS_TOKEN_EXPIRE_MINUTES` | ❌ | 240 | JWT access token expiration time (minutes) |
+| `JWT_REFRESH_TOKEN_EXPIRE_DAYS` | ❌ | 7 | JWT refresh token expiration time (days) |
+| `APP_TITLE` | ❌ | Vue FastAPI Admin | Application title |
+| `DB_ENGINE` | ❌ | postgres | Database type |
+| `DB_HOST` | ❌ | localhost | Database host |
+| `DB_PASSWORD` | ⚠️ | - | Database password (required in production) |
+| `CORS_ORIGINS` | ❌ | localhost:3000 | Allowed CORS origins |
+| `DEBUG` | ❌ | True | Debug mode |
+| `APP_ENV` | ❌ | development | Application environment (development/production) |
 
-### 数据库支持
+### Database Support
 
-- **SQLite** - 适合开发和小型部署
-- **PostgreSQL** - 推荐生产环境使用
+- **SQLite** - Suitable for development and small deployments
+- **PostgreSQL** - Recommended for production environments
 
-## 📈 性能优化
+## 📈 Performance Optimization
 
-### 🚀 已实现的优化
-- **异步处理** - 全异步架构，支持高并发
-- **登录限流** - 防暴力破解，每分钟最多5次尝试
-- **密码策略** - 强制复杂密码，提升账户安全
-- **JWT优化** - 4小时短期令牌+刷新机制
-- **错误保护** - 生产环境隐藏技术细节
-- **健康监控** - 系统状态和版本信息接口
+### 🚀 Implemented Optimizations
+- **Async Processing** - Fully asynchronous architecture supporting high concurrency
+- **Login Rate Limiting** - Brute force prevention, maximum 5 attempts per minute
+- **Password Policy** - Enforced complex passwords to enhance account security
+- **JWT Optimization** - 4-hour short-term token + refresh mechanism
+- **Error Protection** - Hide technical details in production environment
+- **Health Monitoring** - System status and version information endpoints
 
-### 🔄 计划中的优化
-- **性能监控** - 慢查询告警和指标追踪
-- **中间件** - 请求压缩、缓存头设置
-- **GraphQL** - GraphQL接口支持
-- **WebSocket** - 实时通信功能
+### 🔄 Planned Optimizations
+- **Performance Monitoring** - Slow query alerts and metrics tracking
+- **Middleware** - Request compression, cache header settings
+- **GraphQL** - GraphQL interface support
+- **WebSocket** - Real-time communication functionality
 
-## 🤝 贡献指南
+## 🤝 Contributing
 
-1. Fork 项目仓库
-2. 创建功能分支 (`git checkout -b feature/amazing-feature`)
-3. 提交改动 (`git commit -m 'Add some amazing feature'`)
-4. 推送分支 (`git push origin feature/amazing-feature`)
-5. 创建 Pull Request
+1. Fork the project repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Create a Pull Request
 
-### 代码规范
+### Code Standards
 
-#### 🔧 Pre-commit Hooks (推荐)
+#### 🔧 Pre-commit Hooks (Recommended)
 ```bash
-# hooks 会在 uv sync 时自动安装
-# 每次 git commit 时自动运行代码检查和格式化
+# Hooks are automatically installed during uv sync
+# Automatically runs code checks and formatting on each git commit
 
-# 手动运行所有检查
+# Manually run all checks
 uv run pre-commit run --all-files
 
-# 如不想使用 hooks，可以禁用
+# Disable hooks if you don't want to use them
 uv run pre-commit uninstall
 
-# 跳过单次检查 (紧急情况)
+# Skip single check (emergency situations)
 git commit --no-verify -m "urgent fix"
 ```
 
-#### 📋 编码标准
-- 遵循 **PEP 8** 编码规范
-- 使用 **Google风格** 文档字符串
-- 添加 **类型注解** 到所有函数
-- 编写 **单元测试** 覆盖关键功能
-- 使用 **ruff** 进行代码检查和格式化
+#### 📋 Coding Standards
+- Follow **PEP 8** coding standards
+- Use **Google-style** docstrings
+- Add **type annotations** to all functions
+- Write **unit tests** covering key functionality
+- Use **ruff** for code checking and formatting
 
-📖 **详细说明**: 查看 [Pre-commit Hooks 指南](docs/pre-commit-guide.md)
+📖 **Detailed Instructions**: See [Pre-commit Hooks Guide](docs/pre-commit-guide.md)
 
-## 📄 许可证
+## 📄 License
 
-本项目基于 [MIT License](LICENSE) 开源协议。
+This project is licensed under the [MIT License](LICENSE).
 
-## 🔗 相关链接
+## 🔗 Related Links
 
-- [FastAPI官方文档](https://fastapi.tiangolo.com/)
-- [Tortoise ORM文档](https://tortoise.github.io/)
-- [UV包管理器](https://github.com/astral-sh/uv)
-- [Claude Code文档](https://docs.anthropic.com/en/docs/claude-code)
-
----
-
-## 🆘 获取帮助
-
-如果您在使用过程中遇到问题：
-
-1. 📖 查看 [CLAUDE.md](CLAUDE.md) 详细开发指南
-2. 🔍 查看 [Issues](../../issues) 查找类似问题
-3. 💬 创建新的 [Issue](../../issues/new) 描述问题
-4. 📧 联系维护者
-
-**开箱即用，专业可靠的企业级FastAPI后端模板** 🚀
-
-## 📝 更新日志
-
-### 🆕 v1.2.0 - 性能与安全双重升级 (2025-07-14)
-
-#### ⚡ 性能优化
-- ✅ **数据库连接池优化** - 20连接池+超时控制，提升并发性能
-- ✅ **Redis缓存集成** - 智能缓存策略，用户数据缓存管理
-- ✅ **缓存装饰器** - 优雅的缓存解决方案，TTL可配置
-- ✅ **用户缓存管理** - 自动缓存清理机制
-
-#### 🔐 JWT安全增强
-- ✅ **刷新令牌机制** - 7天刷新令牌+自动轮换策略
-- ✅ **双令牌系统** - 访问令牌(4小时)+刷新令牌(7天)
-- ✅ **令牌类型验证** - 防止令牌类型错误使用
-- ✅ **刷新接口限流** - 10次/分钟刷新保护
-
-#### 🏥 监控功能
-- ✅ **健康检查接口** - `/api/v1/base/health`
-- ✅ **版本信息接口** - `/api/v1/base/version`
-- ✅ **系统状态监控** - 实时服务状态展示
-
-#### 🛠️ 开发体验
-- ✅ **自动SECRET_KEY生成** - 无需手动配置
-- ✅ **详细错误提示** - 开发环境友好的错误信息
-- ✅ **配置验证增强** - 启动时自动检查配置
-
-### 📋 v1.0.0 - 基础版本
-- 🏗️ 三层架构设计
-- 🔐 RBAC权限管理
-- 📊 完整CRUD操作
-- 🗄️ 数据库迁移支持
+- [FastAPI Official Documentation](https://fastapi.tiangolo.com/)
+- [Tortoise ORM Documentation](https://tortoise.github.io/)
+- [UV Package Manager](https://github.com/astral-sh/uv)
+- [Claude Code Documentation](https://docs.anthropic.com/en/docs/claude-code)
 
 ---
 
-## 🏆 特色亮点
+## 🆘 Get Help
+
+If you encounter any issues while using this project:
+
+1. 📖 Check [CLAUDE.md](CLAUDE.md) for detailed development guide
+2. 🔍 Check [Issues](../../issues) for similar problems
+3. 💬 Create a new [Issue](../../issues/new) to describe the problem
+4. 📧 Contact the maintainers
+
+**Ready to use, professional and reliable enterprise-grade FastAPI backend template** 🚀
+
+## 📝 Changelog
+
+### 🆕 v1.2.0 - Performance and Security Dual Upgrade (2025-07-14)
+
+#### ⚡ Performance Optimization
+- ✅ **Database Connection Pool Optimization** - 20 connection pool + timeout control, improved concurrency performance
+- ✅ **Redis Cache Integration** - Intelligent caching strategy, user data cache management
+- ✅ **Cache Decorator** - Elegant caching solution with configurable TTL
+- ✅ **User Cache Management** - Automatic cache cleanup mechanism
+
+#### 🔐 JWT Security Enhancement
+- ✅ **Refresh Token Mechanism** - 7-day refresh token + automatic rotation strategy
+- ✅ **Dual Token System** - Access token (4 hours) + Refresh token (7 days)
+- ✅ **Token Type Validation** - Prevents incorrect token type usage
+- ✅ **Refresh Endpoint Rate Limiting** - 10 attempts/minute refresh protection
+
+#### 🏥 Monitoring Features
+- ✅ **Health Check Endpoint** - `/api/v1/base/health`
+- ✅ **Version Information Endpoint** - `/api/v1/base/version`
+- ✅ **System Status Monitoring** - Real-time service status display
+
+#### 🛠️ Developer Experience
+- ✅ **Automatic SECRET_KEY Generation** - No manual configuration needed
+- ✅ **Detailed Error Messages** - Developer-friendly error information
+- ✅ **Enhanced Configuration Validation** - Automatic configuration checks on startup
+
+### 📋 v1.0.0 - Base Version
+- 🏗️ Three-layer architecture design
+- 🔐 RBAC permission management
+- 📊 Complete CRUD operations
+- 🗄️ Database migration support
+
+---
+
+## 🏆 Highlights
 
 <div align="center">
 
-<!-- 成就展示 -->
+<!-- Achievement Display -->
 <div align="center">
 
-### 🎯 已获得开发者认可
+### 🎯 Developer Recognition
 
-| ⭐ **Stars** | 🍴 **Forks** | 👥 **用户** |
+| ⭐ **Stars** | 🍴 **Forks** | 👥 **Users** |
 |:---:|:---:|:---:|
-| 持续增长 | 活跃使用 | 企业级 |
+| Growing | Active Usage | Enterprise-Grade |
 
 </div>
 
-### 🚀 快速上手
+### 🚀 Quick Start
 
-**🎯 方式一：脚手架创建 (推荐)**
+**🎯 Method 1: Scaffold Creation (Recommended)**
 ```bash
 npx create-fastapi-app@latest my-project
 cd my-project && uv run uvicorn src:app --reload
-# 🎉 2分钟内即可启动完整的企业级后端服务！
+# 🎉 Start a complete enterprise-grade backend service in 2 minutes!
 ```
 
-**⭐ 别忘了给脚手架点 Star：https://github.com/JiayuXu0/create-fastapi-app**
+**⭐ Don't forget to star the scaffold: https://github.com/JiayuXu0/create-fastapi-app**
 
-**📦 方式二：模板克隆**
+**📦 Method 2: Template Clone**
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
 git clone https://github.com/JiayuXu0/FastAPI-Template.git
 cd FastAPI-Template && uv sync && cp .env.example .env
 uv run aerich init-db && uv run uvicorn src:app --reload
-# 🎉 5分钟内即可启动完整的企业级后端服务！
+# 🎉 Start a complete enterprise-grade backend service in 5 minutes!
 ```
 
-### 💎 技术栈对比
+### 💎 Tech Stack Comparison
 
-| 传统方案 ❌ | 本模板 ✅ |
+| Traditional Approach ❌ | This Template ✅ |
 |:---:|:---:|
-| 复杂的环境配置 | UV一键管理依赖 |
-| 混乱的项目结构 | 清晰的三层架构 |
-| 手动权限管理 | 完整RBAC系统 |
-| 缺乏安全防护 | 多重安全机制 |
-| 文档不完善 | 详细开发指南 |
+| Complex environment configuration | UV one-click dependency management |
+| Messy project structure | Clear three-layer architecture |
+| Manual permission management | Complete RBAC system |
+| Lack of security protection | Multiple security mechanisms |
+| Incomplete documentation | Detailed development guide |
 
 </div>
 
-## 🌟 社区支持
+## 🌟 Community Support
 
 <div align="center">
 
-**加入我们的开发者社区，一起打造更好的后端模板！**
+**Join our developer community and build a better backend template together!**
 
-<!-- Star呼吁 -->
+<!-- Star Call -->
 <div align="center">
 
-### 🚀 支持项目发展
+### 🚀 Support Project Development
 
-#### ⭐ 给模板项目点个 Star
-如果这个模板对你有帮助，请给我们一个Star⭐
+#### ⭐ Give the Template Project a Star
+If this template helps you, please give us a star⭐
 
 <a href="https://github.com/JiayuXu0/FastAPI-Template" target="_blank">
-  <img src="https://img.shields.io/badge/⭐_立即Star-支持模板-FFD700?style=for-the-badge&logo=github&logoColor=white&labelColor=FF6B6B&color=FFD700" alt="立即Star模板">
+  <img src="https://img.shields.io/badge/⭐_Star_Now-Support_Template-FFD700?style=for-the-badge&logo=github&logoColor=white&labelColor=FF6B6B&color=FFD700" alt="Star Template">
 </a>
 
-#### 🚀 也别忘了 create-fastapi-app 脚手架
-**更重要的是，也给我们的脚手架工具点个 Star！**
+#### 🚀 Don't Forget create-fastapi-app Scaffold
+**More importantly, also give our scaffolding tool a star!**
 
 <a href="https://github.com/JiayuXu0/create-fastapi-app" target="_blank">
-  <img src="https://img.shields.io/badge/⭐_Star脚手架-create--fastapi--app-00D8FF?style=for-the-badge&logo=fastapi&logoColor=white&labelColor=009688&color=00D8FF" alt="Star脚手架">
+  <img src="https://img.shields.io/badge/⭐_Star_Scaffold-create--fastapi--app-00D8FF?style=for-the-badge&logo=fastapi&logoColor=white&labelColor=009688&color=00D8FF" alt="Star Scaffold">
 </a>
 
-**🎯 为什么要 Star 脚手架项目？**
-- 🚀 让更多开发者发现这个便利工具
-- 💪 激励我们持续改进和添加新功能
-- 🌟 你的支持是开源项目发展的动力
+**🎯 Why Star the Scaffold Project?**
+- 🚀 Let more developers discover this convenient tool
+- 💪 Motivate us to continuously improve and add new features
+- 🌟 Your support is the driving force for open source project development
 
 </div>
 
@@ -695,20 +695,20 @@ uv run aerich init-db && uv run uvicorn src:app --reload
 [![GitHub Issues](https://img.shields.io/github/issues/JiayuXu0/FastAPI-Template?color=green&logo=github)](https://github.com/JiayuXu0/FastAPI-Template/issues)
 [![GitHub Pull Requests](https://img.shields.io/github/issues-pr/JiayuXu0/FastAPI-Template?color=orange&logo=github)](https://github.com/JiayuXu0/FastAPI-Template/pulls)
 
-[💬 讨论交流](https://github.com/JiayuXu0/FastAPI-Template/discussions) • [🐛 报告问题](https://github.com/JiayuXu0/FastAPI-Template/issues) • [🔀 提交PR](https://github.com/JiayuXu0/FastAPI-Template/pulls)
+[💬 Discussions](https://github.com/JiayuXu0/FastAPI-Template/discussions) • [🐛 Report Issues](https://github.com/JiayuXu0/FastAPI-Template/issues) • [🔀 Submit PR](https://github.com/JiayuXu0/FastAPI-Template/pulls)
 
 </div>
 
-## 🎯 路线图
+## 🎯 Roadmap
 
-- [x] ✅ **v1.0** - 基础三层架构和RBAC系统
-- [x] ✅ **v1.1** - UV包管理器集成
-- [x] ✅ **v1.2** - 数据库连接池优化+Redis缓存+JWT刷新机制
-- [ ] 🚧 **v1.3** - GraphQL API支持
-- [ ] 📅 **v1.4** - 微服务架构扩展
-- [ ] 📅 **v1.5** - 实时通信 (WebSocket)
-- [ ] 📅 **v2.0** - 云原生部署方案
+- [x] ✅ **v1.0** - Base three-layer architecture and RBAC system
+- [x] ✅ **v1.1** - UV package manager integration
+- [x] ✅ **v1.2** - Database connection pool optimization + Redis cache + JWT refresh mechanism
+- [ ] 🚧 **v1.3** - GraphQL API support
+- [ ] 📅 **v1.4** - Microservice architecture expansion
+- [ ] 📅 **v1.5** - Real-time communication (WebSocket)
+- [ ] 📅 **v2.0** - Cloud-native deployment solution
 
-[查看完整路线图 →](https://github.com/JiayuXu0/FastAPI-Template/projects)
+[View Full Roadmap →](https://github.com/JiayuXu0/FastAPI-Template/projects)
 
 ---

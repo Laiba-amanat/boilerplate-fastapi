@@ -1,11 +1,11 @@
-"""文件映射仓库 - 管理文件ID和文件信息的映射关系"""
+"""File mapping repository - manages mapping relationships between file IDs and file information"""
 
 from core.crud import CRUDBase
 from models.admin import FileMapping
 
 
 class FileMappingCreate:
-    """文件映射创建模型"""
+    """File mapping creation model"""
 
     def __init__(
         self,
@@ -25,7 +25,7 @@ class FileMappingCreate:
 
 
 class FileMappingUpdate:
-    """文件映射更新模型"""
+    """File mapping update model"""
 
     pass
 
@@ -33,7 +33,7 @@ class FileMappingUpdate:
 class FileMappingRepository(
     CRUDBase[FileMapping, FileMappingCreate, FileMappingUpdate]
 ):
-    """文件映射仓库"""
+    """File mapping repository"""
 
     async def create_file_mapping(
         self,
@@ -44,7 +44,7 @@ class FileMappingRepository(
         user_id: int,
         file_path: str | None = None,
     ) -> FileMapping:
-        """创建文件映射记录"""
+        """Create file mapping record"""
         return await FileMapping.create(
             file_id=file_id,
             original_filename=original_name,
@@ -55,14 +55,14 @@ class FileMappingRepository(
         )
 
     async def get_file_info_by_ids(self, file_ids: list[str]) -> list[FileMapping]:
-        """根据文件ID列表获取文件信息"""
+        """Get file information by file ID list"""
         if not file_ids:
             return []
 
         return await FileMapping.filter(file_id__in=file_ids).all()
 
     async def get_file_mapping_by_file_id(self, file_id: str) -> dict | None:
-        """根据文件ID获取文件映射信息"""
+        """Get file mapping information by file ID"""
         mapping = await FileMapping.filter(file_id=file_id).first()
         if mapping:
             return {
@@ -76,5 +76,5 @@ class FileMappingRepository(
         return None
 
 
-# 全局实例
+# Global instance
 file_mapping_repository = FileMappingRepository(FileMapping)

@@ -15,14 +15,14 @@ class BaseRole(BaseModel):
 
 
 class RoleCreate(BaseModel):
-    name: str = Field(example="管理员")
-    desc: str = Field("", example="管理员角色")
+    name: str = Field(example="Administrator")
+    desc: str = Field("", example="Administrator role")
 
 
 class RoleUpdate(BaseModel):
     id: int = Field(example=1)
-    name: str = Field(example="管理员")
-    desc: str = Field("", example="管理员角色")
+    name: str = Field(example="Administrator")
+    desc: str = Field("", example="Administrator role")
 
 
 class RoleUpdateMenusApis(BaseModel):

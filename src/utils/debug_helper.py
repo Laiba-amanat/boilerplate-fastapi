@@ -1,6 +1,6 @@
 """
-调试助手工具
-用于在业务代码中添加详细的调试信息
+Debug helper utility
+Used to add detailed debugging information in business code
 """
 import inspect
 import json
@@ -13,11 +13,11 @@ from log.context import LogContext
 
 
 class DebugHelper:
-    """调试助手类"""
+    """Debug helper class"""
     
     @staticmethod
     def log_function_call(func_name: str, args: tuple = (), kwargs: dict = None, result: Any = None, error: Exception = None):
-        """记录函数调用详情"""
+        """Log function call details"""
         logger = LogContext.get_logger()
         
         call_info = {
@@ -29,16 +29,16 @@ class DebugHelper:
             "call_time": datetime.now().isoformat(),
         }
         
-        # 记录参数（避免记录敏感信息）
+        # Log parameters (avoid logging sensitive information)
         safe_args = []
         for i, arg in enumerate(args):
             if isinstance(arg, (str, int, float, bool)):
-                if len(str(arg)) < 100:  # 避免记录过长的字符串
+                if len(str(arg)) < 100:  # Avoid logging overly long strings
                     safe_args.append(str(arg))
                 else:
-                    safe_args.append(f"<长字符串: {len(str(arg))}字符>")
+                    safe_args.append(f"<Long string: {len(str(arg))} characters>")
             else:
-                safe_args.append(f"<{type(arg).__name__} 对象>")
+                safe_args.append(f"<{type(arg).__name__} object>")
         
         call_info["safe_args"] = safe_args
         
@@ -46,13 +46,13 @@ class DebugHelper:
             call_info["error_type"] = type(error).__name__
             call_info["error_msg"] = str(error)
             call_info["traceback"] = traceback.format_exc()
-            logger.error(f"函数调用异常: {func_name}", extra=call_info)
+            logger.error(f"Function call exception: {func_name}", extra=call_info)
         else:
-            logger.debug(f"函数调用: {func_name}", extra=call_info)
+            logger.debug(f"Function call: {func_name}", extra=call_info)
     
     @staticmethod
     def log_database_query(query_type: str, table: str, conditions: dict = None, result_count: int = None, duration_ms: float = None, error: Exception = None):
-        """记录数据库查询详情"""
+        """Log database query details"""
         logger = LogContext.get_logger()
         
         query_info = {
@@ -68,13 +68,13 @@ class DebugHelper:
             query_info["error_type"] = type(error).__name__
             query_info["error_msg"] = str(error)
             query_info["traceback"] = traceback.format_exc()
-            logger.error(f"数据库查询异常: {query_type} {table}", extra=query_info)
+            logger.error(f"Database query exception: {query_type} {table}", extra=query_info)
         else:
-            logger.debug(f"数据库查询: {query_type} {table}", extra=query_info)
+            logger.debug(f"Database query: {query_type} {table}", extra=query_info)
     
     @staticmethod
     def log_business_logic(operation: str, data: dict = None, result: Any = None, error: Exception = None):
-        """记录业务逻辑执行详情"""
+        """Log business logic execution details"""
         logger = LogContext.get_logger()
         
         logic_info = {
@@ -88,13 +88,13 @@ class DebugHelper:
             logic_info["error_type"] = type(error).__name__
             logic_info["error_msg"] = str(error)
             logic_info["traceback"] = traceback.format_exc()
-            logger.error(f"业务逻辑异常: {operation}", extra=logic_info)
+            logger.error(f"Business logic exception: {operation}", extra=logic_info)
         else:
-            logger.debug(f"业务逻辑执行: {operation}", extra=logic_info)
+            logger.debug(f"Business logic execution: {operation}", extra=logic_info)
     
     @staticmethod
     def log_external_call(service: str, endpoint: str, method: str = "GET", request_data: dict = None, response_data: dict = None, duration_ms: float = None, error: Exception = None):
-        """记录外部服务调用详情"""
+        """Log external service call details"""
         logger = LogContext.get_logger()
         
         call_info = {
@@ -111,13 +111,13 @@ class DebugHelper:
             call_info["error_type"] = type(error).__name__
             call_info["error_msg"] = str(error)
             call_info["traceback"] = traceback.format_exc()
-            logger.error(f"外部服务调用异常: {service} {endpoint}", extra=call_info)
+            logger.error(f"External service call exception: {service} {endpoint}", extra=call_info)
         else:
-            logger.debug(f"外部服务调用: {service} {endpoint}", extra=call_info)
+            logger.debug(f"External service call: {service} {endpoint}", extra=call_info)
 
 
 def debug_trace(include_args: bool = False, include_result: bool = False):
-    """函数调用跟踪装饰器"""
+    """Function call tracing decorator"""
     def decorator(func: Callable):
         @wraps(func)
         async def async_wrapper(*args, **kwargs):
@@ -128,7 +128,7 @@ def debug_trace(include_args: bool = False, include_result: bool = False):
                 result = await func(*args, **kwargs)
                 duration = (datetime.now() - start_time).total_seconds() * 1000
                 
-                # 记录成功调用
+                # Log successful call
                 call_args = args if include_args else ()
                 call_result = result if include_result else None
                 
@@ -150,7 +150,7 @@ def debug_trace(include_args: bool = False, include_result: bool = False):
             except Exception as e:
                 duration = (datetime.now() - start_time).total_seconds() * 1000
                 
-                # 记录异常调用
+                # Log exception call
                 call_args = args if include_args else ()
                 
                 DebugHelper.log_function_call(
@@ -178,7 +178,7 @@ def debug_trace(include_args: bool = False, include_result: bool = False):
                 result = func(*args, **kwargs)
                 duration = (datetime.now() - start_time).total_seconds() * 1000
                 
-                # 记录成功调用
+                # Log successful call
                 call_args = args if include_args else ()
                 call_result = result if include_result else None
                 
@@ -200,7 +200,7 @@ def debug_trace(include_args: bool = False, include_result: bool = False):
             except Exception as e:
                 duration = (datetime.now() - start_time).total_seconds() * 1000
                 
-                # 记录异常调用
+                # Log exception call
                 call_args = args if include_args else ()
                 
                 DebugHelper.log_function_call(
@@ -219,7 +219,7 @@ def debug_trace(include_args: bool = False, include_result: bool = False):
                 
                 raise
         
-        # 检查是否是异步函数
+        # Check if it's an async function
         if inspect.iscoroutinefunction(func):
             return async_wrapper
         else:
@@ -228,37 +228,37 @@ def debug_trace(include_args: bool = False, include_result: bool = False):
     return decorator
 
 
-# 便捷函数
+# Convenience functions
 def log_debug(message: str, **extra):
-    """记录调试信息"""
+    """Log debug information"""
     logger = LogContext.get_logger()
     logger.debug(message, extra=extra)
 
 
 def log_info(message: str, **extra):
-    """记录信息"""
+    """Log information"""
     logger = LogContext.get_logger()
     logger.info(message, extra=extra)
 
 
 def log_warning(message: str, **extra):
-    """记录警告"""
+    """Log warning"""
     logger = LogContext.get_logger()
     logger.warning(message, extra=extra)
 
 
 def log_error(message: str, error: Exception = None, **extra):
-    """记录错误"""
+    """Log error"""
     logger = LogContext.get_logger()
     
     if error:
-        # 构建详细的错误信息
+        # Build detailed error information
         error_info = f"{message}\n"
         error_info += f"Exception Type: {type(error).__name__}\n"
         error_info += f"Exception Message: {str(error)}\n"
         error_info += f"\nStack Trace:\n{traceback.format_exc()}\n"
         
-        # 添加上下文信息
+        # Add context information
         if extra:
             error_info += f"\nContext Info:\n"
             for key, value in extra.items():
@@ -269,24 +269,24 @@ def log_error(message: str, error: Exception = None, **extra):
         
         error_info += "=" * 80
         
-        # 记录详细信息
+        # Log detailed information
         logger.error(error_info)
     else:
         logger.bind(**extra).error(message)
 
 
 def log_critical(message: str, error: Exception = None, **extra):
-    """记录关键错误"""
+    """Log critical error"""
     logger = LogContext.get_logger()
     
     if error:
-        # 构建详细的关键错误信息
+        # Build detailed critical error information
         error_info = f"{message}\n"
         error_info += f"CRITICAL Exception Type: {type(error).__name__}\n"
         error_info += f"CRITICAL Exception Message: {str(error)}\n"
         error_info += f"\nCRITICAL Stack Trace:\n{traceback.format_exc()}\n"
         
-        # 添加上下文信息
+        # Add context information
         if extra:
             error_info += f"\nContext Info:\n"
             for key, value in extra.items():
@@ -297,7 +297,7 @@ def log_critical(message: str, error: Exception = None, **extra):
         
         error_info += "=" * 80
         
-        # 记录关键错误信息
+        # Log critical error information
         logger.critical(error_info)
     else:
         logger.bind(**extra).critical(message)

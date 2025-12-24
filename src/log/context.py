@@ -1,6 +1,6 @@
 """
-日志上下文管理器
-提供请求追踪和用户关联功能
+Log context manager
+Provides request tracking and user association functionality
 """
 
 import uuid
@@ -8,26 +8,26 @@ import traceback
 from contextvars import ContextVar
 from typing import Any, Dict, Optional
 
-# 延迟导入，避免循环导入
+# Lazy import to avoid circular imports
 # from log import logger
 
-# 上下文变量
+# Context variables
 request_id_var: ContextVar[str] = ContextVar("request_id", default="-")
 user_id_var: ContextVar[str] = ContextVar("user_id", default="-")
 request_context_var: ContextVar[Dict[str, Any]] = ContextVar("request_context", default={})
 
 
 class LogContext:
-    """日志上下文管理器"""
+    """Log context manager"""
 
     @staticmethod
     def generate_request_id() -> str:
-        """生成唯一请求ID"""
+        """Generate unique request ID"""
         return str(uuid.uuid4())[:8]
 
     @staticmethod
     def set_request_id(request_id: str | None = None) -> str:
-        """设置请求ID"""
+        """Set request ID"""
         if not request_id:
             request_id = LogContext.generate_request_id()
         request_id_var.set(request_id)
@@ -35,46 +35,46 @@ class LogContext:
 
     @staticmethod
     def set_user_id(user_id: str | None) -> None:
-        """设置用户ID"""
+        """Set user ID"""
         user_id_var.set(str(user_id) if user_id else "-")
 
     @staticmethod
     def get_request_id() -> str:
-        """获取当前请求ID"""
+        """Get current request ID"""
         return request_id_var.get()
 
     @staticmethod
     def get_user_id() -> str:
-        """获取当前用户ID"""
+        """Get current user ID"""
         return user_id_var.get()
 
     @staticmethod
     def set_context(key: str, value: Any) -> None:
-        """设置上下文信息"""
+        """Set context information"""
         context = request_context_var.get({})
         context[key] = value
         request_context_var.set(context)
     
     @staticmethod
     def get_context(key: str = None) -> Any:
-        """获取上下文信息"""
+        """Get context information"""
         context = request_context_var.get({})
         return context.get(key) if key else context
     
     @staticmethod
     def update_context(**kwargs) -> None:
-        """批量更新上下文信息"""
+        """Batch update context information"""
         context = request_context_var.get({})
         context.update(kwargs)
         request_context_var.set(context)
     
     @staticmethod
     def get_logger():
-        """获取带上下文的logger"""
-        # 延迟导入避免循环导入
+        """Get logger with context"""
+        # Lazy import to avoid circular imports
         from log.log import logger
 
-        # 获取所有上下文信息
+        # Get all context information
         context = request_context_var.get({})
         base_context = {
             "request_id": LogContext.get_request_id(),
@@ -86,14 +86,14 @@ class LogContext:
 
     @staticmethod
     def clear():
-        """清除上下文"""
+        """Clear context"""
         request_id_var.set("-")
         user_id_var.set("-")
         request_context_var.set({})
 
 
 class RequestLogContext:
-    """请求级别的日志上下文管理器"""
+    """Request-level log context manager"""
 
     def __init__(self, request_id: str | None = None, user_id: str | None = None):
         self.request_id = request_id
@@ -102,22 +102,22 @@ class RequestLogContext:
         self.old_user_id = None
 
     def __enter__(self):
-        # 保存旧值
+        # Save old values
         self.old_request_id = LogContext.get_request_id()
         self.old_user_id = LogContext.get_user_id()
 
-        # 设置新值
+        # Set new values
         LogContext.set_request_id(self.request_id)
         LogContext.set_user_id(self.user_id)
 
         return LogContext.get_logger()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        # 如果有异常，记录异常信息
+        # If there's an exception, log exception information
         if exc_type:
             logger = LogContext.get_logger()
             logger.error(
-                f"请求上下文中发生异常: {exc_type.__name__}: {exc_val}",
+                f"Exception occurred in request context: {exc_type.__name__}: {exc_val}",
                 extra={
                     "exception_type": exc_type.__name__,
                     "exception_msg": str(exc_val),
@@ -125,19 +125,19 @@ class RequestLogContext:
                 }
             )
         
-        # 恢复旧值
+        # Restore old values
         request_id_var.set(self.old_request_id)
         user_id_var.set(self.old_user_id)
-        # 清除请求级上下文
+        # Clear request-level context
         request_context_var.set({})
 
 
-# 便捷函数
+# Convenience functions
 def get_context_logger():
-    """获取带上下文的logger"""
+    """Get logger with context"""
     return LogContext.get_logger()
 
 
 def with_request_context(request_id: str | None = None, user_id: str | None = None):
-    """创建请求上下文管理器"""
+    """Create request context manager"""
     return RequestLogContext(request_id, user_id)

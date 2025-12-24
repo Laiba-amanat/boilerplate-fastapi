@@ -1,4 +1,4 @@
-"""数据库和缓存集成测试"""
+"""Database and cache integration tests"""
 
 import pytest
 from httpx import AsyncClient
@@ -8,19 +8,19 @@ from src.utils.cache import cache_manager, clear_user_cache
 
 
 class TestDatabaseIntegration:
-    """数据库集成测试类"""
+    """Database integration test class"""
 
     async def test_database_connection(self):
-        """测试数据库连接"""
+        """Test database connection"""
         from tortoise import Tortoise
 
-        # 验证数据库连接是否正常
+        # Verify database connection is normal
         connections = Tortoise.get_connection("default")
         assert connections is not None
 
     async def test_user_model_crud(self):
-        """测试用户模型CRUD操作"""
-        # 创建用户
+        """Test user model CRUD operations"""
+        # Create user
         user_data = UserCreate(
             username="db_test_user",
             email="db_test@test.com",
@@ -34,12 +34,12 @@ class TestDatabaseIntegration:
         assert created_user.username == "db_test_user"
         assert created_user.email == "db_test@test.com"
 
-        # 读取用户
+        # Read user
         retrieved_user = await user_repository.get(id=created_user.id)
         assert retrieved_user is not None
         assert retrieved_user.username == "db_test_user"
 
-        # 更新用户
+        # Update user
         from src.schemas.users import UserUpdate
 
         update_data = UserUpdate(
@@ -57,20 +57,20 @@ class TestDatabaseIntegration:
         assert updated_user.username == "db_test_user_updated"
         assert updated_user.email == "db_test_updated@test.com"
 
-        # 删除用户
+        # Delete user
         await user_repository.remove(id=created_user.id)
 
-        # 验证删除
+        # Verify deletion
         try:
             _ = await user_repository.get(id=created_user.id)
-            raise AssertionError("应该抛出DoesNotExist异常")
+            raise AssertionError("Should raise DoesNotExist exception")
         except Exception:
-            # 用户已被删除，期望抛出异常
+            # User has been deleted, expect exception to be raised
             pass
 
     async def test_user_authentication_flow(self):
-        """测试用户认证流程"""
-        # 创建用户
+        """Test user authentication flow"""
+        # Create user
         user_data = UserCreate(
             username="auth_flow_test",
             email="auth_flow@test.com",
@@ -81,7 +81,7 @@ class TestDatabaseIntegration:
 
         created_user = await user_repository.create_user(obj_in=user_data)
 
-        # 测试认证
+        # Test authentication
         from src.schemas.login import CredentialsSchema
 
         credentials = CredentialsSchema(
@@ -92,7 +92,7 @@ class TestDatabaseIntegration:
         assert authenticated_user is not None
         assert authenticated_user.id == created_user.id
 
-        # 测试错误密码
+        # Test wrong password
         wrong_credentials = CredentialsSchema(
             username="auth_flow_test", password="WrongPassword"
         )
@@ -101,14 +101,14 @@ class TestDatabaseIntegration:
             await user_repository.authenticate(wrong_credentials)
 
     async def test_database_transaction_rollback(self):
-        """测试数据库事务回滚"""
+        """Test database transaction rollback"""
         from tortoise import transactions
 
         initial_count = await user_repository.model.all().count()
 
         try:
             async with transactions.in_transaction():
-                # 创建用户
+                # Create user
                 user_data = UserCreate(
                     username="transaction_test",
                     email="transaction@test.com",
@@ -119,48 +119,48 @@ class TestDatabaseIntegration:
 
                 await user_repository.create_user(obj_in=user_data)
 
-                # 人为抛出异常触发回滚
+                # Manually raise exception to trigger rollback
                 raise Exception("Test rollback")
         except Exception:
             pass
 
-        # 验证回滚后用户数量未增加
+        # Verify user count did not increase after rollback
         final_count = await user_repository.model.all().count()
         assert final_count == initial_count
 
 
 class TestCacheIntegration:
-    """缓存集成测试类"""
+    """Cache integration test class"""
 
     async def test_cache_manager_connection(self):
-        """测试缓存管理器连接"""
-        # 测试连接（如果Redis不可用，应该优雅降级）
+        """Test cache manager connection"""
+        # Test connection (should gracefully degrade if Redis is unavailable)
         await cache_manager.connect()
 
-        # 测试基本操作
+        # Test basic operations
         test_key = "test_key"
         test_value = {"test": "data"}
 
-        # 设置缓存
+        # Set cache
         set_result = await cache_manager.set(test_key, test_value, ttl=60)
 
-        if cache_manager.redis:  # 只有Redis可用时才测试
+        if cache_manager.redis:  # Only test when Redis is available
             assert set_result is True
 
-            # 获取缓存
+            # Get cache
             cached_value = await cache_manager.get(test_key)
             assert cached_value == test_value
 
-            # 删除缓存
+            # Delete cache
             delete_result = await cache_manager.delete(test_key)
             assert delete_result is True
 
-            # 验证删除
+            # Verify deletion
             deleted_value = await cache_manager.get(test_key)
             assert deleted_value is None
 
     async def test_cache_decorator_functionality(self):
-        """测试缓存装饰器功能"""
+        """Test cache decorator functionality"""
         from src.utils.cache import cached
 
         call_count = 0
@@ -171,27 +171,27 @@ class TestCacheIntegration:
             call_count += 1
             return f"result_{param}"
 
-        # 第一次调用
+        # First call
         result1 = await test_function("test")
         assert result1 == "result_test"
         assert call_count == 1
 
-        # 如果缓存可用，第二次调用应该使用缓存
+        # If cache is available, second call should use cache
         result2 = await test_function("test")
         assert result2 == "result_test"
 
         if cache_manager.redis:
-            # Redis可用时，应该使用缓存
+            # When Redis is available, should use cache
             assert call_count == 1
         else:
-            # Redis不可用时，会直接调用函数
+            # When Redis is unavailable, will directly call function
             assert call_count == 2
 
     async def test_user_cache_clearing(self):
-        """测试用户缓存清理"""
+        """Test user cache clearing"""
         user_id = 123
 
-        # 设置一些用户相关缓存
+        # Set some user-related cache
         test_caches = [
             f"user:{user_id}:profile",
             f"userinfo:{user_id}",
@@ -202,24 +202,24 @@ class TestCacheIntegration:
         for cache_key in test_caches:
             await cache_manager.set(cache_key, {"test": "data"}, ttl=60)
 
-        # 清理用户缓存
+        # Clear user cache
         cleared_count = await clear_user_cache(user_id)
 
         if cache_manager.redis:
-            # Redis可用时应该清理了缓存
+            # When Redis is available, cache should be cleared
             assert cleared_count >= 0
 
-            # 验证缓存已被清理
+            # Verify cache has been cleared
             for cache_key in test_caches:
                 cached_value = await cache_manager.get(cache_key)
                 assert cached_value is None
 
     async def test_cache_pattern_operations(self):
-        """测试缓存模式操作"""
+        """Test cache pattern operations"""
         if not cache_manager.redis:
             pytest.skip("Redis not available, skipping pattern tests")
 
-        # 设置一些测试缓存
+        # Set some test cache
         test_pattern = "pattern_test"
         test_keys = [
             f"{test_pattern}:key1",
@@ -231,34 +231,34 @@ class TestCacheIntegration:
         for key in test_keys:
             await cache_manager.set(key, {"test": "data"}, ttl=60)
 
-        # 清理匹配模式的缓存
+        # Clear cache matching pattern
         cleared_count = await cache_manager.clear_pattern(f"{test_pattern}:*")
 
-        # 应该清理了3个匹配的键
+        # Should have cleared 3 matching keys
         assert cleared_count == 3
 
-        # 验证匹配的键被清理，其他键保留
-        for key in test_keys[:3]:  # pattern_test:* 键
+        # Verify matching keys are cleared, other keys remain
+        for key in test_keys[:3]:  # pattern_test:* keys
             cached_value = await cache_manager.get(key)
             assert cached_value is None
 
-        # other_key应该还在
+        # other_key should still exist
         other_value = await cache_manager.get("other_key")
         assert other_value == {"test": "data"}
 
     async def test_cache_with_api_endpoints(
         self, async_client: AsyncClient, admin_token: str
     ):
-        """测试API端点的缓存行为"""
+        """Test API endpoint caching behavior"""
         headers = {"Authorization": f"Bearer {admin_token}"}
 
-        # 多次调用用户信息接口
+        # Call user info endpoint multiple times
         responses = []
         for _ in range(3):
             response = await async_client.get("/api/v1/base/userinfo", headers=headers)
             assert response.status_code == 200
             responses.append(response.json())
 
-        # 所有响应应该相同
+        # All responses should be the same
         for response in responses[1:]:
             assert response == responses[0]

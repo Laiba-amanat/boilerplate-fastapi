@@ -48,8 +48,8 @@ def make_middlewares():
             allow_methods=settings.CORS_ALLOW_METHODS,
             allow_headers=settings.CORS_ALLOW_HEADERS,
         ),
-        Middleware(SecurityHeadersMiddleware),  # 安全头中间件
-        Middleware(RequestLoggingMiddleware),  # 请求日志中间件
+        Middleware(SecurityHeadersMiddleware),  # Security headers middleware
+        Middleware(RequestLoggingMiddleware),  # Request logging middleware
         Middleware(BackGroundTaskMiddleware),
         Middleware(
             HttpAuditLogMiddleware,
@@ -70,9 +70,9 @@ def register_exceptions(app: FastAPI):
     app.add_exception_handler(IntegrityError, IntegrityHandle)
     app.add_exception_handler(RequestValidationError, RequestValidationHandle)
     app.add_exception_handler(ResponseValidationError, ResponseValidationHandle)
-    # 注册通用异常处理器（必须放在最后，作为兜底）
+    # Register general exception handler (must be placed last as fallback)
     app.add_exception_handler(Exception, UnhandledExceptionHandle)
-    # 注册限流异常处理
+    # Register rate limit exception handler
     app.state.limiter = limiter
     app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
@@ -82,7 +82,7 @@ def register_routers(app: FastAPI, prefix: str = "/api"):
 
 
 async def init_superuser():
-    logger.info("🔧 开始初始化超级管理员用户...")
+    logger.info("🔧 Starting superuser initialization...")
     user = await user_repository.model.exists()
     if not user:
         await user_repository.create_user(
@@ -94,18 +94,18 @@ async def init_superuser():
                 is_superuser=True,
             )
         )
-        logger.info("✅ 超级管理员用户创建成功 - 用户名: admin")
+        logger.info("✅ Superuser created successfully - Username: admin")
     else:
-        logger.info("ℹ️ 超级管理员用户已存在，跳过创建")
+        logger.info("ℹ️ Superuser already exists, skipping creation")
 
 
 async def init_menus():
-    logger.info("🔧 开始初始化系统菜单...")
+    logger.info("🔧 Starting system menu initialization...")
     menus = await Menu.exists()
     if not menus:
         parent_menu = await Menu.create(
             menu_type=MenuType.CATALOG,
-            name="系统管理",
+            name="System Management",
             path="/system",
             order=1,
             parent_id=0,
@@ -118,7 +118,7 @@ async def init_menus():
         children_menu = [
             Menu(
                 menu_type=MenuType.MENU,
-                name="用户管理",
+                name="User Management",
                 path="user",
                 order=1,
                 parent_id=parent_menu.id,
@@ -129,7 +129,7 @@ async def init_menus():
             ),
             Menu(
                 menu_type=MenuType.MENU,
-                name="角色管理",
+                name="Role Management",
                 path="role",
                 order=2,
                 parent_id=parent_menu.id,
@@ -140,7 +140,7 @@ async def init_menus():
             ),
             Menu(
                 menu_type=MenuType.MENU,
-                name="菜单管理",
+                name="Menu Management",
                 path="menu",
                 order=3,
                 parent_id=parent_menu.id,
@@ -151,7 +151,7 @@ async def init_menus():
             ),
             Menu(
                 menu_type=MenuType.MENU,
-                name="API管理",
+                name="API Management",
                 path="api",
                 order=4,
                 parent_id=parent_menu.id,
@@ -162,7 +162,7 @@ async def init_menus():
             ),
             Menu(
                 menu_type=MenuType.MENU,
-                name="部门管理",
+                name="Department Management",
                 path="dept",
                 order=5,
                 parent_id=parent_menu.id,
@@ -173,7 +173,7 @@ async def init_menus():
             ),
             Menu(
                 menu_type=MenuType.MENU,
-                name="审计日志",
+                name="Audit Log",
                 path="auditlog",
                 order=6,
                 parent_id=parent_menu.id,
@@ -186,7 +186,7 @@ async def init_menus():
         await Menu.bulk_create(children_menu)
         await Menu.create(
             menu_type=MenuType.MENU,
-            name="一级菜单",
+            name="Top Level Menu",
             path="/top-menu",
             order=2,
             parent_id=0,
@@ -196,21 +196,21 @@ async def init_menus():
             keepalive=False,
             redirect="",
         )
-        logger.info("✅ 系统菜单初始化成功 - 菜单数量: 8")
+        logger.info("✅ System menu initialization successful - Menu count: 8")
     else:
-        logger.info("ℹ️ 系统菜单已存在，跳过初始化")
+        logger.info("ℹ️ System menus already exist, skipping initialization")
 
 
 async def init_apis():
-    logger.info("🔧 开始初始化API数据...")
+    logger.info("🔧 Starting API data initialization...")
     apis = await api_repository.model.exists()
     if not apis:
         await api_repository.refresh_api()
         api_count = await Api.all().count()
-        logger.info(f"✅ API数据初始化成功 - API数量: {api_count}")
+        logger.info(f"✅ API data initialization successful - API count: {api_count}")
     else:
         api_count = await Api.all().count()
-        logger.info(f"ℹ️ API数据已存在，跳过初始化 - 当前API数量: {api_count}")
+        logger.info(f"ℹ️ API data already exists, skipping initialization - Current API count: {api_count}")
 
 
 async def init_db():
@@ -224,100 +224,100 @@ async def init_db():
     try:
         await command.migrate(no_input=True)
     except AttributeError as e:
-        logger.error(f"数据库迁移失败: {e}")
-        logger.warning("请手动检查数据库和migrations状态")
-        # 不再自动删除migrations文件夹，避免意外丢失迁移历史
-        # 如需重置migrations，请手动执行：rm -rf migrations && uv run aerich init-db
-        raise RuntimeError("数据库迁移失败，请检查数据库连接和migrations状态") from e
+        logger.error(f"Database migration failed: {e}")
+        logger.warning("Please manually check database and migrations status")
+        # No longer automatically delete migrations folder to avoid accidentally losing migration history
+        # To reset migrations, manually execute: rm -rf migrations && uv run aerich init-db
+        raise RuntimeError("Database migration failed, please check database connection and migrations status") from e
 
     await command.upgrade(run_in_transaction=True)
 
 
 async def init_roles():
-    logger.info("🔧 开始初始化用户角色...")
+    logger.info("🔧 Starting user role initialization...")
     roles = await Role.exists()
     if not roles:
         admin_role = await Role.create(
-            name="管理员",
-            desc="管理员角色",
+            name="Administrator",
+            desc="Administrator role",
         )
         user_role = await Role.create(
-            name="普通用户",
-            desc="普通用户角色",
+            name="Regular User",
+            desc="Regular user role",
         )
 
-        # 分配所有API给管理员角色
+        # Assign all APIs to administrator role
         all_apis = await Api.all()
         await admin_role.apis.add(*all_apis)
-        # 分配所有菜单给管理员和普通用户
+        # Assign all menus to administrator and regular user
         all_menus = await Menu.all()
         await admin_role.menus.add(*all_menus)
         await user_role.menus.add(*all_menus)
 
-        # 为普通用户分配基本API
-        basic_apis = await Api.filter(Q(method__in=["GET"]) | Q(tags="基础模块"))
+        # Assign basic APIs to regular user
+        basic_apis = await Api.filter(Q(method__in=["GET"]) | Q(tags="Base Module"))
         await user_role.apis.add(*basic_apis)
 
-        logger.info("✅ 用户角色初始化成功 - 角色: 管理员, 普通用户")
+        logger.info("✅ User role initialization successful - Roles: Administrator, Regular User")
     else:
         role_count = await Role.all().count()
-        logger.info(f"ℹ️ 用户角色已存在，跳过初始化 - 当前角色数量: {role_count}")
+        logger.info(f"ℹ️ User roles already exist, skipping initialization - Current role count: {role_count}")
 
 
 async def init_data():
-    logger.info("🚀 系统初始化开始...")
+    logger.info("🚀 System initialization starting...")
 
-    logger.info("🔧 开始数据库初始化和迁移...")
+    logger.info("🔧 Starting database initialization and migration...")
     await init_db()
-    logger.info("✅ 数据库初始化完成")
+    logger.info("✅ Database initialization completed")
 
-    logger.info("🔄 并行初始化基础数据...")
+    logger.info("🔄 Initializing base data in parallel...")
     await asyncio.gather(
         init_superuser(),
         init_menus(),
         init_apis(),
     )
-    logger.info("✅ 基础数据初始化完成")
+    logger.info("✅ Base data initialization completed")
 
     await init_roles()
 
-    logger.info("🎉 系统初始化完成！")
+    logger.info("🎉 System initialization completed!")
 
 
 async def startup():
-    """应用启动事件"""
-    logger.info("🚀 Fast API应用启动中...")
+    """Application startup event"""
+    logger.info("🚀 FastAPI application starting...")
 
-    # 初始化Redis连接
+    # Initialize Redis connection
     await cache_manager.connect()
 
-    # 初始化数据库
+    # Initialize database
     await init_data()
 
 
 async def shutdown():
-    """应用关闭事件"""
-    logger.info("🛑 Fast API应用关闭中...")
+    """Application shutdown event"""
+    logger.info("🛑 FastAPI application shutting down...")
 
-    # 断开Redis连接
+    # Disconnect Redis connection
     await cache_manager.disconnect()
 
 
 async def init_app(app: FastAPI):
-    """应用启动时初始化"""
-    # 注册启动和关闭事件
+    """Initialize on application startup"""
+    # Register startup and shutdown events
     app.add_event_handler("startup", startup)
     app.add_event_handler("shutdown", shutdown)
-    logger.info("🎉 Fast API应用启动完成！")
+    logger.info("🎉 FastAPI application startup completed!")
 
 
 async def stop_app(app: FastAPI):
-    """应用关闭时清理"""
-    logger.info("🔧 开始停止系统服务...")
-    logger.info("👋 系统服务已关闭")
+    """Cleanup on application shutdown"""
+    logger.info("🔧 Starting system service shutdown...")
+    logger.info("👋 System service has been shut down")
 
 
 def register_startup_event(app: FastAPI):
-    """注册启动和关闭事件"""
+    """Register startup and shutdown events"""
     app.add_event_handler("startup", partial(init_app, app))
     app.add_event_handler("shutdown", partial(stop_app, app))

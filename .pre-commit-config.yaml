@@ -1,35 +1,35 @@
 # Pre-commit hooks configuration
-# 如果不想使用 pre-commit hooks，可以运行: pre-commit uninstall
-# 或者在提交时跳过检查: git commit --no-verify
+# If you don't want to use pre-commit hooks, run: pre-commit uninstall
+# Or skip checks when committing: git commit --no-verify
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
     hooks:
-      - id: trailing-whitespace        # 移除行尾空格
-      - id: end-of-file-fixer         # 确保文件以换行符结尾
-      - id: check-yaml                # 检查YAML语法
-        args: ['--unsafe']            # 允许自定义标签
-      - id: check-added-large-files   # 检查大文件
-        args: ['--maxkb=10000']       # 限制10MB
-      - id: check-merge-conflict      # 检查合并冲突标记
-      - id: debug-statements          # 检查调试语句
-      - id: check-json               # 检查JSON语法
-      - id: check-toml               # 检查TOML语法
-      - id: check-xml                # 检查XML语法
-      - id: mixed-line-ending        # 检查行结束符
-      - id: check-case-conflict      # 检查文件名大小写冲突
+      - id: trailing-whitespace        # Remove trailing whitespace
+      - id: end-of-file-fixer         # Ensure files end with newline
+      - id: check-yaml                # Check YAML syntax
+        args: ['--unsafe']            # Allow custom tags
+      - id: check-added-large-files   # Check for large files
+        args: ['--maxkb=10000']       # Limit 10MB
+      - id: check-merge-conflict      # Check for merge conflict markers
+      - id: debug-statements          # Check for debug statements
+      - id: check-json               # Check JSON syntax
+      - id: check-toml               # Check TOML syntax
+      - id: check-xml                # Check XML syntax
+      - id: mixed-line-ending        # Check line endings
+      - id: check-case-conflict      # Check for filename case conflicts
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.8.0
     hooks:
-      - id: ruff                     # Python代码检查
+      - id: ruff                     # Python code checking
         args: [--fix, --exit-non-zero-on-fix]
         types_or: [python, pyi, jupyter]
-      - id: ruff-format             # Python代码格式化
+      - id: ruff-format             # Python code formatting
         types_or: [python, pyi, jupyter]
 
-  # 可选: 添加类型检查 (如需要可取消注释)
+  # Optional: Add type checking (uncomment if needed)
   # - repo: https://github.com/pre-commit/mirrors-mypy
   #   rev: v1.8.0
   #   hooks:
@@ -37,7 +37,7 @@ repos:
   #       additional_dependencies: [types-all]
   #       args: [--ignore-missing-imports]
 
-  # 可选: 安全检查 (如需要可取消注释)
+  # Optional: Security checks (uncomment if needed)
   # - repo: https://github.com/PyCQA/bandit
   #   rev: '1.7.5'
   #   hooks:

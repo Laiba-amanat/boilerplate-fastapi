@@ -1,18 +1,18 @@
-"""CRUD操作测试"""
+"""CRUD operation tests"""
 
 from httpx import AsyncClient
 
 
 class TestCRUDOperations:
-    """CRUD操作测试类"""
+    """CRUD operation test class"""
 
     async def test_user_crud_full_cycle(
         self, async_client: AsyncClient, admin_token: str
     ):
-        """测试用户CRUD完整流程"""
+        """Test complete user CRUD flow"""
         headers = {"Authorization": f"Bearer {admin_token}"}
 
-        # 1. 创建用户
+        # 1. Create user
         user_data = {
             "username": "crud_test_user",
             "email": "crud_test@test.com",
@@ -28,13 +28,13 @@ class TestCRUDOperations:
 
         assert create_response.status_code == 200
 
-        # 2. 获取用户列表，验证用户已创建
+        # 2. Get user list, verify user was created
         list_response = await async_client.get("/api/v1/users/list", headers=headers)
 
         assert list_response.status_code == 200
         users_data = list_response.json()["data"]
 
-        # 查找创建的用户
+        # Find created user
         created_user = None
         for user in users_data:
             if user["username"] == "crud_test_user":
@@ -47,7 +47,7 @@ class TestCRUDOperations:
 
         user_id = created_user["id"]
 
-        # 3. 更新用户
+        # 3. Update user
         update_data = {
             "id": user_id,
             "username": "crud_test_updated",
@@ -63,7 +63,7 @@ class TestCRUDOperations:
 
         assert update_response.status_code == 200
 
-        # 4. 验证更新
+        # 4. Verify update
         list_response_after_update = await async_client.get(
             "/api/v1/users/list", headers=headers
         )
@@ -79,14 +79,14 @@ class TestCRUDOperations:
         assert updated_user["username"] == "crud_test_updated"
         assert updated_user["email"] == "crud_test_updated@test.com"
 
-        # 5. 删除用户
+        # 5. Delete user
         delete_response = await async_client.delete(
             f"/api/v1/users/delete?user_id={user_id}", headers=headers
         )
 
         assert delete_response.status_code == 200
 
-        # 6. 验证删除
+        # 6. Verify deletion
         list_response_after_delete = await async_client.get(
             "/api/v1/users/list", headers=headers
         )
@@ -98,18 +98,18 @@ class TestCRUDOperations:
                 deleted_user = user
                 break
 
-        # 用户应该被删除
+        # User should be deleted
         assert deleted_user is None
 
     async def test_user_creation_validation(
         self, async_client: AsyncClient, admin_token: str
     ):
-        """测试用户创建数据验证"""
+        """Test user creation data validation"""
         headers = {"Authorization": f"Bearer {admin_token}"}
 
-        # 测试无效数据
+        # Test invalid data
         invalid_cases = [
-            # 缺少用户名
+            # Missing username
             {
                 "email": "test@test.com",
                 "password": "Test123456",
@@ -117,7 +117,7 @@ class TestCRUDOperations:
                 "is_superuser": False,
                 "role_ids": [],
             },
-            # 缺少邮箱
+            # Missing email
             {
                 "username": "test_user",
                 "password": "Test123456",
@@ -125,7 +125,7 @@ class TestCRUDOperations:
                 "is_superuser": False,
                 "role_ids": [],
             },
-            # 缺少密码
+            # Missing password
             {
                 "username": "test_user",
                 "email": "test@test.com",
@@ -133,7 +133,7 @@ class TestCRUDOperations:
                 "is_superuser": False,
                 "role_ids": [],
             },
-            # 无效邮箱格式
+            # Invalid email format
             {
                 "username": "test_user",
                 "email": "invalid_email",
@@ -149,13 +149,13 @@ class TestCRUDOperations:
                 "/api/v1/users/create", json=invalid_data, headers=headers
             )
 
-            # 应该返回验证错误
+            # Should return validation error
             assert response.status_code == 422
 
     async def test_duplicate_user_creation(
         self, async_client: AsyncClient, admin_token: str
     ):
-        """测试创建重复用户"""
+        """Test creating duplicate user"""
         headers = {"Authorization": f"Bearer {admin_token}"}
 
         user_data = {
@@ -167,14 +167,14 @@ class TestCRUDOperations:
             "role_ids": [],
         }
 
-        # 第一次创建应该成功
+        # First creation should succeed
         first_response = await async_client.post(
             "/api/v1/users/create", json=user_data, headers=headers
         )
 
         assert first_response.status_code == 200
 
-        # 第二次创建相同邮箱的用户应该失败
+        # Second creation with same email should fail
         second_response = await async_client.post(
             "/api/v1/users/create", json=user_data, headers=headers
         )
@@ -184,10 +184,10 @@ class TestCRUDOperations:
     async def test_user_list_pagination(
         self, async_client: AsyncClient, admin_token: str
     ):
-        """测试用户列表分页"""
+        """Test user list pagination"""
         headers = {"Authorization": f"Bearer {admin_token}"}
 
-        # 测试分页参数
+        # Test pagination parameters
         response = await async_client.get(
             "/api/v1/users/list?page=1&page_size=5", headers=headers
         )
@@ -205,10 +205,10 @@ class TestCRUDOperations:
     async def test_user_search_functionality(
         self, async_client: AsyncClient, admin_token: str
     ):
-        """测试用户搜索功能"""
+        """Test user search functionality"""
         headers = {"Authorization": f"Bearer {admin_token}"}
 
-        # 先创建一个测试用户
+        # First create a test user
         user_data = {
             "username": "search_test_user",
             "email": "search_test@test.com",
@@ -220,7 +220,7 @@ class TestCRUDOperations:
 
         await async_client.post("/api/v1/users/create", json=user_data, headers=headers)
 
-        # 测试用户名搜索
+        # Test username search
         search_response = await async_client.get(
             "/api/v1/users/list?username=search_test", headers=headers
         )
@@ -228,7 +228,7 @@ class TestCRUDOperations:
         assert search_response.status_code == 200
         search_data = search_response.json()["data"]
 
-        # 应该找到匹配的用户
+        # Should find matching user
         found_user = False
         for user in search_data:
             if "search_test" in user["username"]:
@@ -240,11 +240,11 @@ class TestCRUDOperations:
     async def test_nonexistent_user_operations(
         self, async_client: AsyncClient, admin_token: str
     ):
-        """测试对不存在用户的操作"""
+        """Test operations on non-existent user"""
         headers = {"Authorization": f"Bearer {admin_token}"}
         nonexistent_id = 99999
 
-        # 测试更新不存在的用户
+        # Test updating non-existent user
         update_data = {
             "id": nonexistent_id,
             "username": "nonexistent_user",
@@ -258,13 +258,13 @@ class TestCRUDOperations:
             "/api/v1/users/update", json=update_data, headers=headers
         )
 
-        # 应该返回错误
+        # Should return error
         assert update_response.status_code in [400, 404]
 
-        # 测试删除不存在的用户
+        # Test deleting non-existent user
         delete_response = await async_client.delete(
             f"/api/v1/users/delete/{nonexistent_id}", headers=headers
         )
 
-        # 应该返回错误
+        # Should return error
         assert delete_response.status_code in [400, 404]

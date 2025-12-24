@@ -1,2 +1,2 @@
-# 新增model需要在这里导入
+# New models need to be imported here
 from .admin import *

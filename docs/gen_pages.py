@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-API文档自动生成脚本
-从FastAPI应用中提取路由信息，生成API文档
+API documentation auto-generation script
+Extracts route information from FastAPI application and generates API documentation
 """
 
 import inspect
@@ -12,7 +12,7 @@ from typing import Any, Union
 
 import mkdocs_gen_files
 
-# 添加项目根目录到Python路径
+# Add project root directory to Python path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 try:
@@ -21,10 +21,10 @@ try:
     from fastapi.routing import APIRoute
     from pydantic import BaseModel
 
-    # 导入应用
+    # Import application
     from src import app
 except ImportError as e:
-    print(f"无法导入FastAPI应用: {e}")
+    print(f"Unable to import FastAPI application: {e}")
     app = None
 
 
@@ -64,15 +64,15 @@ def get_model_fields(model: type[BaseModel]) -> list[dict[str, Any]]:
         # 获取约束
         constraints = []
         if hasattr(field_info, "min_length") and field_info.min_length is not None:
-            constraints.append(f"最小长度: {field_info.min_length}")
+            constraints.append(f"Min length: {field_info.min_length}")
         if hasattr(field_info, "max_length") and field_info.max_length is not None:
-            constraints.append(f"最大长度: {field_info.max_length}")
+            constraints.append(f"Max length: {field_info.max_length}")
         if hasattr(field_info, "ge") and field_info.ge is not None:
-            constraints.append(f"最小值: {field_info.ge}")
+            constraints.append(f"Min value: {field_info.ge}")
         if hasattr(field_info, "le") and field_info.le is not None:
-            constraints.append(f"最大值: {field_info.le}")
+            constraints.append(f"Max value: {field_info.le}")
         if hasattr(field_info, "pattern") and field_info.pattern is not None:
-            constraints.append(f"正则: `{field_info.pattern}`")
+            constraints.append(f"Pattern: `{field_info.pattern}`")
 
         required = (
             field_info.is_required() if hasattr(field_info, "is_required") else True
@@ -94,7 +94,7 @@ def get_model_fields(model: type[BaseModel]) -> list[dict[str, Any]]:
 
 
 def extract_route_details(route: APIRoute) -> dict[str, Any]:
-    """提取路由的详细信息，包括参数和响应"""
+    """Extract detailed route information, including parameters and responses"""
     route_info = {
         "path": route.path,
         "methods": list(route.methods),
@@ -108,29 +108,29 @@ def extract_route_details(route: APIRoute) -> dict[str, Any]:
         "responses": {},
     }
 
-    # 获取端点函数
+    # Get endpoint function
     endpoint = route.endpoint
     if endpoint:
-        # 获取函数签名
+        # Get function signature
         sig = inspect.signature(endpoint)
 
-        # 分析参数
+        # Analyze parameters
         for param_name, param in sig.parameters.items():
             if param_name in ["request", "response", "background_tasks"]:
                 continue
 
             param_info = {
                 "name": param_name,
-                "in": "query",  # 默认
-                "type": "string",  # 默认
+                "in": "query",  # Default
+                "type": "string",  # Default
                 "required": param.default == param.empty,
                 "description": "",
                 "default": None if param.default == param.empty else param.default,
             }
 
-            # 检查参数注解
+            # Check parameter annotations
             if param.annotation != param.empty:
-                # 处理 Query, Body, Path 等参数
+                # Handle Query, Body, Path parameters
                 if hasattr(param.default, "__class__"):
                     param_class = param.default.__class__.__name__
 
@@ -152,7 +152,7 @@ def extract_route_details(route: APIRoute) -> dict[str, Any]:
                         if hasattr(param.default, "description"):
                             param_info["description"] = param.default.description
 
-                # 处理 Pydantic 模型 - 这是关键的修复
+                # Handle Pydantic models - this is a key fix
                 try:
                     if inspect.isclass(param.annotation) and issubclass(
                         param.annotation, BaseModel
@@ -163,16 +163,16 @@ def extract_route_details(route: APIRoute) -> dict[str, Any]:
                         route_info["request_body"] = param_info
                         continue
                 except (TypeError, AttributeError):
-                    # 如果不是class或者不是BaseModel的子类，继续其他处理
+                    # If not a class or not a subclass of BaseModel, continue with other processing
                     pass
 
-                # 处理泛型和Union类型
+                # Handle generics and Union types
                 if hasattr(param.annotation, "__origin__"):
                     if param.annotation.__origin__ is Union:
-                        # 处理Union类型，比如Optional[str]
+                        # Handle Union types, e.g., Optional[str]
                         args = param.annotation.__args__
                         if len(args) == 2 and type(None) in args:
-                            # 这是Optional类型
+                            # This is an Optional type
                             param_info["required"] = False
                             non_none_type = (
                                 args[0] if args[1] is type(None) else args[1]
@@ -195,7 +195,7 @@ def extract_route_details(route: APIRoute) -> dict[str, Any]:
                             .replace("builtins.", "")
                         )
                 else:
-                    # 简化类型名称
+                    # Simplify type name
                     param_info["type"] = (
                         str(param.annotation)
                         .replace("typing.", "")
@@ -205,7 +205,7 @@ def extract_route_details(route: APIRoute) -> dict[str, Any]:
             if param_info["in"] != "body":
                 route_info["parameters"].append(param_info)
 
-        # 获取响应模型
+        # Get response model
         if hasattr(route, "response_model") and route.response_model:
             response_model = route.response_model
             try:
@@ -223,15 +223,15 @@ def extract_route_details(route: APIRoute) -> dict[str, Any]:
 
 
 def generate_parameter_table(parameters: list[dict[str, Any]]) -> str:
-    """生成参数表格"""
+    """Generate parameter table"""
     if not parameters:
-        return "无需参数"
+        return "No parameters required"
 
-    table = "| 参数名 | 类型 | 位置 | 必填 | 描述 | 默认值 |\n"
-    table += "|--------|------|------|------|------|--------|\n"
+    table = "| Parameter Name | Type | Location | Required | Description | Default Value |\n"
+    table += "|----------------|------|----------|----------|-------------|---------------|\n"
 
     for param in parameters:
-        required = "是" if param.get("required", False) else "否"
+        required = "Yes" if param.get("required", False) else "No"
         default = param.get("default", "-")
         if default is None:
             default = "null"
@@ -244,22 +244,22 @@ def generate_parameter_table(parameters: list[dict[str, Any]]) -> str:
 
 
 def generate_request_body_section(request_body: dict[str, Any]) -> str:
-    """生成请求体文档"""
+    """Generate request body documentation"""
     if not request_body:
         return ""
 
-    content = "### 请求体\n\n"
+    content = "### Request Body\n\n"
     content += "**Content-Type**: `application/json`\n\n"
 
     if "model_fields" in request_body:
-        content += f"**模型**: `{request_body['type']}`\n\n"
+        content += f"**Model**: `{request_body['type']}`\n\n"
 
-        # 生成字段表格
-        content += "| 字段名 | 类型 | 必填 | 描述 | 示例 | 约束 |\n"
-        content += "|--------|------|------|------|------|------|\n"
+        # Generate field table
+        content += "| Field Name | Type | Required | Description | Example | Constraints |\n"
+        content += "|------------|------|----------|-------------|---------|-------------|\n"
 
         for field in request_body["model_fields"]:
-            required = "是" if field["required"] else "否"
+            required = "Yes" if field["required"] else "No"
             example = field.get("example", "")
             if example:
                 example = f"`{example}`"
@@ -267,14 +267,14 @@ def generate_request_body_section(request_body: dict[str, Any]) -> str:
 
             content += f"| {field['name']} | `{field['type']}` | {required} | {field.get('description', '')} | {example} | {constraints} |\n"
 
-        # 生成示例
-        content += "\n**请求示例**:\n\n```json\n"
+        # Generate example
+        content += "\n**Request Example**:\n\n```json\n"
         example_data = {}
         for field in request_body["model_fields"]:
             if field.get("example") is not None:
                 example_data[field["name"]] = field["example"]
             elif field["required"]:
-                # 根据字段名和类型生成更真实的示例
+                # Generate more realistic examples based on field name and type
                 field_name = field["name"].lower()
                 field_type = field["type"].lower()
 
@@ -295,15 +295,15 @@ def generate_request_body_section(request_body: dict[str, Any]) -> str:
                         example_data[field["name"]] = []
                 elif "str" in field_type:
                     if "desc" in field_name or "description" in field_name:
-                        example_data[field["name"]] = "描述信息"
+                        example_data[field["name"]] = "Description information"
                     elif "path" in field_name:
                         example_data[field["name"]] = "/api/v1/example"
                     elif "method" in field_name:
                         example_data[field["name"]] = "GET"
                     elif "tag" in field_name:
-                        example_data[field["name"]] = "示例模块"
+                        example_data[field["name"]] = "Example Module"
                     else:
-                        example_data[field["name"]] = "示例文本"
+                        example_data[field["name"]] = "Example text"
                 elif "int" in field_type:
                     example_data[field["name"]] = 1
                 else:
@@ -316,33 +316,33 @@ def generate_request_body_section(request_body: dict[str, Any]) -> str:
 
 
 def generate_module_doc(module_name: str, routes: list[dict[str, Any]]) -> str:
-    """为模块生成文档"""
+    """Generate documentation for module"""
 
-    # 模块名称映射
+    # Module name mapping
     module_names = {
-        "users": "用户管理",
-        "role": "角色管理",
-        "menu": "菜单管理",
-        "files": "文件管理",
-        "dept": "部门管理",
-        "api": "API权限",
-        "auditlog": "审计日志",
-        "base": "认证授权",
+        "users": "User Management",
+        "role": "Role Management",
+        "menu": "Menu Management",
+        "files": "File Management",
+        "dept": "Department Management",
+        "api": "API Permissions",
+        "auditlog": "Audit Log",
+        "base": "Authentication & Authorization",
     }
 
     module_display_name = module_names.get(module_name, module_name.title())
 
     content = f"""# {module_display_name} API
 
-## 概述
+## Overview
 
-{module_display_name}相关的API接口文档。
+API interface documentation for {module_display_name}.
 
 """
 
-    # 为每个路由生成详细文档
+    # Generate detailed documentation for each route
     for route_data in routes:
-        # 提取详细信息
+        # Extract detailed information
         route_details = (
             extract_route_details(route_data)
             if isinstance(route_data, APIRoute)
@@ -351,68 +351,68 @@ def generate_module_doc(module_name: str, routes: list[dict[str, Any]]) -> str:
 
         content += f"## {route_details['summary'] or route_details['name']}\n\n"
 
-        # 基本信息
-        content += f"- **路径**: `{route_details['path']}`\n"
-        content += f"- **方法**: {', '.join(f'`{method}`' for method in route_details['methods'])}\n"
+        # Basic information
+        content += f"- **Path**: `{route_details['path']}`\n"
+        content += f"- **Method**: {', '.join(f'`{method}`' for method in route_details['methods'])}\n"
 
         if route_details["tags"]:
-            content += f"- **标签**: {', '.join(route_details['tags'])}\n"
+            content += f"- **Tags**: {', '.join(route_details['tags'])}\n"
 
         if route_details.get("deprecated"):
-            content += "- **状态**: ⚠️ 已弃用\n"
+            content += "- **Status**: ⚠️ Deprecated\n"
 
         content += "\n"
 
-        # 描述
+        # Description
         if route_details["description"]:
-            content += f"### 描述\n\n{route_details['description']}\n\n"
+            content += f"### Description\n\n{route_details['description']}\n\n"
 
-        # 参数
+        # Parameters
         if route_details.get("parameters"):
-            content += "### 请求参数\n\n"
+            content += "### Request Parameters\n\n"
             content += generate_parameter_table(route_details["parameters"])
             content += "\n"
 
-        # 请求体
+        # Request body
         if route_details.get("request_body"):
             content += generate_request_body_section(route_details["request_body"])
 
-        # 响应
-        content += "### 响应\n\n"
-        content += "**成功响应**:\n\n"
-        content += "- **状态码**: `200`\n"
+        # Response
+        content += "### Response\n\n"
+        content += "**Success Response**:\n\n"
+        content += "- **Status Code**: `200`\n"
         content += "- **Content-Type**: `application/json`\n\n"
 
-        # 标准响应格式
+        # Standard response format
         content += "```json\n{\n"
         content += '  "code": 200,\n'
         content += '  "msg": "success",\n'
         content += '  "data": ...\n'
         content += "}\n```\n\n"
 
-        # 错误响应
-        content += "**错误响应**:\n\n"
-        content += "- **状态码**: `400` / `401` / `403` / `404` / `500`\n\n"
+        # Error response
+        content += "**Error Response**:\n\n"
+        content += "- **Status Code**: `400` / `401` / `403` / `404` / `500`\n\n"
         content += "```json\n{\n"
         content += '  "code": 400,\n'
-        content += '  "msg": "错误信息",\n'
+        content += '  "msg": "Error message",\n'
         content += '  "data": null\n'
         content += "}\n```\n\n"
 
-        # 使用示例
-        content += "### 使用示例\n\n"
+        # Usage examples
+        content += "### Usage Examples\n\n"
 
-        # cURL 示例
+        # cURL example
         content += "**cURL**:\n```bash\n"
 
         method = (
             list(route_details["methods"])[0] if route_details["methods"] else "GET"
         )
 
-        # 构建cURL命令
+        # Build cURL command
         curl_cmd = f'curl -X {method} "http://localhost:8000{route_details["path"]}'
 
-        # 添加查询参数示例
+        # Add query parameter examples
         query_params = [
             p for p in route_details.get("parameters", []) if p["in"] == "query"
         ]
@@ -429,11 +429,11 @@ def generate_module_doc(module_name: str, routes: list[dict[str, Any]]) -> str:
 
         curl_cmd += '"'
 
-        # 添加认证头
+        # Add authentication header
         if module_name != "base":
             curl_cmd += ' \\\n  -H "Authorization: Bearer <your-token>"'
 
-        # 添加请求体
+        # Add request body
         if method in ["POST", "PUT", "PATCH"] and route_details.get("request_body"):
             curl_cmd += ' \\\n  -H "Content-Type: application/json"'
             if route_details["request_body"].get("model_fields"):
@@ -442,7 +442,7 @@ def generate_module_doc(module_name: str, routes: list[dict[str, Any]]) -> str:
                     if field.get("example") is not None:
                         example_data[field["name"]] = field["example"]
                     elif field["required"]:
-                        # 根据字段名和类型生成更真实的示例
+                        # Generate more realistic examples based on field name and type
                         field_name = field["name"].lower()
                         field_type = field["type"].lower()
 
@@ -463,15 +463,15 @@ def generate_module_doc(module_name: str, routes: list[dict[str, Any]]) -> str:
                                 example_data[field["name"]] = []
                         elif "str" in field_type:
                             if "desc" in field_name or "description" in field_name:
-                                example_data[field["name"]] = "描述信息"
+                                example_data[field["name"]] = "Description information"
                             elif "path" in field_name:
                                 example_data[field["name"]] = "/api/v1/example"
                             elif "method" in field_name:
                                 example_data[field["name"]] = "GET"
                             elif "tag" in field_name:
-                                example_data[field["name"]] = "示例模块"
+                                example_data[field["name"]] = "Example Module"
                             else:
-                                example_data[field["name"]] = "示例文本"
+                                example_data[field["name"]] = "Example text"
                         else:
                             example_data[field["name"]] = "value"
 
@@ -484,7 +484,7 @@ def generate_module_doc(module_name: str, routes: list[dict[str, Any]]) -> str:
 
         content += curl_cmd + "\n```\n\n"
 
-        # Python 示例
+        # Python example
         content += "**Python (requests)**:\n```python\n"
         content += "import requests\n\n"
 
@@ -496,7 +496,7 @@ def generate_module_doc(module_name: str, routes: list[dict[str, Any]]) -> str:
         if method == "GET":
             if query_params:
                 content += "params = {\n"
-                for param in query_params[:3]:  # 只显示前3个参数作为示例
+                for param in query_params[:3]:  # Only show first 3 parameters as example
                     if param.get("example"):
                         content += f'    "{param["name"]}": "{param["example"]}",\n'
                     elif param["required"]:
@@ -522,7 +522,7 @@ def generate_module_doc(module_name: str, routes: list[dict[str, Any]]) -> str:
                 content += "data = {\n"
                 example_count = 0
                 for field in route_details["request_body"]["model_fields"]:
-                    if example_count >= 5:  # 限制显示数量
+                    if example_count >= 5:  # Limit display count
                         break
 
                     if field.get("example") is not None:
@@ -532,7 +532,7 @@ def generate_module_doc(module_name: str, routes: list[dict[str, Any]]) -> str:
                             content += f'    "{field["name"]}": {json.dumps(field["example"])},\n'
                         example_count += 1
                     elif field["required"]:
-                        # 生成真实示例数据
+                        # Generate realistic example data
                         field_name = field["name"].lower()
                         field_type = field["type"].lower()
 
@@ -553,7 +553,7 @@ def generate_module_doc(module_name: str, routes: list[dict[str, Any]]) -> str:
                                 content += f'    "{field["name"]}": [],\n'
                         elif "str" in field_type:
                             if "desc" in field_name or "description" in field_name:
-                                content += f'    "{field["name"]}": "描述信息",\n'
+                                content += f'    "{field["name"]}": "Description information",\n'
                             elif "path" in field_name:
                                 content += (
                                     f'    "{field["name"]}": "/api/v1/example",\n'
@@ -561,9 +561,9 @@ def generate_module_doc(module_name: str, routes: list[dict[str, Any]]) -> str:
                             elif "method" in field_name:
                                 content += f'    "{field["name"]}": "GET",\n'
                             elif "tag" in field_name:
-                                content += f'    "{field["name"]}": "示例模块",\n'
+                                content += f'    "{field["name"]}": "Example Module",\n'
                             else:
-                                content += f'    "{field["name"]}": "示例文本",\n'
+                                content += f'    "{field["name"]}": "Example text",\n'
                         else:
                             content += f'    "{field["name"]}": "value",\n'
                         example_count += 1
@@ -621,26 +621,26 @@ def extract_route_info(app: FastAPI) -> dict[str, list[Any]]:
 
 
 def generate_api_index() -> str:
-    """生成API索引页面"""
-    return """# API 文档
+    """Generate API index page"""
+    return """# API Documentation
 
-## 概述
+## Overview
 
-这里是FastAPI后端模板的完整API文档。所有API都遵循RESTful设计原则，使用JSON格式进行数据交换。
+This is the complete API documentation for the FastAPI backend template. All APIs follow RESTful design principles and use JSON format for data exchange.
 
-## 认证
+## Authentication
 
-大部分API需要JWT认证。请先通过登录接口获取访问令牌，然后在请求头中包含：
+Most APIs require JWT authentication. Please first obtain an access token through the login endpoint, then include it in the request header:
 
 ```
 Authorization: Bearer <your-access-token>
 ```
 
-## 响应格式
+## Response Format
 
-所有API响应都遵循统一的格式：
+All API responses follow a unified format:
 
-### 成功响应
+### Success Response
 ```json
 {
   "code": 200,
@@ -649,7 +649,7 @@ Authorization: Bearer <your-access-token>
 }
 ```
 
-### 错误响应
+### Error Response
 ```json
 {
   "code": 400,
@@ -658,66 +658,66 @@ Authorization: Bearer <your-access-token>
 }
 ```
 
-### 错误码说明
+### Error Code Description
 
-| 错误码 | 说明 |
-|--------|------|
-| 200 | 成功 |
-| 400 | 请求参数错误 |
-| 401 | 未认证 |
-| 403 | 无权限 |
-| 404 | 资源不存在 |
-| 422 | 参数验证失败 |
-| 429 | 请求过于频繁 |
-| 500 | 服务器内部错误 |
+| Error Code | Description |
+|------------|-------------|
+| 200 | Success |
+| 400 | Request parameter error |
+| 401 | Unauthenticated |
+| 403 | No permission |
+| 404 | Resource does not exist |
+| 422 | Parameter validation failed |
+| 429 | Request too frequent |
+| 500 | Internal server error |
 
-## API 模块
+## API Modules
 
-- [认证授权](base.md) - 用户登录、token刷新等
-- [用户管理](users.md) - 用户CRUD操作
-- [角色管理](role.md) - 角色权限管理
-- [菜单管理](menu.md) - 系统菜单配置
-- [文件管理](files.md) - 文件上传下载
-- [部门管理](dept.md) - 组织架构管理
-- [API权限](api.md) - API权限控制
-- [审计日志](auditlog.md) - 操作日志记录
+- [Authentication & Authorization](base.md) - User login, token refresh, etc.
+- [User Management](users.md) - User CRUD operations
+- [Role Management](role.md) - Role permission management
+- [Menu Management](menu.md) - System menu configuration
+- [File Management](files.md) - File upload and download
+- [Department Management](dept.md) - Organizational structure management
+- [API Permissions](api.md) - API permission control
+- [Audit Log](auditlog.md) - Operation log records
 
-## 在线测试
+## Online Testing
 
-启动服务后，您可以通过以下地址访问交互式API文档：
+After starting the service, you can access the interactive API documentation at the following addresses:
 
 - **Swagger UI**: http://localhost:8000/docs
 - **ReDoc**: http://localhost:8000/redoc
 
-## 请求限制
+## Request Limits
 
-- 文件上传大小限制：10MB
-- 登录尝试限制：5次/分钟
-- Token刷新限制：10次/分钟
-- API请求频率：根据具体接口而定
+- File upload size limit: 10MB
+- Login attempt limit: 5 times/minute
+- Token refresh limit: 10 times/minute
+- API request frequency: Depends on specific endpoint
 
-## 健康检查
+## Health Check
 
-- **健康状态**: `GET /api/v1/base/health`
-- **版本信息**: `GET /api/v1/base/version`
+- **Health Status**: `GET /api/v1/base/health`
+- **Version Information**: `GET /api/v1/base/version`
 """
 
 
 def main():
-    """主函数"""
-    print("正在生成API文档...")
+    """Main function"""
+    print("Generating API documentation...")
 
-    # 生成API索引页面
+    # Generate API index page
     with mkdocs_gen_files.open("api/index.md", "w") as f:
         f.write(generate_api_index())
 
-    # 如果应用可用，生成详细文档
+    # If application is available, generate detailed documentation
     if app is not None:
         try:
-            # 提取路由信息
+            # Extract route information
             routes_info = extract_route_info(app)
 
-            # 为每个模块生成文档
+            # Generate documentation for each module
             for module_name, routes in routes_info.items():
                 file_name = f"api/{module_name}.md"
                 content = generate_module_doc(module_name, routes)
@@ -725,25 +725,25 @@ def main():
                 with mkdocs_gen_files.open(file_name, "w") as f:
                     f.write(content)
 
-                print(f"已生成: {file_name}")
+                print(f"Generated: {file_name}")
 
-            # 生成OpenAPI规范文件
+            # Generate OpenAPI specification file
             openapi_schema = get_openapi_schema(app)
             if openapi_schema:
                 with mkdocs_gen_files.open("api/openapi.json", "w") as f:
                     json.dump(openapi_schema, f, indent=2, ensure_ascii=False)
-                print("已生成: api/openapi.json")
+                print("Generated: api/openapi.json")
 
-            print(f"API文档生成完成！共生成 {len(routes_info)} 个模块文档")
+            print(f"API documentation generation complete! Generated {len(routes_info)} module documents")
 
         except Exception as e:
-            print(f"生成API文档时出错: {e}")
+            print(f"Error generating API documentation: {e}")
             import traceback
 
             traceback.print_exc()
-            print("将生成基础文档结构...")
+            print("Will generate basic documentation structure...")
 
-            # 生成基础文档结构
+            # Generate basic documentation structure
             basic_modules = [
                 "base",
                 "users",
@@ -759,20 +759,20 @@ def main():
                 file_name = f"api/{module}.md"
                 content = f"""# {module.title()} API
 
-## 概述
+## Overview
 
-{module.title()}相关的API接口文档。
+API interface documentation for {module.title()}.
 
-!!! note "注意"
-    请启动FastAPI应用后重新生成文档以获取完整的API信息。
+!!! note "Note"
+    Please start the FastAPI application and regenerate the documentation to get complete API information.
 
-## 快速开始
+## Quick Start
 
 ```bash
-# 启动应用
+# Start application
 uv run uvicorn src:app --reload
 
-# 访问交互式文档
+# Access interactive documentation
 open http://localhost:8000/docs
 ```
 """
@@ -780,12 +780,12 @@ open http://localhost:8000/docs
                 with mkdocs_gen_files.open(file_name, "w") as f:
                     f.write(content)
 
-                print(f"已生成基础文档: {file_name}")
+                print(f"Generated basic documentation: {file_name}")
 
     else:
-        print("FastAPI应用不可用，生成基础文档结构...")
+        print("FastAPI application not available, generating basic documentation structure...")
 
-        # 生成基础文档结构
+        # Generate basic documentation structure
         basic_modules = [
             "base",
             "users",
@@ -801,20 +801,20 @@ open http://localhost:8000/docs
             file_name = f"api/{module}.md"
             content = f"""# {module.title()} API
 
-## 概述
+## Overview
 
-{module.title()}相关的API接口文档。
+API interface documentation for {module.title()}.
 
-!!! note "注意"
-    请启动FastAPI应用后重新生成文档以获取完整的API信息。
+!!! note "Note"
+    Please start the FastAPI application and regenerate the documentation to get complete API information.
 
-## 快速开始
+## Quick Start
 
 ```bash
-# 启动应用
+# Start application
 uv run uvicorn src:app --reload
 
-# 访问交互式文档
+# Access interactive documentation
 open http://localhost:8000/docs
 ```
 """
@@ -822,7 +822,7 @@ open http://localhost:8000/docs
             with mkdocs_gen_files.open(file_name, "w") as f:
                 f.write(content)
 
-            print(f"已生成基础文档: {file_name}")
+            print(f"Generated basic documentation: {file_name}")
 
 
 def get_openapi_schema(app: FastAPI) -> dict:

@@ -4,16 +4,16 @@ from log import logger
 
 
 class DataProcessor:
-    """数据处理工具类 - 合并所有重复的数据处理逻辑"""
+    """Data processing utility class - consolidates all duplicate data processing logic"""
 
     @staticmethod
     def extract_workflow_data(chunks: list[str]) -> dict | None:
-        """从数据块中提取workflow_finished事件数据 - 统一版本"""
-        logger.info(f"开始从 {len(chunks)} 个数据块中提取workflow_finished事件")
+        """Extract workflow_finished event data from data chunks - unified version"""
+        logger.info(f"Starting to extract workflow_finished event from {len(chunks)} data chunks")
 
         found_event_types = []
 
-        # 从后往前查找，最新的事件在后面
+        # Search from back to front, latest events are at the end
         for i, chunk in enumerate(reversed(chunks)):
             if chunk.startswith("data:"):
                 json_content_str = chunk[len("data:") :].strip()
@@ -26,24 +26,24 @@ class DataProcessor:
 
                         if event_type == "workflow_finished":
                             logger.info(
-                                f"在数据块 {len(chunks) - 1 - i} 找到workflow_finished事件"
+                                f"Found workflow_finished event in chunk {len(chunks) - 1 - i}"
                             )
                             return event_data
                     except json.JSONDecodeError as e:
                         logger.warning(
-                            f"解析数据块失败: {str(e)}, 内容: {json_content_str[:100]}..."
+                            f"Failed to parse data chunk: {str(e)}, content: {json_content_str[:100]}..."
                         )
                         continue
 
         logger.warning(
-            f"未找到workflow_finished事件。遍历了 {len(chunks)} 个数据块，"
-            f"发现的事件类型: {found_event_types}"
+            f"workflow_finished event not found. Traversed {len(chunks)} data chunks, "
+            f"found event types: {found_event_types}"
         )
         return None
 
     @staticmethod
     def extract_text_from_chunks(chunks: list[str]) -> str:
-        """从数据块中提取累积的文本内容"""
+        """Extract accumulated text content from data chunks"""
         accumulated_text = ""
 
         for chunk in chunks:
@@ -54,7 +54,7 @@ class DataProcessor:
                         event_data = json.loads(json_content_str)
                         event_type = event_data.get("event")
 
-                        # 从不同类型的事件中提取文本
+                        # Extract text from different event types
                         if event_type == "text_chunk":
                             text = event_data.get("data", {}).get("text", "")
                             if text:
@@ -64,12 +64,12 @@ class DataProcessor:
                             if text:
                                 accumulated_text += text
                         elif event_type == "message":
-                            # 检查是否有输出内容
+                            # Check if there is output content
                             data = event_data.get("data", {})
                             if data.get("outputs"):
                                 answer = data.get("outputs", {}).get("answer", "")
                                 if answer:
-                                    accumulated_text = answer  # 使用最终答案
+                                    accumulated_text = answer  # Use final answer
                             elif data.get("answer"):
                                 accumulated_text = data.get("answer")
                     except json.JSONDecodeError:
@@ -79,7 +79,7 @@ class DataProcessor:
 
     @staticmethod
     def parse_chunk_event(chunk: str) -> dict | None:
-        """解析数据块中的事件"""
+        """Parse event from data chunk"""
         if not chunk.startswith("data:"):
             return None
 
@@ -94,7 +94,7 @@ class DataProcessor:
 
     @staticmethod
     def generate_title(query: str, answer: str) -> str:
-        """生成标题"""
+        """Generate title"""
         if query and answer:
             return f"{query} - {answer}"[:50]
         elif query:
@@ -105,5 +105,5 @@ class DataProcessor:
             return "New Chat"
 
 
-# 全局实例
+# Global instance
 data_processor = DataProcessor()

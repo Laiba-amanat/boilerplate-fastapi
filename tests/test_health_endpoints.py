@@ -1,44 +1,44 @@
-"""健康检查和基础端点测试"""
+"""Health check and basic endpoint tests"""
 
 from httpx import AsyncClient
 
 
 class TestHealthEndpoints:
-    """健康检查端点测试类"""
+    """Health check endpoint test class"""
 
     async def test_health_check_endpoint(self, async_client: AsyncClient):
-        """测试健康检查端点"""
+        """Test health check endpoint"""
         response = await async_client.get("/api/v1/base/health")
 
         assert response.status_code == 200
         data = response.json()
 
-        # 验证响应结构
+        # Verify response structure
         assert "status" in data
         assert "timestamp" in data
         assert "version" in data
         assert "environment" in data
         assert "service" in data
 
-        # 验证值
+        # Verify values
         assert data["status"] == "healthy"
         assert data["service"] == "FastAPI Backend Template"
 
-        # 验证时间戳格式
+        # Verify timestamp format
         from datetime import datetime
 
         timestamp = data["timestamp"]
-        # 应该是有效的ISO格式时间戳
+        # Should be valid ISO format timestamp
         datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
 
     async def test_version_endpoint(self, async_client: AsyncClient):
-        """测试版本信息端点"""
+        """Test version information endpoint"""
         response = await async_client.get("/api/v1/base/version")
 
         assert response.status_code == 200
         data = response.json()
 
-        # 验证响应结构
+        # Verify response structure
         required_fields = [
             "version",
             "app_title",
@@ -53,7 +53,7 @@ class TestHealthEndpoints:
             assert isinstance(data[field], str)
 
     async def test_health_endpoint_performance(self, async_client: AsyncClient):
-        """测试健康检查端点性能"""
+        """Test health check endpoint performance"""
         import time
 
         start_time = time.time()
@@ -62,71 +62,71 @@ class TestHealthEndpoints:
 
         assert response.status_code == 200
 
-        # 健康检查应该在100ms内完成
+        # Health check should complete within 100ms
         response_time = (end_time - start_time) * 1000
         assert response_time < 100, f"Health check took {response_time:.2f}ms"
 
     async def test_health_check_no_authentication_required(
         self, async_client: AsyncClient
     ):
-        """测试健康检查不需要认证"""
-        # 不提供任何认证头
+        """Test health check does not require authentication"""
+        # Do not provide any authentication headers
         response = await async_client.get("/api/v1/base/health")
 
         assert response.status_code == 200
         assert response.json()["status"] == "healthy"
 
     async def test_version_no_authentication_required(self, async_client: AsyncClient):
-        """测试版本信息不需要认证"""
-        # 不提供任何认证头
+        """Test version information does not require authentication"""
+        # Do not provide any authentication headers
         response = await async_client.get("/api/v1/base/version")
 
         assert response.status_code == 200
         assert "version" in response.json()
 
     async def test_cors_headers(self, async_client: AsyncClient):
-        """测试CORS头设置"""
+        """Test CORS header settings"""
         response = await async_client.get("/api/v1/base/health")
 
-        # 检查是否有CORS相关头（如果配置了的话）
+        # Check if CORS-related headers exist (if configured)
         assert response.status_code == 200
 
-        # 基本CORS头检查（可能不是所有环境都有）
+        # Basic CORS header check (may not exist in all environments)
         _ = response.headers
-        # 这些头可能存在，取决于中间件配置
+        # These headers may exist depending on middleware configuration
         # assert "access-control-allow-origin" in headers
 
     async def test_multiple_concurrent_health_checks(self, async_client: AsyncClient):
-        """测试并发健康检查"""
+        """Test concurrent health checks"""
         import asyncio
 
-        # 并发发送多个健康检查请求
+        # Send multiple concurrent health check requests
         tasks = [async_client.get("/api/v1/base/health") for _ in range(10)]
 
         responses = await asyncio.gather(*tasks)
 
-        # 所有请求都应该成功
+        # All requests should succeed
         for response in responses:
             assert response.status_code == 200
             assert response.json()["status"] == "healthy"
 
     async def test_api_root_documentation(self, async_client: AsyncClient):
-        """测试API根路径和文档"""
-        # 获取设置中的基本认证信息
+        """Test API root path and documentation"""
+        # Get basic authentication information from settings
         import base64
 
         from src.settings.config import settings
 
-        # 创建基本认证头
+        # Create basic authentication header
         credentials = f"{settings.SWAGGER_UI_USERNAME}:{settings.SWAGGER_UI_PASSWORD}"
         encoded_credentials = base64.b64encode(credentials.encode()).decode()
         auth_headers = {"Authorization": f"Basic {encoded_credentials}"}
 
-        # 测试docs端点
+        # Test docs endpoint
         docs_response = await async_client.get("/docs", headers=auth_headers)
         assert docs_response.status_code == 200
 
-        # 测试OpenAPI规范
+        # Test OpenAPI specification
         openapi_response = await async_client.get("/openapi.json", headers=auth_headers)
         assert openapi_response.status_code == 200
 
@@ -136,25 +136,25 @@ class TestHealthEndpoints:
         assert "paths" in openapi_data
 
     async def test_health_check_includes_settings(self, async_client: AsyncClient):
-        """测试健康检查包含必要的配置信息"""
+        """Test health check includes necessary configuration information"""
         response = await async_client.get("/api/v1/base/health")
         data = response.json()
 
-        # 验证环境信息
+        # Verify environment information
         environment = data.get("environment")
         assert environment in ["development", "production", "testing"]
 
-        # 验证版本信息存在
+        # Verify version information exists
         version = data.get("version")
         assert version is not None
         assert len(version) > 0
 
     async def test_version_includes_build_info(self, async_client: AsyncClient):
-        """测试版本信息包含构建信息"""
+        """Test version information includes build information"""
         response = await async_client.get("/api/v1/base/version")
         data = response.json()
 
-        # 验证构建信息
+        # Verify build information
         build = data.get("build", "dev")
         commit = data.get("commit", "unknown")
         python_version = data.get("python_version", "3.11+")
@@ -163,5 +163,5 @@ class TestHealthEndpoints:
         assert isinstance(commit, str)
         assert isinstance(python_version, str)
 
-        # Python版本应该包含数字
+        # Python version should contain digits
         assert any(char.isdigit() for char in python_version)

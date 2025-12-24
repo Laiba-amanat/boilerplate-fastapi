@@ -14,7 +14,7 @@ T = TypeVar("T", bound=Model)
 
 
 class BaseService:
-    """基础服务类 - 统一公共逻辑"""
+    """Base service class - unified common logic"""
 
     def __init__(self, repository: CRUDBase):
         self.repository = repository
@@ -30,19 +30,19 @@ class BaseService:
         include_m2m: bool = False,
         transform_func: Callable | None = None,
     ) -> SuccessExtra:
-        """获取分页列表 - 统一版本
+        """Get paginated list - unified version
 
         Args:
-            page: 页码
-            page_size: 每页数量
-            search_filters: 搜索条件
-            order: 排序字段
-            exclude_fields: 排除字段
-            include_m2m: 是否包含多对多关系
-            transform_func: 数据转换函数
+            page: Page number
+            page_size: Items per page
+            search_filters: Search conditions
+            order: Sort fields
+            exclude_fields: Fields to exclude
+            include_m2m: Whether to include many-to-many relationships
+            transform_func: Data transformation function
 
         Returns:
-            SuccessExtra: 分页响应
+            SuccessExtra: Paginated response
         """
         try:
             total, items = await self.repository.list(
@@ -52,7 +52,7 @@ class BaseService:
                 order=order or ["-created_at"],
             )
 
-            # 转换数据
+            # Transform data
             if transform_func:
                 data = await transform_func(items)
             else:
@@ -66,26 +66,26 @@ class BaseService:
             return SuccessExtra(data=data, total=total, page=page, page_size=page_size)
 
         except Exception as e:
-            self.logger.error(f"获取分页列表失败: {str(e)}")
-            return Fail(msg="获取列表失败")
+            self.logger.error(f"Failed to get paginated list: {str(e)}")
+            return Fail(msg="Failed to get list")
 
     async def get_by_id(
         self,
         item_id: int,
         exclude_fields: list[str] | None = None,
         include_m2m: bool = False,
-        not_found_msg: str = "记录不存在",
+        not_found_msg: str = "Record does not exist",
     ) -> Success:
-        """根据ID获取单个记录
+        """Get single record by ID
 
         Args:
-            item_id: 记录ID
-            exclude_fields: 排除字段
-            include_m2m: 是否包含多对多关系
-            not_found_msg: 未找到时的错误消息
+            item_id: Record ID
+            exclude_fields: Fields to exclude
+            include_m2m: Whether to include many-to-many relationships
+            not_found_msg: Error message when not found
 
         Returns:
-            Success: 成功响应
+            Success: Success response
         """
         try:
             item = await self.repository.get(item_id)
@@ -100,24 +100,24 @@ class BaseService:
         except HTTPException:
             raise
         except Exception as e:
-            self.logger.error(f"获取记录失败: {str(e)}")
-            return Fail(msg="获取记录失败")
+            self.logger.error(f"Failed to get record: {str(e)}")
+            return Fail(msg="Failed to get record")
 
     async def create_item(
         self,
         item_data: dict[str, Any],
-        success_msg: str = "创建成功",
+        success_msg: str = "Created successfully",
         exclude_fields: list[str] | None = None,
     ) -> Success:
-        """创建记录
+        """Create record
 
         Args:
-            item_data: 创建数据
-            success_msg: 成功消息
-            exclude_fields: 排除字段
+            item_data: Creation data
+            success_msg: Success message
+            exclude_fields: Fields to exclude
 
         Returns:
-            Success: 成功响应
+            Success: Success response
         """
         try:
             item = await self.repository.create(item_data)
@@ -125,28 +125,28 @@ class BaseService:
             return Success(data=data, msg=success_msg)
 
         except Exception as e:
-            self.logger.error(f"创建记录失败: {str(e)}")
-            return Fail(msg="创建失败")
+            self.logger.error(f"Failed to create record: {str(e)}")
+            return Fail(msg="Failed to create")
 
     async def update_item(
         self,
         item_id: int,
         item_data: dict[str, Any],
-        success_msg: str = "更新成功",
-        not_found_msg: str = "记录不存在",
+        success_msg: str = "Updated successfully",
+        not_found_msg: str = "Record does not exist",
         exclude_fields: list[str] | None = None,
     ) -> Success:
-        """更新记录
+        """Update record
 
         Args:
-            item_id: 记录ID
-            item_data: 更新数据
-            success_msg: 成功消息
-            not_found_msg: 未找到消息
-            exclude_fields: 排除字段
+            item_id: Record ID
+            item_data: Update data
+            success_msg: Success message
+            not_found_msg: Not found message
+            exclude_fields: Fields to exclude
 
         Returns:
-            Success: 成功响应
+            Success: Success response
         """
         try:
             item = await self.repository.get(item_id)
@@ -160,24 +160,24 @@ class BaseService:
         except HTTPException:
             raise
         except Exception as e:
-            self.logger.error(f"更新记录失败: {str(e)}")
-            return Fail(msg="更新失败")
+            self.logger.error(f"Failed to update record: {str(e)}")
+            return Fail(msg="Failed to update")
 
     async def delete_item(
         self,
         item_id: int,
-        success_msg: str = "删除成功",
-        not_found_msg: str = "记录不存在",
+        success_msg: str = "Deleted successfully",
+        not_found_msg: str = "Record does not exist",
     ) -> Success:
-        """删除记录
+        """Delete record
 
         Args:
-            item_id: 记录ID
-            success_msg: 成功消息
-            not_found_msg: 未找到消息
+            item_id: Record ID
+            success_msg: Success message
+            not_found_msg: Not found message
 
         Returns:
-            Success: 成功响应
+            Success: Success response
         """
         try:
             item = await self.repository.get(item_id)
@@ -190,27 +190,27 @@ class BaseService:
         except HTTPException:
             raise
         except Exception as e:
-            self.logger.error(f"删除记录失败: {str(e)}")
-            return Fail(msg="删除失败")
+            self.logger.error(f"Failed to delete record: {str(e)}")
+            return Fail(msg="Failed to delete")
 
 
 class PermissionService:
-    """权限服务 - 统一权限检查逻辑"""
+    """Permission service - unified permission check logic"""
 
     @staticmethod
     async def check_superuser(
-        user: User, error_msg: str = "权限不足，需要超级管理员权限"
+        user: User, error_msg: str = "Insufficient permissions, superuser privileges required"
     ):
-        """检查超级管理员权限"""
+        """Check superuser permissions"""
         if not user.is_superuser:
             return Fail(code=403, msg=error_msg)
         return None
 
     @staticmethod
     async def get_user_agent_ids(user: User) -> set:
-        """获取用户有权限的智能体ID集合"""
+        """Get set of agent IDs user has permissions for"""
         if user.is_superuser:
-            return set()  # 超级管理员无限制
+            return set()  # Superuser has no restrictions
 
         roles: list[Role] = await user.roles.all()
         if not roles:
@@ -229,17 +229,17 @@ class PermissionService:
         search_fields: list[str] | None = None,
         extra_filters: dict[str, Any] | None = None,
     ) -> Q:
-        """构建搜索过滤条件"""
+        """Build search filter conditions"""
         filters = Q()
 
-        # 关键词搜索
+        # Keyword search
         if keyword and search_fields:
             keyword_filters = Q()
             for field in search_fields:
                 keyword_filters |= Q(**{f"{field}__icontains": keyword})
             filters &= keyword_filters
 
-        # 额外过滤条件
+        # Additional filter conditions
         if extra_filters:
             for field, value in extra_filters.items():
                 if value is not None:
@@ -251,5 +251,5 @@ class PermissionService:
         return filters
 
 
-# 全局实例
+# Global instance
 permission_service = PermissionService()

@@ -9,31 +9,31 @@ from utils.sensitive_word_filter import sensitive_word_filter
 
 
 class SensitiveFilterHandler:
-    """统一的敏感词处理器"""
+    """Unified sensitive word handler"""
 
     def __init__(self):
         self.filter = sensitive_word_filter
 
     def check_input(self, text: str) -> tuple[bool, str | None]:
-        """检查输入文本是否包含敏感词
+        """Check if input text contains sensitive words
 
         Returns:
-            Tuple[bool, Optional[str]]: (是否包含敏感词, 匹配的敏感词)
+            Tuple[bool, Optional[str]]: (whether contains sensitive words, matched sensitive word)
         """
         return self.filter.contains_sensitive_word(text)
 
     async def handle_sensitive_input_stream(self, matched_word: str, query: str):
-        """处理包含敏感词的流式请求"""
-        logger.warning(f"用户输入包含敏感词 '{matched_word}': {query[:100]}")
+        """Handle streaming request containing sensitive words"""
+        logger.warning(f"User input contains sensitive word '{matched_word}': {query[:100]}")
 
         async def sensitive_word_response():
-            # 发送敏感词提醒
+            # Send sensitive word reminder
             error_event = {
                 "event": "error",
                 "answer": self.filter.response_message,
             }
             yield f"data: {json.dumps(error_event, ensure_ascii=False)}\n\n"
-            # 发送结束信号
+            # Send end signal
             yield "data: [DONE]\n\n"
 
         return StreamingResponse(
@@ -47,8 +47,8 @@ class SensitiveFilterHandler:
         )
 
     def handle_sensitive_input_sync(self, matched_word: str, query: str):
-        """处理包含敏感词的同步请求"""
-        logger.warning(f"用户输入包含敏感词 '{matched_word}': {query[:100]}")
+        """Handle synchronous request containing sensitive words"""
+        logger.warning(f"User input contains sensitive word '{matched_word}': {query[:100]}")
         return Success(
             data={
                 "status": "blocked",
@@ -58,11 +58,11 @@ class SensitiveFilterHandler:
         )
 
     def filter_chunk(self, chunk: str) -> str | None:
-        """过滤数据块中的敏感词"""
+        """Filter sensitive words from data chunk"""
         return self.filter.filter_streaming_chunk(chunk)
 
     def create_sensitive_response_data(self, event_data: dict | None = None) -> dict:
-        """创建敏感词响应数据"""
+        """Create sensitive word response data"""
         return {
             "event": "workflow_finished",
             "data": {"outputs": {"answer": self.filter.response_message}},
@@ -74,7 +74,7 @@ class SensitiveFilterHandler:
         }
 
     def create_sensitive_stream_message(self, event_data: dict | None = None) -> dict:
-        """创建敏感词流式消息"""
+        """Create sensitive word streaming message"""
         return {
             "event": "error",
             "message_id": event_data.get("message_id") if event_data else "",
@@ -85,5 +85,5 @@ class SensitiveFilterHandler:
         }
 
 
-# 全局实例
+# Global instance
 sensitive_filter_handler = SensitiveFilterHandler()

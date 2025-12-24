@@ -17,10 +17,10 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
-@router.get("/list", summary="查看菜单列表", response_model=MenuListResponse)
+@router.get("/list", summary="Get menu list", response_model=MenuListResponse)
 async def list_menu(
-    page: int = Query(1, description="页码"),
-    page_size: int = Query(10, description="每页数量"),
+    page: int = Query(1, description="Page number"),
+    page_size: int = Query(10, description="Items per page"),
 ):
     async def get_menu_with_children(menu_id: int):
         menu = await menu_repository.model.get(id=menu_id)
@@ -41,16 +41,16 @@ async def list_menu(
     return json.loads(result.body)
 
 
-@router.get("/get", summary="查看菜单", response_model=MenuDetailResponse)
+@router.get("/get", summary="Get menu", response_model=MenuDetailResponse)
 async def get_menu(
-    menu_id: int = Query(..., description="菜单id"),
+    menu_id: int = Query(..., description="Menu ID"),
 ):
     result_data = await menu_repository.get(id=menu_id)
     result = Success(data=result_data)
     return json.loads(result.body)
 
 
-@router.post("/create", summary="创建菜单", response_model=ResponseBase[None])
+@router.post("/create", summary="Create menu", response_model=ResponseBase[None])
 async def create_menu(
     menu_in: MenuCreate,
 ):
@@ -59,7 +59,7 @@ async def create_menu(
     return json.loads(result.body)
 
 
-@router.post("/update", summary="更新菜单", response_model=ResponseBase[None])
+@router.post("/update", summary="Update menu", response_model=ResponseBase[None])
 async def update_menu(
     menu_in: MenuUpdate,
 ):
@@ -68,9 +68,9 @@ async def update_menu(
     return json.loads(result.body)
 
 
-@router.delete("/delete", summary="删除菜单", response_model=ResponseBase[None])
+@router.delete("/delete", summary="Delete menu", response_model=ResponseBase[None])
 async def delete_menu(
-    id: int = Query(..., description="菜单id"),
+    id: int = Query(..., description="Menu ID"),
 ):
     child_menu_count = await menu_repository.model.filter(parent_id=id).count()
     if child_menu_count > 0:

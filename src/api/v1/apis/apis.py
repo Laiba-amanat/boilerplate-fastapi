@@ -11,13 +11,13 @@ from schemas.response import ApiInfo, ApiListResponse, ResponseBase
 router = APIRouter()
 
 
-@router.get("/list", summary="查看API列表", response_model=ApiListResponse)
+@router.get("/list", summary="Get API list", response_model=ApiListResponse)
 async def list_api(
-    page: int = Query(1, description="页码"),
-    page_size: int = Query(10, description="每页数量"),
-    path: str = Query(None, description="API路径"),
-    summary: str = Query(None, description="API简介"),
-    tags: str = Query(None, description="API模块"),
+    page: int = Query(1, description="Page number"),
+    page_size: int = Query(10, description="Items per page"),
+    path: str = Query(None, description="API path"),
+    summary: str = Query(None, description="API summary"),
+    tags: str = Query(None, description="API module"),
 ):
     q = Q()
     if path:
@@ -34,9 +34,9 @@ async def list_api(
     return json.loads(result.body)
 
 
-@router.get("/get", summary="查看Api", response_model=ResponseBase[ApiInfo])
+@router.get("/get", summary="Get API", response_model=ResponseBase[ApiInfo])
 async def get_api(
-    id: int = Query(..., description="Api"),
+    id: int = Query(..., description="API ID"),
 ):
     api_obj = await api_repository.get(id=id)
     data = await api_obj.to_dict()
@@ -44,7 +44,7 @@ async def get_api(
     return json.loads(result.body)
 
 
-@router.post("/create", summary="创建Api", response_model=ResponseBase[None])
+@router.post("/create", summary="Create API", response_model=ResponseBase[None])
 async def create_api(
     api_in: ApiCreate,
 ):
@@ -53,7 +53,7 @@ async def create_api(
     return json.loads(result.body)
 
 
-@router.post("/update", summary="更新Api", response_model=ResponseBase[None])
+@router.post("/update", summary="Update API", response_model=ResponseBase[None])
 async def update_api(
     api_in: ApiUpdate,
 ):
@@ -62,16 +62,16 @@ async def update_api(
     return json.loads(result.body)
 
 
-@router.delete("/delete", summary="删除Api", response_model=ResponseBase[None])
+@router.delete("/delete", summary="Delete API", response_model=ResponseBase[None])
 async def delete_api(
-    api_id: int = Query(..., description="ApiID"),
+    api_id: int = Query(..., description="API ID"),
 ):
     await api_repository.remove(id=api_id)
     result = Success(msg="Deleted Success")
     return json.loads(result.body)
 
 
-@router.post("/refresh", summary="刷新API列表", response_model=ResponseBase[None])
+@router.post("/refresh", summary="Refresh API list", response_model=ResponseBase[None])
 async def refresh_api():
     await api_repository.refresh_api()
     result = Success(msg="OK")

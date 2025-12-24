@@ -24,7 +24,7 @@ class Settings(BaseSettings):
 
     @property
     def CORS_ORIGINS_LIST(self) -> list[str]:
-        """将CORS_ORIGINS字符串转换为列表"""
+        """Convert CORS_ORIGINS string to list"""
         return [origin.strip() for origin in self.CORS_ORIGINS.split(",")]
 
     CORS_ALLOW_CREDENTIALS: bool = True
@@ -53,8 +53,8 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = "HS256"
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 4  # 4 hours
     JWT_REFRESH_TOKEN_EXPIRE_DAYS: int = 7  # 7 days for refresh token
-    # 数据库配置
-    DB_ENGINE: str = "postgres"  # 默认使用PostgreSQL
+    # Database configuration
+    DB_ENGINE: str = "postgres"  # Default to PostgreSQL
     DB_HOST: str = "localhost"
     DB_PORT: int = 5432
     DB_USER: str = os.getenv("DB_USER", "postgres")
@@ -63,7 +63,7 @@ class Settings(BaseSettings):
 
     @property
     def TORTOISE_ORM(self) -> dict:
-        """动态生成Tortoise ORM配置"""
+        """Dynamically generate Tortoise ORM configuration"""
         if self.DB_ENGINE == "postgres":
             return {
                 "connections": {
@@ -75,7 +75,7 @@ class Settings(BaseSettings):
                             "user": self.DB_USER,
                             "password": self.DB_PASSWORD,
                             "database": self.DB_NAME,
-                            # 连接池配置
+                            # Connection pool configuration
                             "minsize": 1,
                             "maxsize": 20,
                             "max_queries": 50000,
@@ -120,14 +120,14 @@ class Settings(BaseSettings):
     SWAGGER_UI_PASSWORD: str = os.getenv("SWAGGER_UI_PASSWORD", "")
     COMPANY_ROLE_MAPPING: dict[str, list[int]] = {"default": []}
 
-    # Redis配置
+    # Redis configuration
     REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
-    CACHE_TTL: int = 300  # 默认缓存过期时间（秒）
+    CACHE_TTL: int = 300  # Default cache expiration time (seconds)
 
     @field_validator("COMPANY_ROLE_MAPPING", mode="before")
     @classmethod
     def parse_company_role_mapping(cls, v):
-        """解析 COMPANY_ROLE_MAPPING 环境变量"""
+        """Parse COMPANY_ROLE_MAPPING environment variable"""
         if isinstance(v, str):
             try:
                 return json.loads(v)
@@ -138,52 +138,52 @@ class Settings(BaseSettings):
     @field_validator("DB_PASSWORD")
     @classmethod
     def validate_db_password(cls, v):
-        """验证数据库密码"""
+        """Validate database password"""
         app_env = os.getenv("APP_ENV", "development")
-        # 测试和开发环境允许空密码
+        # Testing and development environments allow empty password
         if not v and app_env == "production":
-            raise ValueError("生产环境必须设置数据库密码")
+            raise ValueError("Database password must be set in production environment")
         return v
 
     @field_validator("SECRET_KEY")
     @classmethod
     def validate_secret_key(cls, v):
-        """验证SECRET_KEY强度"""
+        """Validate SECRET_KEY strength"""
         if len(v) < 32:
-            raise ValueError("SECRET_KEY长度至少32字符")
+            raise ValueError("SECRET_KEY must be at least 32 characters long")
         return v
 
     @field_validator("SWAGGER_UI_PASSWORD")
     @classmethod
     def validate_swagger_password(cls, v):
-        """验证Swagger访问密码"""
+        """Validate Swagger access password"""
         import os
 
-        # 测试环境允许空密码
+        # Testing environment allows empty password
         if os.getenv("APP_ENV") == "testing":
             return v or "test_password"
         if not v:
-            raise ValueError("SWAGGER_UI_PASSWORD必须设置")
+            raise ValueError("SWAGGER_UI_PASSWORD must be set")
         if len(v) < 8:
-            raise ValueError("Swagger访问密码长度至少8位")
+            raise ValueError("Swagger access password must be at least 8 characters long")
         return v
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        # 额外的环境特定验证
+        # Additional environment-specific validation
         if self.APP_ENV == "production":
             self._validate_production_config()
 
     def _validate_production_config(self):
-        """生产环境特定配置验证"""
+        """Production environment specific configuration validation"""
         if self.DEBUG:
-            raise ValueError("生产环境不能启用DEBUG模式")
+            raise ValueError("DEBUG mode cannot be enabled in production environment")
 
         if self.DB_ENGINE == "sqlite":
-            raise ValueError("生产环境建议使用PostgreSQL而非SQLite")
+            raise ValueError("Production environment should use PostgreSQL instead of SQLite")
 
         if "localhost" in self.CORS_ORIGINS:
-            raise ValueError("生产环境不应允许localhost的CORS访问")
+            raise ValueError("Production environment should not allow localhost CORS access")
 
 
 settings = Settings()

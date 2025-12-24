@@ -1,14 +1,14 @@
-"""认证API测试"""
+"""Authentication API tests"""
 
 from httpx import AsyncClient
 
 
 class TestAuthAPI:
-    """认证API测试类"""
+    """Authentication API test class"""
 
     async def test_login_success(self, async_client: AsyncClient):
-        """测试成功登录"""
-        # 先创建用户
+        """Test successful login"""
+        # First create user
         from src.repositories.user import user_repository
         from src.schemas.users import UserCreate
 
@@ -22,7 +22,7 @@ class TestAuthAPI:
 
         await user_repository.create_user(obj_in=user_data)
 
-        # 测试登录
+        # Test login
         response = await async_client.post(
             "/api/v1/base/access_token",
             json={"username": "login_test_user", "password": "Test123456"},
@@ -40,7 +40,7 @@ class TestAuthAPI:
         assert data["data"]["token_type"] == "bearer"
 
     async def test_login_invalid_credentials(self, async_client: AsyncClient):
-        """测试无效凭据登录"""
+        """Test login with invalid credentials"""
         response = await async_client.post(
             "/api/v1/base/access_token",
             json={"username": "nonexistent_user", "password": "wrong_password"},
@@ -49,22 +49,22 @@ class TestAuthAPI:
         assert response.status_code == 400 or response.status_code == 401
 
     async def test_login_inactive_user(self, async_client: AsyncClient):
-        """测试非激活用户登录"""
+        """Test login with inactive user"""
         from src.repositories.user import user_repository
         from src.schemas.users import UserCreate
 
-        # 创建非激活用户
+        # Create inactive user
         user_data = UserCreate(
             username="inactive_user",
             email="inactive@test.com",
             password="Test123456",
-            is_active=False,  # 非激活状态
+            is_active=False,  # Inactive status
             is_superuser=False,
         )
 
         await user_repository.create_user(obj_in=user_data)
 
-        # 尝试登录
+        # Attempt login
         response = await async_client.post(
             "/api/v1/base/access_token",
             json={"username": "inactive_user", "password": "Test123456"},
@@ -73,8 +73,8 @@ class TestAuthAPI:
         assert response.status_code == 400 or response.status_code == 401
 
     async def test_refresh_token_success(self, async_client: AsyncClient):
-        """测试刷新令牌成功"""
-        # 先登录获取令牌
+        """Test successful token refresh"""
+        # First login to get token
         from src.repositories.user import user_repository
         from src.schemas.users import UserCreate
 
@@ -88,7 +88,7 @@ class TestAuthAPI:
 
         await user_repository.create_user(obj_in=user_data)
 
-        # 登录
+        # Login
         login_response = await async_client.post(
             "/api/v1/base/access_token",
             json={"username": "refresh_test_user", "password": "Test123456"},
@@ -97,12 +97,12 @@ class TestAuthAPI:
         login_data = login_response.json()["data"]
         refresh_token = login_data["refresh_token"]
 
-        # 等待1秒确保时间戳不同
+        # Wait 1 second to ensure different timestamps
         import asyncio
 
         await asyncio.sleep(1)
 
-        # 使用刷新令牌获取新的令牌对
+        # Use refresh token to get new token pair
         refresh_response = await async_client.post(
             "/api/v1/base/refresh_token", json={"refresh_token": refresh_token}
         )
@@ -115,12 +115,12 @@ class TestAuthAPI:
         assert "expires_in" in refresh_data
         assert refresh_data["token_type"] == "bearer"
 
-        # 新令牌应该与原令牌不同
+        # New tokens should be different from original tokens
         assert refresh_data["access_token"] != login_data["access_token"]
         assert refresh_data["refresh_token"] != login_data["refresh_token"]
 
     async def test_refresh_token_invalid(self, async_client: AsyncClient):
-        """测试无效刷新令牌"""
+        """Test invalid refresh token"""
         response = await async_client.post(
             "/api/v1/base/refresh_token",
             json={"refresh_token": "invalid.refresh.token"},
@@ -129,8 +129,8 @@ class TestAuthAPI:
         assert response.status_code == 401
 
     async def test_refresh_token_access_token_used(self, async_client: AsyncClient):
-        """测试用访问令牌进行刷新操作"""
-        # 先登录获取令牌
+        """Test using access token for refresh operation"""
+        # First login to get token
         from src.repositories.user import user_repository
         from src.schemas.users import UserCreate
 
@@ -144,7 +144,7 @@ class TestAuthAPI:
 
         await user_repository.create_user(obj_in=user_data)
 
-        # 登录
+        # Login
         login_response = await async_client.post(
             "/api/v1/base/access_token",
             json={"username": "token_type_test_user", "password": "Test123456"},
@@ -153,7 +153,7 @@ class TestAuthAPI:
         login_data = login_response.json()["data"]
         access_token = login_data["access_token"]
 
-        # 尝试用访问令牌进行刷新（应该失败）
+        # Attempt to use access token for refresh (should fail)
         refresh_response = await async_client.post(
             "/api/v1/base/refresh_token", json={"refresh_token": access_token}
         )
@@ -163,7 +163,7 @@ class TestAuthAPI:
     async def test_get_userinfo_with_valid_token(
         self, async_client: AsyncClient, admin_token: str
     ):
-        """测试使用有效令牌获取用户信息"""
+        """Test getting user info with valid token"""
         response = await async_client.get(
             "/api/v1/base/userinfo", headers={"Authorization": f"Bearer {admin_token}"}
         )
@@ -177,13 +177,13 @@ class TestAuthAPI:
         assert "is_active" in data
 
     async def test_get_userinfo_without_token(self, async_client: AsyncClient):
-        """测试不带令牌获取用户信息"""
+        """Test getting user info without token"""
         response = await async_client.get("/api/v1/base/userinfo")
 
         assert response.status_code == 401
 
     async def test_get_userinfo_with_invalid_token(self, async_client: AsyncClient):
-        """测试使用无效令牌获取用户信息"""
+        """Test getting user info with invalid token"""
         response = await async_client.get(
             "/api/v1/base/userinfo",
             headers={"Authorization": "Bearer invalid.token.here"},

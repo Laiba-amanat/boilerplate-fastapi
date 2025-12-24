@@ -2,10 +2,10 @@ from pydantic import BaseModel, Field
 
 
 class BaseDept(BaseModel):
-    name: str = Field(..., description="部门名称", example="研发中心")
-    desc: str = Field("", description="备注", example="研发中心")
-    order: int = Field(0, description="排序")
-    parent_id: int = Field(0, description="父部门ID")
+    name: str = Field(..., description="Department name", example="R&D Center")
+    desc: str = Field("", description="Description", example="R&D Center")
+    order: int = Field(0, description="Order")
+    parent_id: int = Field(0, description="Parent department ID")
 
 
 class DeptCreate(BaseDept):

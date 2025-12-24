@@ -14,7 +14,7 @@
 [![RBAC](https://img.shields.io/badge/🔐_Security-RBAC-red.svg)](#)
 [![Docker](https://img.shields.io/badge/🐳_Docker-Ready-blue.svg)](https://www.docker.com/)
 
-[简体中文](README.md) | **English**
+**English**
 
 <div align="center">
   <a href="https://github.com/JiayuXu0/FastAPI-Template" target="_blank">

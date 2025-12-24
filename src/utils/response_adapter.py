@@ -1,6 +1,6 @@
 """
-响应适配器：将JSONResponse转换为字典格式
-使得现有的服务层代码能与Pydantic响应模型兼容
+Response adapter: Convert JSONResponse to dictionary format
+Enables existing service layer code to be compatible with Pydantic response models
 """
 from typing import Any
 from schemas.base import Success, Fail, SuccessExtra
@@ -8,21 +8,21 @@ from schemas.base import Success, Fail, SuccessExtra
 
 def adapt_response(response: Success | Fail | SuccessExtra) -> dict[str, Any]:
     """
-    将JSONResponse对象转换为字典格式
-    这个函数作为过渡期的兼容层，让现有的服务层代码能与新的Pydantic响应模型配合使用
+    Convert JSONResponse object to dictionary format
+    This function serves as a compatibility layer during transition, allowing existing service layer code to work with new Pydantic response models
     
     Args:
-        response: Success、Fail或SuccessExtra实例
+        response: Success, Fail, or SuccessExtra instance
         
     Returns:
-        包含响应数据的字典
+        Dictionary containing response data
     """
     if hasattr(response, 'body'):
-        # JSONResponse对象，从body中解析内容
+        # JSONResponse object, parse content from body
         import json
         return json.loads(response.body)
     else:
-        # 直接返回字典内容
+        # Directly return dictionary content
         return {
             "code": getattr(response, 'code', 200),
             "msg": getattr(response, 'msg', 'OK'),

@@ -1,61 +1,61 @@
 #!/bin/bash
 
-# FastAPI Template 文档部署脚本
+# FastAPI Template Documentation Deployment Script
 
 set -e
 
-echo "🚀 FastAPI Template 文档部署脚本"
+echo "🚀 FastAPI Template Documentation Deployment Script"
 echo "================================="
 
-# 检查是否安装了UV
+# Check if UV is installed
 if ! command -v uv &> /dev/null; then
-    echo "❌ UV 未安装，正在安装..."
+    echo "❌ UV not installed, installing..."
     curl -LsSf https://astral.sh/uv/install.sh | sh
     source ~/.bashrc
 fi
 
-# 检查是否安装了Git
+# Check if Git is installed
 if ! command -v git &> /dev/null; then
-    echo "❌ Git 未安装，请先安装 Git"
+    echo "❌ Git not installed, please install Git first"
     exit 1
 fi
 
-# 安装文档依赖
-echo "📦 安装文档依赖..."
+# Install documentation dependencies
+echo "📦 Installing documentation dependencies..."
 uv sync --group docs
 
-# 构建文档
-echo "🏗️  构建文档..."
+# Build documentation
+echo "🏗️  Building documentation..."
 uv run mkdocs build
 
-# 检查构建结果
+# Check build result
 if [ -d "site" ]; then
-    echo "✅ 文档构建成功！"
-    echo "📁 构建文件位于: site/"
+    echo "✅ Documentation build successful!"
+    echo "📁 Build files located at: site/"
 else
-    echo "❌ 文档构建失败"
+    echo "❌ Documentation build failed"
     exit 1
 fi
 
-# 询问是否部署到GitHub Pages
-read -p "🤔 是否部署到GitHub Pages? (y/n): " -n 1 -r
+# Ask if deploy to GitHub Pages
+read -p "🤔 Deploy to GitHub Pages? (y/n): " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
-    echo "🚀 部署到GitHub Pages..."
+    echo "🚀 Deploying to GitHub Pages..."
     uv run mkdocs gh-deploy
-    echo "✅ 部署完成！"
-    echo "🌐 访问地址: https://$(git remote get-url origin | sed 's/.*github.com[:/]//' | sed 's/.git$//' | sed 's/\//./').github.io/$(basename $(git remote get-url origin) .git)/"
+    echo "✅ Deployment completed!"
+    echo "🌐 Access URL: https://$(git remote get-url origin | sed 's/.*github.com[:/]//' | sed 's/.git$//' | sed 's/\//./').github.io/$(basename $(git remote get-url origin) .git)/"
 else
-    echo "📋 手动部署选项:"
-    echo "   - 本地预览: uv run mkdocs serve"
-    echo "   - 构建文档: uv run mkdocs build"
-    echo "   - 部署到GitHub Pages: uv run mkdocs gh-deploy"
+    echo "📋 Manual deployment options:"
+    echo "   - Local preview: uv run mkdocs serve"
+    echo "   - Build documentation: uv run mkdocs build"
+    echo "   - Deploy to GitHub Pages: uv run mkdocs gh-deploy"
 fi
 
-# 显示本地预览信息
+# Show local preview information
 echo ""
-echo "📖 本地预览:"
+echo "📖 Local preview:"
 echo "   uv run mkdocs serve"
-echo "   访问地址: http://localhost:8000"
+echo "   Access URL: http://localhost:8000"
 echo ""
-echo "🎉 文档系统设置完成！"
+echo "🎉 Documentation system setup completed!"

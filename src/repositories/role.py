@@ -13,14 +13,14 @@ class RoleRepository(CRUDBase[Role, RoleCreate, RoleUpdate]):
     async def update_roles(
         self, role: Role, menu_ids: list[int], api_infos: list[dict]
     ) -> None:
-        # 更新菜单关联
+        # Update menu associations
         await role.menus.clear()
         for menu_id in menu_ids:
             menu_obj = await Menu.filter(id=menu_id).first()
             if menu_obj:
                 await role.menus.add(menu_obj)
 
-        # 更新API关联
+        # Update API associations
         await role.apis.clear()
         for item in api_infos:
             api_obj = await Api.filter(

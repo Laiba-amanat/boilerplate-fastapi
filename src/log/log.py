@@ -35,9 +35,9 @@ LOGGING_RESERVED_FIELDS: Set[str] = {
 
 
 class InterceptHandler(logging.Handler):
-    """将标准 logging 日志转发到 loguru."""
+    """Forward standard logging logs to loguru."""
 
-    def emit(self, record: logging.LogRecord) -> None:  # pragma: no cover - 直接调用
+    def emit(self, record: logging.LogRecord) -> None:  # pragma: no cover - direct call
         try:
             level = loguru_logger.level(record.levelname).name
         except ValueError:
@@ -60,7 +60,7 @@ class InterceptHandler(logging.Handler):
 
 
 class LoggingConfig:
-    """统一日志配置管理"""
+    """Unified logging configuration management"""
 
     def __init__(self) -> None:
         self.debug = settings.DEBUG
@@ -71,13 +71,13 @@ class LoggingConfig:
         self.ensure_log_dir()
 
     def ensure_log_dir(self):
-        """确保日志目录存在"""
+        """Ensure log directory exists"""
         if not os.path.exists(self.log_dir):
             os.makedirs(self.log_dir, exist_ok=True)
 
     @staticmethod
     def _json_default(value: Any) -> Any:
-        """JSON序列化的默认处理逻辑"""
+        """Default JSON serialization handling logic"""
         if isinstance(value, (datetime, date)):
             return value.isoformat()
         if isinstance(value, (set, tuple)):
@@ -87,9 +87,9 @@ class LoggingConfig:
         return str(value)
 
     def _build_log_entry(self, record: Dict[str, Any]) -> Dict[str, Any]:
-        """构建标准化的日志结构"""
+        """Build standardized log structure"""
         extra: Dict[str, Any] = dict(record.get("extra", {}))
-        # 避免递归引用
+        # Avoid recursive references
         extra.pop("serialized", None)
 
         log_entry: Dict[str, Any] = {
@@ -106,7 +106,7 @@ class LoggingConfig:
             "environment": self.environment,
         }
 
-        # 支持上下文透传，兼容 request_id / user_id 等字段
+        # Support context passthrough, compatible with request_id / user_id and other fields
         context = extra.pop("context", None)
         if isinstance(context, dict):
             extra.update(context)
@@ -124,7 +124,7 @@ class LoggingConfig:
         return log_entry
 
     def _serialize_record(self, record: Dict[str, Any]) -> str:
-        """序列化日志记录为 JSON 字符串"""
+        """Serialize log record to JSON string"""
         log_entry = self._build_log_entry(record)
         return json.dumps(
             log_entry,
@@ -135,16 +135,16 @@ class LoggingConfig:
         )
 
     def _patch_record(self, record: Dict[str, Any]) -> None:
-        """为每条日志记录附加序列化后的内容"""
+        """Attach serialized content to each log record"""
         record.setdefault("extra", {})
         record["extra"]["serialized"] = self._serialize_record(record)
 
     def setup_logger(self):
-        """配置日志输出"""
-        # 清除默认处理器
+        """Configure log output"""
+        # Clear default handlers
         loguru_logger.remove()
 
-        # 拦截标准 logging，统一输出格式
+        # Intercept standard logging, unify output format
         intercept_handler = InterceptHandler()
         logging.basicConfig(handlers=[intercept_handler], level=0, force=True)
 
@@ -158,10 +158,10 @@ class LoggingConfig:
             standard_logger.handlers = [intercept_handler]
             standard_logger.propagate = False
 
-        # 启用统一 patcher，确保所有日志输出为 JSON 结构
+        # Enable unified patcher to ensure all log output is JSON structure
         loguru_logger.configure(patcher=self._patch_record)
 
-        # 控制台输出（JSON 流）
+        # Console output (JSON stream)
         loguru_logger.add(
             sink=sys.stdout,
             level=self.level,
@@ -172,7 +172,7 @@ class LoggingConfig:
             enqueue=True,
         )
 
-        # 文件输出 - 所有级别日志
+        # File output - all level logs
         loguru_logger.add(
             sink=f"{self.log_dir}/backend_{{time:YYYY-MM-DD}}.log",
             level="DEBUG",
@@ -186,7 +186,7 @@ class LoggingConfig:
             enqueue=True,
         )
 
-        # 错误日志单独文件
+        # Error logs separate file
         loguru_logger.add(
             sink=f"{self.log_dir}/backend_error_{{time:YYYY-MM-DD}}.log",
             level="ERROR",
@@ -200,7 +200,7 @@ class LoggingConfig:
             enqueue=True,
         )
 
-        # 关键错误日志（CRITICAL级别）
+        # Critical error logs (CRITICAL level)
         loguru_logger.add(
             sink=f"{self.log_dir}/backend_critical_{{time:YYYY-MM-DD}}.log",
             level="CRITICAL",
@@ -214,15 +214,15 @@ class LoggingConfig:
             enqueue=True,
         )
 
-        # 为所有日志添加默认上下文
-        # 注意：这里重新绑定会创建新的logger实例
+        # Add default context for all logs
+        # Note: rebinding here will create a new logger instance
 
-        # 记录日志系统启动
-        loguru_logger.bind(event="logger_startup").info("日志系统已启动")
+        # Log logging system startup
+        loguru_logger.bind(event="logger_startup").info("Logging system started")
 
         return loguru_logger
 
 
-# 全局日志配置实例
+# Global logging configuration instance
 logging_config = LoggingConfig()
 logger = logging_config.setup_logger()

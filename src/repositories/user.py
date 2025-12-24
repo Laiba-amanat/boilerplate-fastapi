@@ -37,12 +37,12 @@ class UserRepository(CRUDBase[User, UserCreate, UserUpdate]):
     async def authenticate(self, credentials: CredentialsSchema) -> Optional["User"]:
         user = await self.model.filter(username=credentials.username).first()
         if not user:
-            raise HTTPException(status_code=400, detail="无效的用户名")
+            raise HTTPException(status_code=400, detail="Invalid username")
         verified = verify_password(credentials.password, user.password)
         if not verified:
-            raise HTTPException(status_code=400, detail="密码错误!")
+            raise HTTPException(status_code=400, detail="Incorrect password!")
         if not user.is_active:
-            raise HTTPException(status_code=400, detail="用户已被禁用")
+            raise HTTPException(status_code=400, detail="User has been disabled")
         return user
 
     async def update_roles(self, user: User, role_ids: list[int]) -> None:
@@ -52,18 +52,18 @@ class UserRepository(CRUDBase[User, UserCreate, UserUpdate]):
             await user.roles.add(role_obj)
 
     async def reset_password(self, user_id: int) -> str:
-        """重置用户密码，返回新密码"""
+        """Reset user password, return new password"""
         user_obj = await self.get(id=user_id)
         if user_obj.is_superuser:
-            raise HTTPException(status_code=403, detail="不允许重置超级管理员密码")
-        # 生成安全的随机密码
+            raise HTTPException(status_code=403, detail="Cannot reset superuser password")
+        # Generate secure random password
         new_password = self._generate_secure_password()
         user_obj.password = get_password_hash(password=new_password)
         await user_obj.save()
         return new_password
 
     def _generate_secure_password(self, length: int = 12) -> str:
-        """生成安全的随机密码"""
+        """Generate secure random password"""
         alphabet = string.ascii_letters + string.digits + "!@#$%^&*"
         password = "".join(secrets.choice(alphabet) for _ in range(length))
         return password

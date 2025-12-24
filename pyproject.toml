@@ -1,7 +1,7 @@
 [project]
 name = "evoai-backend-template"
 version = "1.0.0"
-description = "🚀 企业级FastAPI后端模板 - 开箱即用的三层架构，内置RBAC权限管理、文件管理等核心功能"
+description = "🚀 Enterprise FastAPI Backend Template - Production-ready three-layer architecture with built-in RBAC permission management, file management and other core features"
 authors = [
     {name = "EvoAI Team"}
 ]
@@ -10,7 +10,7 @@ license = {text = "MIT"}
 requires-python = ">=3.11"
 keywords = [
     "fastapi", "backend", "template", "enterprise", "rbac",
-    "三层架构", "权限管理", "UV", "python", "async", "jwt",
+    "three-layer-architecture", "permission-management", "UV", "python", "async", "jwt",
     "tortoise-orm", "postgresql", "sqlite", "docker", "ci-cd",
     "microservices", "api", "authentication", "authorization",
     "crud", "restful", "swagger", "openapi", "production-ready",

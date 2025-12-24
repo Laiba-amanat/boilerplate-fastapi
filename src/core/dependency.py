@@ -43,7 +43,7 @@ class AuthControl:
         cls, token: HTTPAuthorizationCredentials | None = Depends(bearer_scheme)
     ) -> Optional["User"]:
         try:
-            # 直接使用 HTTPBearer 提供的 token (已经去掉了 Bearer 前缀)
+            # Directly use token provided by HTTPBearer (Bearer prefix already removed)
             if token is None or not token.credentials:
                 raise HTTPException(
                     status_code=401, detail="Missing authentication token"
@@ -61,12 +61,12 @@ class AuthControl:
             CTX_USER_ID.set(int(user_id))
             return user
         except jwt.DecodeError as e:
-            raise HTTPException(status_code=401, detail="无效的Token") from e
+            raise HTTPException(status_code=401, detail="Invalid token") from e
         except jwt.ExpiredSignatureError as e:
-            raise HTTPException(status_code=401, detail="登录已过期") from e
+            raise HTTPException(status_code=401, detail="Login has expired") from e
         except Exception as e:
-            # 记录详细错误信息到日志，但不返回给用户
-            raise HTTPException(status_code=401, detail="认证失败") from e
+            # Log detailed error information but don't return it to user
+            raise HTTPException(status_code=401, detail="Authentication failed") from e
 
 
 class PermissionControl:
@@ -76,14 +76,14 @@ class PermissionControl:
         request: Request,
         current_user: User = Depends(AuthControl.is_authed),
     ) -> None:
-        """检查用户是否有访问指定API的权限
+        """Check if user has permission to access specified API
 
         Args:
-            request: FastAPI请求对象
-            current_user: 当前认证用户
+            request: FastAPI request object
+            current_user: Current authenticated user
 
         Raises:
-            HTTPException: 当用户无权限时抛出403错误
+            HTTPException: Raises 403 error when user has no permission
         """
         if current_user.is_superuser:
             return
@@ -97,15 +97,15 @@ class PermissionControl:
                 status_code=403, detail="The user is not bound to a role"
             )
 
-        # 获取用户所有角色的API权限
+        # Get API permissions for all user roles
         apis = [await role.apis.all() for role in roles]
         permission_apis = [(api.method, api.path) for api in sum(apis, [])]
 
-        # 检查权限匹配（支持路径参数）
+        # Check permission match (supports path parameters)
         for perm_method, perm_path in permission_apis:
             if method == perm_method:
-                # 将路径参数占位符转换为正则表达式
-                # 例如: /api/v1/agent/{agent_id} -> /api/v1/agent/[^/]+
+                # Convert path parameter placeholders to regular expressions
+                # Example: /api/v1/agent/{agent_id} -> /api/v1/agent/[^/]+
                 pattern = re.sub(r"\{[^}]+\}", r"[^/]+", perm_path)
                 pattern = f"^{pattern}$"
                 if re.match(pattern, path):
@@ -118,7 +118,7 @@ class PermissionControl:
 
 
 class AgentPermissionControl:
-    """智能体权限控制类"""
+    """Agent permission control class"""
 
     @classmethod
     async def has_agent_permission(
@@ -126,70 +126,70 @@ class AgentPermissionControl:
         request: Request,
         current_user: User = Depends(AuthControl.is_authed),
     ) -> User:
-        """检查用户是否有访问智能体的权限
+        """Check if user has permission to access agent
 
         Args:
-            request: FastAPI请求对象
-            current_user: 当前认证用户
+            request: FastAPI request object
+            current_user: Current authenticated user
 
         Returns:
-            User: 当前用户对象
+            User: Current user object
 
         Raises:
-            HTTPException: 当用户无权限时抛出403错误
+            HTTPException: Raises 403 error when user has no permission
         """
-        # 超级管理员拥有所有权限
+        # Superuser has all permissions
         if current_user.is_superuser:
             return current_user
 
-        # 从URL路径中提取agent_id
+        # Extract agent_id from URL path
         path_params = request.path_params
         agent_id = path_params.get("agent_id")
 
         if not agent_id:
-            raise HTTPException(status_code=400, detail="缺少智能体ID参数")
+            raise HTTPException(status_code=400, detail="Missing agent ID parameter")
 
         try:
             agent_id = int(agent_id)
         except (ValueError, TypeError) as e:
-            raise HTTPException(status_code=400, detail="无效的智能体ID") from e
+            raise HTTPException(status_code=400, detail="Invalid agent ID") from e
 
-        # 获取用户角色
+        # Get user roles
         roles: list[Role] = await current_user.roles.all()
         if not roles:
             raise HTTPException(
-                status_code=403, detail="用户未绑定角色，无权限访问智能体"
+                status_code=403, detail="User is not bound to a role, no permission to access agent"
             )
 
-        # 检查用户角色是否有权限访问该智能体
+        # Check if user roles have permission to access this agent
         for role in roles:
             role_agents = await role.agents.all()
             if any(agent.id == agent_id for agent in role_agents):
                 return current_user
 
-        raise HTTPException(status_code=403, detail="无权限访问该智能体")
+        raise HTTPException(status_code=403, detail="No permission to access this agent")
 
     @classmethod
     async def filter_agents_by_permission(
         cls,
         current_user: User = Depends(AuthControl.is_authed),
     ) -> set[int]:
-        """获取用户有权限访问的智能体ID集合
+        """Get set of agent IDs user has permission to access
 
         Args:
-            current_user: 当前认证用户
+            current_user: Current authenticated user
 
         Returns:
-            set[int]: 用户有权限访问的智能体ID集合，超级管理员返回空集合表示无限制
+            set[int]: Set of agent IDs user has permission to access, superuser returns empty set indicating no restrictions
         """
-        # 超级管理员拥有所有权限，返回空集合表示无限制
+        # Superuser has all permissions, return empty set indicating no restrictions
         if current_user.is_superuser:
             return set()
 
-        # 获取用户角色关联的所有智能体ID
+        # Get all agent IDs associated with user roles
         roles: list[Role] = await current_user.roles.all()
         if not roles:
-            return set()  # 没有角色，返回空集合
+            return set()  # No roles, return empty set
 
         allowed_agent_ids = set()
         for role in roles:

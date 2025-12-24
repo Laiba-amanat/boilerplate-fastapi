@@ -10,18 +10,18 @@ from schemas.response import DeptDetailResponse, DeptListResponse, ResponseBase
 router = APIRouter()
 
 
-@router.get("/list", summary="查看部门列表", response_model=DeptListResponse)
+@router.get("/list", summary="Get department list", response_model=DeptListResponse)
 async def list_dept(
-    name: str = Query(None, description="部门名称"),
+    name: str = Query(None, description="Department name"),
 ):
     dept_tree = await dept_repository.get_dept_tree(name)
     result = Success(data=dept_tree)
     return json.loads(result.body)
 
 
-@router.get("/get", summary="查看部门", response_model=DeptDetailResponse)
+@router.get("/get", summary="Get department", response_model=DeptDetailResponse)
 async def get_dept(
-    id: int = Query(..., description="部门ID"),
+    id: int = Query(..., description="Department ID"),
 ):
     dept_obj = await dept_repository.get(id=id)
     data = await dept_obj.to_dict()
@@ -29,7 +29,7 @@ async def get_dept(
     return json.loads(result.body)
 
 
-@router.post("/create", summary="创建部门", response_model=ResponseBase[None])
+@router.post("/create", summary="Create department", response_model=ResponseBase[None])
 async def create_dept(
     dept_in: DeptCreate,
 ):
@@ -38,7 +38,7 @@ async def create_dept(
     return json.loads(result.body)
 
 
-@router.post("/update", summary="更新部门", response_model=ResponseBase[None])
+@router.post("/update", summary="Update department", response_model=ResponseBase[None])
 async def update_dept(
     dept_in: DeptUpdate,
 ):
@@ -47,9 +47,9 @@ async def update_dept(
     return json.loads(result.body)
 
 
-@router.delete("/delete", summary="删除部门", response_model=ResponseBase[None])
+@router.delete("/delete", summary="Delete department", response_model=ResponseBase[None])
 async def delete_dept(
-    dept_id: int = Query(..., description="部门ID"),
+    dept_id: int = Query(..., description="Department ID"),
 ):
     await dept_repository.delete_dept(dept_id=dept_id)
     result = Success(msg="Deleted Success")

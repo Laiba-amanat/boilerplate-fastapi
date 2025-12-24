@@ -11,14 +11,14 @@ from settings.config import settings
 
 
 class CacheManager:
-    """Redis缓存管理器"""
+    """Redis cache manager"""
 
     def __init__(self):
         self.redis: redis.Redis | None = None
         self._connection_pool = None
 
     async def connect(self):
-        """连接Redis"""
+        """Connect to Redis"""
         if self.redis is None:
             try:
                 self.redis = redis.from_url(
@@ -28,22 +28,22 @@ class CacheManager:
                     max_connections=20,
                     retry_on_timeout=True,
                 )
-                # 测试连接
+                # Test connection
                 await self.redis.ping()
-                logger.info("Redis连接成功")
+                logger.info("Redis connection successful")
             except Exception as e:
-                logger.warning(f"Redis连接失败: {str(e)}，缓存功能将被禁用")
+                logger.warning(f"Redis connection failed: {str(e)}, cache functionality will be disabled")
                 self.redis = None
 
     async def disconnect(self):
-        """断开Redis连接"""
+        """Disconnect from Redis"""
         if self.redis:
             await self.redis.close()
             self.redis = None
-            logger.info("Redis连接已断开")
+            logger.info("Redis connection disconnected")
 
     async def get(self, key: str) -> Any | None:
-        """获取缓存值"""
+        """Get cache value"""
         if not self.redis:
             return None
 
@@ -53,11 +53,11 @@ class CacheManager:
                 return json.loads(data)
             return None
         except Exception as e:
-            logger.error(f"获取缓存失败 key={key}: {str(e)}")
+            logger.error(f"Failed to get cache key={key}: {str(e)}")
             return None
 
     async def set(self, key: str, value: Any, ttl: int | None = None) -> bool:
-        """设置缓存值"""
+        """Set cache value"""
         if not self.redis:
             return False
 
@@ -67,11 +67,11 @@ class CacheManager:
             await self.redis.setex(key, ttl, serialized_value)
             return True
         except Exception as e:
-            logger.error(f"设置缓存失败 key={key}: {str(e)}")
+            logger.error(f"Failed to set cache key={key}: {str(e)}")
             return False
 
     async def delete(self, key: str) -> bool:
-        """删除缓存"""
+        """Delete cache"""
         if not self.redis:
             return False
 
@@ -79,11 +79,11 @@ class CacheManager:
             result = await self.redis.delete(key)
             return bool(result)
         except Exception as e:
-            logger.error(f"删除缓存失败 key={key}: {str(e)}")
+            logger.error(f"Failed to delete cache key={key}: {str(e)}")
             return False
 
     async def exists(self, key: str) -> bool:
-        """检查键是否存在"""
+        """Check if key exists"""
         if not self.redis:
             return False
 
@@ -91,11 +91,11 @@ class CacheManager:
             result = await self.redis.exists(key)
             return bool(result)
         except Exception as e:
-            logger.error(f"检查缓存存在性失败 key={key}: {str(e)}")
+            logger.error(f"Failed to check cache existence key={key}: {str(e)}")
             return False
 
     async def clear_pattern(self, pattern: str) -> int:
-        """根据模式清除缓存"""
+        """Clear cache by pattern"""
         if not self.redis:
             return 0
 
@@ -105,18 +105,18 @@ class CacheManager:
                 return await self.redis.delete(*keys)
             return 0
         except Exception as e:
-            logger.error(f"批量删除缓存失败 pattern={pattern}: {str(e)}")
+            logger.error(f"Failed to batch delete cache pattern={pattern}: {str(e)}")
             return 0
 
     def cache_key(self, prefix: str, *args, **kwargs) -> str:
-        """生成缓存键"""
+        """Generate cache key"""
         key_parts = [prefix]
 
-        # 添加位置参数
+        # Add positional arguments
         if args:
             key_parts.extend(str(arg) for arg in args)
 
-        # 添加关键字参数
+        # Add keyword arguments
         if kwargs:
             sorted_kwargs = sorted(kwargs.items())
             key_parts.extend(f"{k}:{v}" for k, v in sorted_kwargs)
@@ -124,32 +124,32 @@ class CacheManager:
         return ":".join(key_parts)
 
 
-# 全局缓存管理器实例
+# Global cache manager instance
 cache_manager = CacheManager()
 
 
 def cached(prefix: str, ttl: int | None = None, key_func: Callable | None = None):
-    """缓存装饰器
+    """Cache decorator
 
     Args:
-        prefix: 缓存键前缀
-        ttl: 过期时间（秒）
-        key_func: 自定义键生成函数
+        prefix: Cache key prefix
+        ttl: Expiration time (seconds)
+        key_func: Custom key generation function
     """
 
     def decorator(func):
         @wraps(func)
         async def wrapper(*args, **kwargs):
-            # 生成缓存键
+            # Generate cache key
             if key_func:
                 cache_key = key_func(*args, **kwargs)
             else:
                 cache_key = cache_manager.cache_key(prefix, *args, **kwargs)
 
-            # 尝试从缓存获取
+            # Try to get from cache
             cached_result = await cache_manager.get(cache_key)
             if cached_result is not None:
-                logger.debug(f"缓存命中: {cache_key}")
+                logger.debug(f"Cache hit: {cache_key}")
                 if isinstance(cached_result, dict) and cached_result.get("__response__"):
                     response_type = cached_result.get("class")
                     payload = cached_result.get("payload", {})
@@ -161,10 +161,10 @@ def cached(prefix: str, ttl: int | None = None, key_func: Callable | None = None
                     return response_cls(**payload)
                 return cached_result
 
-            # 执行原函数
+            # Execute original function
             result = await func(*args, **kwargs)
 
-            # 设置缓存
+            # Set cache
             if result is not None:
                 value_to_cache: Any = result
                 if isinstance(result, (Success, Fail, SuccessExtra)):
@@ -179,7 +179,7 @@ def cached(prefix: str, ttl: int | None = None, key_func: Callable | None = None
                         "payload": payload,
                     }
                 await cache_manager.set(cache_key, value_to_cache, ttl)
-                logger.debug(f"缓存设置: {cache_key}")
+                logger.debug(f"Cache set: {cache_key}")
 
             return result
 
@@ -188,9 +188,9 @@ def cached(prefix: str, ttl: int | None = None, key_func: Callable | None = None
     return decorator
 
 
-# 缓存清理工具函数
+# Cache cleanup utility functions
 async def clear_user_cache(user_id: int):
-    """清除用户相关缓存"""
+    """Clear user-related cache"""
     patterns = [
         f"user:{user_id}:*",
         f"userinfo:{user_id}",
@@ -203,12 +203,12 @@ async def clear_user_cache(user_id: int):
         cleared = await cache_manager.clear_pattern(pattern)
         total_cleared += cleared
 
-    logger.info(f"清除用户{user_id}相关缓存，共{total_cleared}个键")
+    logger.info(f"Cleared user {user_id} related cache, total {total_cleared} keys")
     return total_cleared
 
 
 async def clear_role_cache(role_id: int):
-    """清除角色相关缓存"""
+    """Clear role-related cache"""
     patterns = [
         f"role:{role_id}:*",
         f"role_permissions:{role_id}",
@@ -220,5 +220,5 @@ async def clear_role_cache(role_id: int):
         cleared = await cache_manager.clear_pattern(pattern)
         total_cleared += cleared
 
-    logger.info(f"清除角色{role_id}相关缓存，共{total_cleared}个键")
+    logger.info(f"Cleared role {role_id} related cache, total {total_cleared} keys")
     return total_cleared

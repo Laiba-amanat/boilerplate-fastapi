@@ -11,7 +11,7 @@ class Success(JSONResponse):
         data: Any | None = None,
         **kwargs,
     ):
-        # 确保msg不为None
+        # Ensure msg is not None
         if msg is None:
             msg = "OK"
         content = {"code": code, "msg": msg, "data": data}
@@ -27,7 +27,7 @@ class Fail(JSONResponse):
         data: Any | None = None,
         **kwargs,
     ):
-        # 确保msg不为None
+        # Ensure msg is not None
         if msg is None:
             msg = "Error"
         content = {"code": code, "msg": msg, "data": data}
@@ -46,7 +46,7 @@ class SuccessExtra(JSONResponse):
         page_size: int = 20,
         **kwargs,
     ):
-        # 确保msg不为None
+        # Ensure msg is not None
         if msg is None:
             msg = "OK"
         content = {

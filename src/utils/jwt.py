@@ -7,9 +7,9 @@ from settings.config import settings
 
 
 def create_access_token(*, data: JWTPayload):
-    """创建访问令牌"""
+    """Create access token"""
     payload = data.model_dump().copy()
-    # 确保token_type为access
+    # Ensure token_type is access
     payload["token_type"] = "access"
     encoded_jwt = jwt.encode(
         payload, settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM
@@ -18,7 +18,7 @@ def create_access_token(*, data: JWTPayload):
 
 
 def create_refresh_token(user_id: int) -> str:
-    """创建刷新令牌"""
+    """Create refresh token"""
     expire = datetime.now(UTC) + timedelta(days=settings.JWT_REFRESH_TOKEN_EXPIRE_DAYS)
 
     payload = JWTPayload(
@@ -28,7 +28,7 @@ def create_refresh_token(user_id: int) -> str:
     )
 
     payload_dict = payload.model_dump()
-    # 确保token_type为refresh
+    # Ensure token_type is refresh
     payload_dict["token_type"] = "refresh"
 
     return jwt.encode(
@@ -37,13 +37,13 @@ def create_refresh_token(user_id: int) -> str:
 
 
 def verify_token(token: str, token_type: str = "access") -> JWTPayload:
-    """验证令牌并返回载荷"""
+    """Verify token and return payload"""
     try:
         payload = jwt.decode(
             token, settings.SECRET_KEY, algorithms=[settings.JWT_ALGORITHM]
         )
 
-        # 检查令牌类型
+        # Check token type
         if payload.get("token_type") != token_type:
             raise jwt.InvalidTokenError(f"Invalid token type. Expected {token_type}")
 
@@ -56,8 +56,8 @@ def verify_token(token: str, token_type: str = "access") -> JWTPayload:
 
 
 def create_token_pair(user_id: int) -> tuple[str, str]:
-    """创建访问令牌和刷新令牌对"""
-    # 创建访问令牌
+    """Create access token and refresh token pair"""
+    # Create access token
     access_expire = datetime.now(UTC) + timedelta(
         minutes=settings.JWT_ACCESS_TOKEN_EXPIRE_MINUTES
     )
@@ -68,7 +68,7 @@ def create_token_pair(user_id: int) -> tuple[str, str]:
     )
     access_token = create_access_token(data=access_payload)
 
-    # 创建刷新令牌
+    # Create refresh token
     refresh_token = create_refresh_token(user_id)
 
     return access_token, refresh_token

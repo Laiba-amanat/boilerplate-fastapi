@@ -61,24 +61,24 @@ router = APIRouter()
 
 
 def apply_rate_limit(rate="5/minute"):
-    """根据环境应用限流装饰器"""
+    """Apply rate limit decorator based on environment"""
 
     def decorator(func):
 
         if os.getenv("TESTING", "false").lower() == "true":
-            return func  # 测试环境不应用限流
+            return func  # Testing environment does not apply rate limiting
         return limiter.limit(rate)(func)
 
     return decorator
 
 
-@router.post("/access_token", summary="获取token", response_model=TokenResponse)
+@router.post("/access_token", summary="Get token", response_model=TokenResponse)
 @apply_rate_limit()
 async def login_access_token(request: Request, credentials: CredentialsSchema):
     user: User = await user_repository.authenticate(credentials)
     await user_repository.update_last_login(user.id)
 
-    # 创建访问令牌和刷新令牌
+    # Create access token and refresh token
     access_token, refresh_token = create_token_pair(user_id=user.id)
 
     data = JWTOut(
@@ -90,22 +90,22 @@ async def login_access_token(request: Request, credentials: CredentialsSchema):
     return Success(data=data.model_dump())
 
 
-@router.post("/refresh_token", summary="刷新token", response_model=TokenResponse)
+@router.post("/refresh_token", summary="Refresh token", response_model=TokenResponse)
 @apply_rate_limit("10/minute")
 async def refresh_access_token(request: Request, refresh_request: RefreshTokenRequest):
     """
-    使用刷新令牌获取新的访问令牌和刷新令牌
+    Use refresh token to get new access token and refresh token
     """
     try:
-        # 验证刷新令牌
+        # Verify refresh token
         payload = verify_token(refresh_request.refresh_token, token_type="refresh")
 
-        # 验证用户是否仍然存在且有效
+        # Verify user still exists and is active
         user = await user_repository.get(id=payload.user_id)
         if not user or not user.is_active:
-            return Fail(code=401, msg="用户不存在或已被禁用")
+            return Fail(code=401, msg="User does not exist or has been disabled")
 
-        # 创建新的令牌对
+        # Create new token pair
         access_token, refresh_token = create_token_pair(user_id=user.id)
 
         data = TokenRefreshOut(
@@ -117,10 +117,10 @@ async def refresh_access_token(request: Request, refresh_request: RefreshTokenRe
         return Success(data=data.model_dump())
 
     except Exception as exc:  # noqa: BLE001 - propagate as HTTP error for clarity
-        raise HTTPException(status_code=401, detail="令牌无效或已过期") from exc
+        raise HTTPException(status_code=401, detail="Token is invalid or expired") from exc
 
 
-@router.get("/userinfo", summary="查看用户信息", response_model=CurrentUserResponse)
+@router.get("/userinfo", summary="Get user information", response_model=CurrentUserResponse)
 async def get_userinfo(current_user: User = DependAuth):
     user_id = CTX_USER_ID.get()
     user_obj = await user_repository.get(id=user_id)
@@ -128,9 +128,9 @@ async def get_userinfo(current_user: User = DependAuth):
     return Success(data=user_dict)
 
 
-@router.get("/health", summary="健康检查")
+@router.get("/health", summary="Health check")
 async def health_check():
-    """系统健康检查"""
+    """System health check"""
 
     return {
         "status": "healthy",
@@ -142,9 +142,9 @@ async def health_check():
     }
 
 
-@router.get("/version", summary="版本信息")
+@router.get("/version", summary="Version information")
 async def get_version():
-    """获取API版本信息"""
+    """Get API version information"""
 
     return {
         "version": settings.VERSION,
@@ -156,7 +156,7 @@ async def get_version():
     }
 
 
-# @router.get("/usermenu", summary="查看用户菜单", dependencies=[DependAuth])
+# @router.get("/usermenu", summary="Get user menu", dependencies=[DependAuth])
 # async def get_user_menu():
 #     user_id = CTX_USER_ID.get()
 #     user_obj = await User.filter(id=user_id).first()
@@ -184,7 +184,7 @@ async def get_version():
 #     return Success(data=res)
 
 
-# @router.get("/userapi", summary="查看用户API", dependencies=[DependAuth])
+# @router.get("/userapi", summary="Get user API", dependencies=[DependAuth])
 # async def get_user_api():
 #     user_id = CTX_USER_ID.get()
 #     user_obj = await User.filter(id=user_id).first()
@@ -201,13 +201,13 @@ async def get_version():
 #     return Success(data=apis)
 
 
-# @router.post("/update_password", summary="修改密码", dependencies=[DependAuth])
+# @router.post("/update_password", summary="Update password", dependencies=[DependAuth])
 # async def update_user_password(req_in: UpdatePassword):
 #     user_id = CTX_USER_ID.get()
 #     user = await user_controller.get(user_id)
 #     verified = verify_password(req_in.old_password, user.password)
 #     if not verified:
-#         return Fail(msg="旧密码验证错误！")
+#         return Fail(msg="Old password verification failed!")
 #     user.password = get_password_hash(req_in.new_password)
 #     await user.save()
-#     return Success(msg="修改成功")
+#     return Success(msg="Password updated successfully")

@@ -21,20 +21,20 @@ from .bgtask import BgTasks
 
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
-    """安全头中间件"""
+    """Security headers middleware"""
 
     async def dispatch(
         self, request: Request, call_next: RequestResponseEndpoint
     ) -> Response:
         response = await call_next(request)
 
-        # 添加安全头
+        # Add security headers
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["X-Frame-Options"] = "DENY"
         response.headers["X-XSS-Protection"] = "1; mode=block"
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
 
-        # 为Swagger UI和ReDoc设置更宽松的CSP策略
+        # Set more relaxed CSP policy for Swagger UI and ReDoc
         if request.url.path in ["/docs", "/redoc"]:
             response.headers["Content-Security-Policy"] = (
                 "default-src 'self'; "
@@ -56,7 +56,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
                 "connect-src 'self'"
             )
 
-        # 仅在HTTPS环境下添加HSTS头
+        # Only add HSTS header in HTTPS environment
         if request.url.scheme == "https":
             response.headers[
                 "Strict-Transport-Security"
@@ -101,19 +101,19 @@ class HttpAuditLogMiddleware(BaseHTTPMiddleware):
         self.methods = methods
         self.exclude_paths = exclude_paths
         self.audit_log_paths = ["/api/v1/auditlog/list"]
-        self.max_body_size = 1024 * 1024  # 1MB 响应体大小限制
+        self.max_body_size = 1024 * 1024  # 1MB response body size limit
 
     async def get_request_args(self, request: Request) -> dict:
         args = {}
-        # 获取查询参数
+        # Get query parameters
         for key, value in request.query_params.items():
             args[key] = value
 
-        # 获取请求体
+        # Get request body
         if request.method in ["POST", "PUT", "PATCH"]:
             content_type = request.headers.get("content-type", "")
 
-            # 如果是文件上传请求，跳过请求体解析
+            # If it's a file upload request, skip request body parsing
             if "multipart/form-data" in content_type:
                 return args
 
@@ -130,16 +130,16 @@ class HttpAuditLogMiddleware(BaseHTTPMiddleware):
         return args
 
     async def get_response_body(self, request: Request, response: Response) -> Any:
-        # 对于流式响应，不记录响应体
+        # For streaming responses, don't log response body
         if isinstance(response, StreamingResponse):
             return {"message": "[Streaming Response]"}
 
-        # 检查响应类型，如果是流式相关的响应类型也跳过
+        # Check response type, skip if it's a streaming-related response type
         if hasattr(response, "body_iterator") and not hasattr(response, "body"):
             return {"message": "[Streaming Response]"}
 
         body = b""
-        # 检查Content-Length
+        # Check Content-Length
         content_length = response.headers.get("content-length")
         if content_length and int(content_length) > self.max_body_size:
             return {
@@ -161,13 +161,13 @@ class HttpAuditLogMiddleware(BaseHTTPMiddleware):
                 response.body_iterator = self._async_iter(body_chunks)
                 body = b"".join(body_chunks)
         except Exception:
-            # 如果读取响应体失败，返回默认值
+            # If reading response body fails, return default value
             return {"message": "[Unable to read response body]"}
 
         if any(request.url.path.startswith(path) for path in self.audit_log_paths):
             try:
                 data = self.lenient_json(body)
-                # 只保留基本信息，去除详细的响应内容
+                # Only keep basic information, remove detailed response content
                 if isinstance(data, dict):
                     data.pop("response_body", None)
                     if "data" in data and isinstance(data["data"], list):
@@ -193,14 +193,14 @@ class HttpAuditLogMiddleware(BaseHTTPMiddleware):
 
     async def get_request_log(self, request: Request, response: Response) -> dict:
         """
-        根据request和response对象获取对应的日志记录数据
+        Get corresponding log record data based on request and response objects
         """
         data: dict = {
             "path": request.url.path,
             "status": response.status_code,
             "method": request.method,
         }
-        # 路由信息
+        # Route information
         app: FastAPI = request.app
         for route in app.routes:
             if (
@@ -210,7 +210,7 @@ class HttpAuditLogMiddleware(BaseHTTPMiddleware):
             ):
                 data["module"] = ",".join(route.tags)
                 data["summary"] = route.summary
-        # 获取用户信息
+        # Get user information
         try:
             token = request.headers.get("token")
             user_obj = None
@@ -256,15 +256,15 @@ class HttpAuditLogMiddleware(BaseHTTPMiddleware):
 
 
 class RequestLoggingMiddleware(BaseHTTPMiddleware):
-    """请求日志中间件"""
+    """Request logging middleware"""
 
     async def dispatch(
         self, request: Request, call_next: RequestResponseEndpoint
     ) -> Response:
-        """处理请求并记录日志"""
+        """Process request and log"""
         start_time = datetime.now()
         
-        # 设置请求级上下文信息
+        # Set request-level context information
         request_id = LogContext.set_request_id()
         LogContext.update_context(
             method=request.method,
@@ -278,20 +278,20 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
             start_time=start_time.isoformat(),
         )
 
-        # 获取带上下文的logger
+        # Get logger with context
         context_logger = LogContext.get_logger()
 
-        # 记录请求开始
-        context_logger.info(f"请求开始: {request.method} {request.url.path}")
+        # Log request start
+        context_logger.info(f"Request started: {request.method} {request.url.path}")
 
         try:
             response = await call_next(request)
 
-            # 计算处理时间
+            # Calculate processing time
             end_time = datetime.now()
             process_time = (end_time - start_time).total_seconds() * 1000
             
-            # 更新上下文信息
+            # Update context information
             LogContext.update_context(
                 status_code=response.status_code,
                 process_time_ms=process_time,
@@ -299,19 +299,19 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
                 response_headers=dict(response.headers),
             )
 
-            # 记录请求完成
+            # Log request completion
             context_logger.info(
-                f"请求完成: {request.method} {request.url.path} - {response.status_code} ({process_time:.2f}ms)"
+                f"Request completed: {request.method} {request.url.path} - {response.status_code} ({process_time:.2f}ms)"
             )
 
             return response
 
         except Exception as e:
-            # 计算处理时间
+            # Calculate processing time
             end_time = datetime.now()
             process_time = (end_time - start_time).total_seconds() * 1000
             
-            # 更新上下文信息
+            # Update context information
             LogContext.update_context(
                 exception_occurred=True,
                 exception_type=type(e).__name__,
@@ -321,12 +321,12 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
                 traceback=traceback.format_exc()
             )
 
-            # 记录详细的请求异常信息
+            # Log detailed request exception information
             context_logger.error(
-                f"请求处理异常: {request.method} {request.url.path} - {type(e).__name__}: {str(e)} ({process_time:.2f}ms)"
+                f"Request processing exception: {request.method} {request.url.path} - {type(e).__name__}: {str(e)} ({process_time:.2f}ms)"
             )
 
             raise
         finally:
-            # 清理请求上下文
+            # Clear request context
             LogContext.clear()

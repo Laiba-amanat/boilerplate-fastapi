@@ -67,10 +67,10 @@ Dockerfile*
 docker-compose*
 .dockerignore
 
-# Migrations (可选，根据需要调整)
+# Migrations (optional, adjust as needed)
 # migrations
-# 注释掉migrations，因为容器需要访问迁移文件
-# Static files (如果在容器中生成)
+# Commented out migrations because container needs access to migration files
+# Static files (if generated in container)
 # static
 
 # Temporary files

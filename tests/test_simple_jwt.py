@@ -1,4 +1,4 @@
-"""简单JWT测试 - 不依赖应用配置"""
+"""Simple JWT tests - no application configuration dependency"""
 
 import os
 import sys
@@ -6,7 +6,7 @@ from datetime import UTC, datetime, timedelta
 
 import pytest
 
-# 添加src到路径
+# Add src to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from schemas.login import JWTPayload  # noqa: E402
@@ -14,10 +14,10 @@ from utils.jwt import create_access_token, create_token_pair, verify_token  # no
 
 
 class TestSimpleJWT:
-    """简单JWT测试类"""
+    """Simple JWT test class"""
 
     def test_create_token_pair(self):
-        """测试创建Token对"""
+        """Test creating token pair"""
         user_id = 1
 
         access_token, refresh_token = create_token_pair(user_id=user_id)
@@ -29,47 +29,47 @@ class TestSimpleJWT:
         assert access_token != refresh_token
 
     def test_verify_access_token(self):
-        """测试验证访问令牌"""
+        """Test verifying access token"""
         user_id = 1
 
         access_token, _ = create_token_pair(user_id)
 
-        # 验证访问令牌
+        # Verify access token
         payload = verify_token(access_token, token_type="access")
 
         assert payload.user_id == user_id
         assert payload.token_type == "access"
 
     def test_verify_refresh_token(self):
-        """测试验证刷新令牌"""
+        """Test verifying refresh token"""
         user_id = 2
 
         _, refresh_token = create_token_pair(user_id)
 
-        # 验证刷新令牌
+        # Verify refresh token
         payload = verify_token(refresh_token, token_type="refresh")
 
         assert payload.user_id == user_id
         assert payload.token_type == "refresh"
 
     def test_token_type_validation(self):
-        """测试令牌类型验证"""
+        """Test token type validation"""
         user_id = 3
 
         access_token, refresh_token = create_token_pair(user_id)
 
-        # 用访问令牌验证刷新令牌类型应该失败
+        # Verifying refresh token type with access token should fail
         with pytest.raises(Exception):  # noqa: B017
             verify_token(access_token, token_type="refresh")
 
-        # 用刷新令牌验证访问令牌类型应该失败
+        # Verifying access token type with refresh token should fail
         with pytest.raises(Exception):  # noqa: B017
             verify_token(refresh_token, token_type="access")
 
     def test_expired_token(self):
-        """测试过期令牌"""
-        # 创建已过期的令牌
-        expire = datetime.now(UTC) - timedelta(minutes=1)  # 1分钟前过期
+        """Test expired token"""
+        # Create an expired token
+        expire = datetime.now(UTC) - timedelta(minutes=1)  # Expired 1 minute ago
 
         payload = JWTPayload(
             user_id=4,
@@ -79,12 +79,12 @@ class TestSimpleJWT:
 
         expired_token = create_access_token(data=payload)
 
-        # 验证过期令牌应该失败
+        # Verifying expired token should fail
         with pytest.raises(Exception):  # noqa: B017
             verify_token(expired_token, token_type="access")
 
     def test_invalid_token(self):
-        """测试无效令牌"""
+        """Test invalid token"""
         invalid_token = "invalid.token.here"
 
         with pytest.raises(Exception):  # noqa: B017

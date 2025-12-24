@@ -12,21 +12,21 @@ router = APIRouter()
 
 @router.post(
     "/upload",
-    summary="上传文件",
+    summary="Upload file",
     response_model=ResponseBase[dict],
 )
 async def upload_file(
-    file: UploadFile = File(..., description="要上传的文件"),
+    file: UploadFile = File(..., description="File to upload"),
     current_user: User = DependAuth,
 ):
     """
-    通用文件上传
+    General file upload
 
     Args:
-        file: 上传的文件
+        file: File to upload
 
     Returns:
-        上传成功的响应，包含文件信息
+        Upload success response containing file information
     """
     result = await file_service.upload_file(file, current_user.id)
     return json.loads(result.body)

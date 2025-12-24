@@ -1,76 +1,76 @@
-# 测试套件说明
+# Test Suite Documentation
 
-## 🧪 最小可行测试方案
+## 🧪 Minimum Viable Testing Approach
 
-本项目实现了最小可行测试方案，专注于核心功能的质量保证。
+This project implements a minimum viable testing approach, focusing on quality assurance for core functionality.
 
-### ✅ 已实现的测试
+### ✅ Implemented Tests
 
-#### 1. JWT认证功能测试 (100% 覆盖率)
-- **文件**: `test_simple_jwt.py`, `test_core_functionality.py`
-- **覆盖内容**:
-  - 令牌创建和验证
-  - 访问令牌和刷新令牌机制
-  - 令牌类型安全验证
-  - 过期令牌检测
-  - 无效令牌处理
+#### 1. JWT Authentication Function Tests (100% Coverage)
+- **Files**: `test_simple_jwt.py`, `test_core_functionality.py`
+- **Coverage**:
+  - Token creation and verification
+  - Access token and refresh token mechanisms
+  - Token type security validation
+  - Expired token detection
+  - Invalid token handling
 
-#### 2. 密码安全测试 (89% 覆盖率)
-- **文件**: `test_core_functionality.py`
-- **覆盖内容**:
-  - 密码哈希加密
-  - 密码验证
-  - 盐值随机性验证
-  - 不同密码产生不同哈希
+#### 2. Password Security Tests (89% Coverage)
+- **Files**: `test_core_functionality.py`
+- **Coverage**:
+  - Password hashing encryption
+  - Password verification
+  - Salt randomness validation
+  - Different passwords produce different hashes
 
-#### 3. 配置安全测试 (80% 覆盖率)
-- **文件**: `test_core_functionality.py`
-- **覆盖内容**:
-  - SECRET_KEY强度验证
-  - JWT配置检查
-  - 令牌过期时间配置验证
+#### 3. Configuration Security Tests (80% Coverage)
+- **Files**: `test_core_functionality.py`
+- **Coverage**:
+  - SECRET_KEY strength validation
+  - JWT configuration checks
+  - Token expiration time configuration validation
 
-#### 4. 数据验证测试 (100% 覆盖率)
-- **文件**: `test_core_functionality.py`
-- **覆盖内容**:
-  - Pydantic Schema验证
-  - 凭据数据验证
-  - JWT载荷验证
+#### 4. Data Validation Tests (100% Coverage)
+- **Files**: `test_core_functionality.py`
+- **Coverage**:
+  - Pydantic Schema validation
+  - Credential data validation
+  - JWT payload validation
 
-### 🚀 运行测试
+### 🚀 Running Tests
 
-#### 运行核心功能测试
+#### Run Core Functionality Tests
 ```bash
-# 运行核心功能测试
+# Run core functionality tests
 uv run pytest tests/test_core_functionality.py -v
 
-# 运行JWT专项测试
+# Run JWT specific tests
 uv run pytest tests/test_simple_jwt.py -v
 
-# 运行所有测试并生成覆盖率报告
+# Run all tests and generate coverage report
 uv run pytest tests/test_core_functionality.py tests/test_simple_jwt.py --cov=src --cov-report=term-missing --cov-report=html
 ```
 
-#### CI/CD 自动测试
-项目已配置GitHub Actions自动测试，每次push和PR都会自动运行：
-- 代码风格检查 (ruff)
-- 类型检查 (mypy)
-- 单元测试 (pytest)
-- 测试覆盖率报告
+#### CI/CD Automated Testing
+The project is configured with GitHub Actions automated testing, which runs automatically on every push and PR:
+- Code style checks (ruff)
+- Type checking (mypy)
+- Unit tests (pytest)
+- Test coverage reports
 
-### 📊 测试覆盖率
+### 📊 Test Coverage
 
-当前整体覆盖率：**14%**
+Current overall coverage: **14%**
 
-**核心模块覆盖率**：
+**Core Module Coverage**:
 - `utils/jwt.py`: **100%** ✅
 - `schemas/login.py`: **100%** ✅
 - `utils/password.py`: **89%** ✅
 - `settings/config.py`: **80%** ✅
 
-### 🔧 测试配置
+### 🔧 Test Configuration
 
-#### pytest配置 (pyproject.toml)
+#### pytest Configuration (pyproject.toml)
 ```toml
 [tool.pytest.ini_options]
 minversion = "7.0"
@@ -82,7 +82,7 @@ python_functions = ["test_*"]
 asyncio_mode = "auto"
 ```
 
-#### 覆盖率配置
+#### Coverage Configuration
 ```toml
 [tool.coverage.run]
 source = ["src"]
@@ -93,45 +93,45 @@ omit = [
 ]
 ```
 
-### 🎯 测试重点
+### 🎯 Testing Focus
 
-#### ✅ 已覆盖的关键安全功能
-1. **身份认证**: JWT令牌的创建、验证、过期处理
-2. **密码安全**: 哈希加密、验证、盐值处理
-3. **配置安全**: 密钥强度、过期时间配置
-4. **数据验证**: 输入数据格式验证
+#### ✅ Covered Key Security Features
+1. **Authentication**: JWT token creation, verification, expiration handling
+2. **Password Security**: Hash encryption, verification, salt handling
+3. **Configuration Security**: Key strength, expiration time configuration
+4. **Data Validation**: Input data format validation
 
-#### 🚧 可扩展的测试方向
-1. **API端点测试**: 需要解决依赖问题后可添加
-2. **数据库集成测试**: 需要测试数据库配置
-3. **缓存功能测试**: 需要Redis测试环境
-4. **权限控制测试**: 需要用户角色数据
+#### 🚧 Extensible Testing Directions
+1. **API Endpoint Tests**: Can be added after resolving dependency issues
+2. **Database Integration Tests**: Requires test database configuration
+3. **Cache Function Tests**: Requires Redis test environment
+4. **Permission Control Tests**: Requires user role data
 
-### 🐛 已知问题
+### 🐛 Known Issues
 
-#### Python 3.13 兼容性
-- **aioredis问题**: 当前使用redis.asyncio替代
-- **类型注解**: 使用Optional[T]替代T | None语法
+#### Python 3.13 Compatibility
+- **aioredis Issue**: Currently using redis.asyncio as replacement
+- **Type Annotations**: Using Optional[T] instead of T | None syntax
 
-#### 依赖隔离
-- 使用独立测试文件避免复杂导入链
-- Mock复杂依赖(Redis, 数据库)进行单元测试
+#### Dependency Isolation
+- Using independent test files to avoid complex import chains
+- Mocking complex dependencies (Redis, database) for unit testing
 
-### 📝 最佳实践
+### 📝 Best Practices
 
-1. **最小可行原则**: 专注核心功能，避免过度测试
-2. **安全优先**: 重点测试认证、授权、加密功能
-3. **CI/CD集成**: 自动化测试流程
-4. **覆盖率监控**: 追踪核心模块的测试覆盖率
-5. **文档同步**: 测试用例即文档，说明功能预期行为
+1. **Minimum Viable Principle**: Focus on core functionality, avoid over-testing
+2. **Security First**: Prioritize testing authentication, authorization, encryption functions
+3. **CI/CD Integration**: Automate testing workflows
+4. **Coverage Monitoring**: Track test coverage for core modules
+5. **Documentation Sync**: Test cases serve as documentation, explaining expected behavior
 
-### 🔗 相关文件
+### 🔗 Related Files
 
-- `tests/test_core_functionality.py` - 核心功能测试
-- `tests/test_simple_jwt.py` - JWT专项测试
-- `.github/workflows/ci.yml` - CI/CD配置
-- `pyproject.toml` - 测试和覆盖率配置
+- `tests/test_core_functionality.py` - Core functionality tests
+- `tests/test_simple_jwt.py` - JWT specific tests
+- `.github/workflows/ci.yml` - CI/CD configuration
+- `pyproject.toml` - Test and coverage configuration
 
 ---
 
-**最小可行测试方案确保了核心安全功能的质量，为项目提供了可靠的质量保证基础。** 🚀
+**The minimum viable testing approach ensures the quality of core security features and provides a reliable quality assurance foundation for the project.** 🚀
