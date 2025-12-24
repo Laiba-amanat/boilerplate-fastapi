@@ -21,3 +21,5 @@ min-similarity-lines=7
 ignore-comments=yes
 ignore-docstrings=yes
 ignore-imports=yes
+
+# Note: All file contents are in English

@@ -211,3 +211,5 @@ logs/*.log
 
 # Documentation files (internal use only)
 IMPROVEMENT_ROADMAP.md
+
+# Note: All file contents are in English
