@@ -1,46 +1,46 @@
-# 常见问题
+# Frequently Asked Questions
 
-## 🚀 快速开始
+## 🚀 Quick Start
 
-### Q: 安装依赖时遇到错误怎么办？
+### Q: What to do when encountering errors during dependency installation?
 
-A: 请确保您使用的是Python 3.11+版本，并且网络连接正常。如果遇到包冲突，可以尝试：
+A: Please ensure you are using Python 3.11+ and have a stable network connection. If you encounter package conflicts, you can try:
 
 ```bash
-# 清理缓存
+# Clear cache
 uv cache clean
 
-# 重新安装
+# Reinstall
 uv sync --reinstall
 ```
 
-### Q: 如何修改默认端口？
+### Q: How to change the default port?
 
-A: 在启动命令中指定端口：
+A: Specify the port in the startup command:
 
 ```bash
 uv run uvicorn src:app --reload --host 0.0.0.0 --port 8080
 ```
 
-或者在 `.env` 文件中设置：
+Or set it in the `.env` file:
 
 ```env
 PORT=8080
 ```
 
-### Q: 默认管理员账号是什么？
+### Q: What is the default administrator account?
 
-A: 默认管理员账号：
-- 用户名: `admin`
-- 密码: `abcd1234`
+A: Default administrator account:
+- Username: `admin`
+- Password: `abcd1234`
 
-**重要**: 请在生产环境中立即修改默认密码！
+**Important**: Please change the default password immediately in production environment!
 
-## 🔧 配置相关
+## 🔧 Configuration Related
 
-### Q: 如何切换数据库？
+### Q: How to switch databases?
 
-A: 修改 `.env` 文件中的数据库配置：
+A: Modify the database configuration in the `.env` file:
 
 === "PostgreSQL"
 
@@ -60,91 +60,91 @@ A: 修改 `.env` 文件中的数据库配置：
     DB_NAME=fastapi_template.db
     ```
 
-### Q: 如何配置CORS？
+### Q: How to configure CORS?
 
-A: 在 `.env` 文件中设置允许的源：
+A: Set allowed origins in the `.env` file:
 
 ```env
 CORS_ORIGINS=http://localhost:3000,http://localhost:8080,https://yourdomain.com
 ```
 
-### Q: 如何更改JWT过期时间？
+### Q: How to change JWT expiration time?
 
-A: 在 `.env` 文件中配置：
+A: Configure in the `.env` file:
 
 ```env
-JWT_ACCESS_TOKEN_EXPIRE_MINUTES=240  # 访问令牌4小时
-JWT_REFRESH_TOKEN_EXPIRE_DAYS=7      # 刷新令牌7天
+JWT_ACCESS_TOKEN_EXPIRE_MINUTES=240  # Access token 4 hours
+JWT_REFRESH_TOKEN_EXPIRE_DAYS=7      # Refresh token 7 days
 ```
 
-## 🗄️ 数据库相关
+## 🗄️ Database Related
 
-### Q: 如何重置数据库？
+### Q: How to reset the database?
 
-A: 删除数据库文件并重新初始化：
+A: Delete the database file and re-initialize:
 
 ```bash
 # SQLite
 rm fastapi_template.db
 
-# 删除迁移记录
+# Delete migration records
 rm -rf migrations/
 
-# 重新初始化
+# Re-initialize
 uv run aerich init-db
 ```
 
-### Q: 如何添加新的数据表？
+### Q: How to add a new data table?
 
-A: 按照以下步骤：
+A: Follow these steps:
 
-1. 在 `src/models/` 中定义模型
-2. 生成迁移文件
-3. 应用迁移
+1. Define model in `src/models/`
+2. Generate migration file
+3. Apply migration
 
 ```bash
-# 生成迁移
+# Generate migration
 uv run aerich migrate --name "add_new_table"
 
-# 应用迁移
+# Apply migration
 uv run aerich upgrade
 ```
 
-### Q: 迁移失败怎么办？
+### Q: What to do if migration fails?
 
-A: 检查迁移历史并手动修复：
+A: Check migration history and manually fix:
 
 ```bash
-# 查看迁移历史
+# View migration history
 uv run aerich history
 
-# 如果需要回滚
+# If rollback is needed
 uv run aerich downgrade
 
-# 手动修复后重新迁移
+# Re-migrate after manual fix
 uv run aerich migrate --name "fix_migration"
 uv run aerich upgrade
 ```
 
-## 🔐 认证授权
+## 🔐 Authentication & Authorization
 
-### Q: 如何添加新的用户角色？
+### Q: How to add a new user role?
 
-A: 通过API或直接在数据库中添加：
+A: Add via API or directly in the database:
 
 ```python
-# 通过代码添加
+# Add via code
 from src.models.admin import Role
 
 role = await Role.create(
     name="editor",
-    description="编辑者角色"
+    description="Editor role"
 )
 ```
 
-### Q: 如何自定义权限检查？
+### Q: How to customize permission checks?
 
-A: 创建自定义依赖项：
+A: Create custom dependency:
 
 ```python
 from fastapi import Depends, HTTPException
@@ -152,71 +152,71 @@ from src.core.dependency import get_current_user
 
 def require_admin(current_user = Depends(get_current_user)):
     if not current_user.is_superuser:
-        raise HTTPException(status_code=403, detail="需要管理员权限")
+        raise HTTPException(status_code=403, detail="Admin permission required")
     return current_user
 ```
 
-### Q: JWT令牌过期后如何处理？
+### Q: How to handle JWT token expiration?
 
-A: 使用刷新令牌获取新的访问令牌：
+A: Use refresh token to get new access token:
 
 ```python
-# 使用刷新令牌
+# Use refresh token
 response = requests.post("/api/v1/base/refresh_token", json={
     "refresh_token": "your_refresh_token"
 })
 ```
 
-## 📁 文件管理
+## 📁 File Management
 
-### Q: 如何限制文件上传大小？
+### Q: How to limit file upload size?
 
-A: 在 `src/services/file_service.py` 中修改：
+A: Modify in `src/services/file_service.py`:
 
 ```python
 MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB
 ```
 
-### Q: 如何添加新的文件类型支持？
+### Q: How to add support for new file types?
 
-A: 修改允许的文件类型列表：
+A: Modify the allowed file types list:
 
 ```python
 ALLOWED_EXTENSIONS = {
     'image': ['.jpg', '.jpeg', '.png', '.gif', '.bmp'],
     'document': ['.pdf', '.doc', '.docx', '.txt'],
-    'video': ['.mp4', '.avi', '.mkv']  # 新增视频支持
+    'video': ['.mp4', '.avi', '.mkv']  # Add video support
 }
 ```
 
-### Q: 上传的文件存储在哪里？
+### Q: Where are uploaded files stored?
 
-A: 默认存储在 `uploads/` 目录下，可以通过环境变量修改：
+A: Default storage is in the `uploads/` directory, can be modified via environment variable:
 
 ```env
 UPLOAD_DIR=/path/to/uploads
 ```
 
-## 🧪 测试相关
+## 🧪 Testing Related
 
-### Q: 如何运行测试？
+### Q: How to run tests?
 
-A: 使用pytest运行测试：
+A: Use pytest to run tests:
 
 ```bash
-# 运行所有测试
+# Run all tests
 uv run pytest
 
-# 运行特定测试文件
+# Run specific test file
 uv run pytest tests/test_users.py
 
-# 运行带覆盖率的测试
+# Run tests with coverage
 uv run pytest --cov=src --cov-report=html
 ```
 
-### Q: 如何添加新的测试？
+### Q: How to add new tests?
 
-A: 在 `tests/` 目录下创建测试文件：
+A: Create test file in `tests/` directory:
 
 ```python
 import pytest
@@ -233,23 +233,23 @@ async def test_create_user():
     assert response.status_code == 200
 ```
 
-## 🚀 部署相关
+## 🚀 Deployment Related
 
-### Q: 如何部署到生产环境？
+### Q: How to deploy to production environment?
 
-A: 使用Docker部署：
+A: Deploy using Docker:
 
 ```bash
-# 构建镜像
+# Build image
 docker build -t fastapi-template .
 
-# 运行容器
+# Run container
 docker run -d -p 8000:8000 --name fastapi-app fastapi-template
 ```
 
-### Q: 如何配置反向代理？
+### Q: How to configure reverse proxy?
 
-A: Nginx配置示例：
+A: Nginx configuration example:
 
 ```nginx
 server {
@@ -266,9 +266,9 @@ server {
 }
 ```
 
-### Q: 如何设置环境变量？
+### Q: How to set environment variables?
 
-A: 生产环境推荐使用环境变量而不是 `.env` 文件：
+A: Production environment recommends using environment variables instead of `.env` file:
 
 ```bash
 export SECRET_KEY="your-secret-key"
@@ -276,61 +276,61 @@ export DB_HOST="your-db-host"
 export DB_PASSWORD="your-db-password"
 ```
 
-## 🐛 故障排除
+## 🐛 Troubleshooting
 
-### Q: 应用启动时报错怎么办？
+### Q: What to do when application startup reports errors?
 
-A: 检查以下项目：
+A: Check the following items:
 
-1. 确保所有依赖已安装
-2. 检查数据库连接配置
-3. 验证环境变量设置
-4. 查看详细错误日志
+1. Ensure all dependencies are installed
+2. Check database connection configuration
+3. Verify environment variable settings
+4. View detailed error logs
 
 ```bash
-# 查看详细日志
+# View detailed logs
 uv run uvicorn src:app --reload --log-level debug
 ```
 
-### Q: 数据库连接失败？
+### Q: Database connection failed?
 
-A: 检查数据库配置和连接：
+A: Check database configuration and connection:
 
 ```python
-# 测试数据库连接
+# Test database connection
 from src.core.database import get_db_connection
 
 async def test_db():
     try:
         conn = await get_db_connection()
-        print("数据库连接成功")
+        print("Database connection successful")
     except Exception as e:
-        print(f"数据库连接失败: {e}")
+        print(f"Database connection failed: {e}")
 ```
 
-### Q: 如何启用调试模式？
+### Q: How to enable debug mode?
 
-A: 在 `.env` 文件中设置：
+A: Set in the `.env` file:
 
 ```env
 DEBUG=True
 APP_ENV=development
 ```
 
-## 📚 开发相关
+## 📚 Development Related
 
-### Q: 如何添加新的API端点？
+### Q: How to add a new API endpoint?
 
-A: 按照三层架构添加：
+A: Add following the three-layer architecture:
 
-1. 定义模型 (`src/models/`)
-2. 创建仓储 (`src/repositories/`)
-3. 实现服务 (`src/services/`)
-4. 添加路由 (`src/api/v1/`)
+1. Define model (`src/models/`)
+2. Create repository (`src/repositories/`)
+3. Implement service (`src/services/`)
+4. Add route (`src/api/v1/`)
 
-### Q: 如何自定义中间件？
+### Q: How to customize middleware?
 
-A: 在 `src/core/middleware.py` 中添加：
+A: Add in `src/core/middleware.py`:
 
 ```python
 from fastapi import Request
@@ -338,15 +338,15 @@ from starlette.middleware.base import BaseHTTPMiddleware
 
 class CustomMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
-        # 处理请求前
+        # Process before request
         response = await call_next(request)
-        # 处理响应后
+        # Process after response
         return response
 ```
 
-### Q: 如何添加定时任务？
+### Q: How to add scheduled tasks?
 
-A: 使用APScheduler：
+A: Use APScheduler:
 
 ```python
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -355,34 +355,34 @@ scheduler = AsyncIOScheduler()
 
 @scheduler.scheduled_job("interval", minutes=30)
 async def cleanup_expired_tokens():
-    # 清理过期令牌
+    # Clean up expired tokens
     pass
 
 scheduler.start()
 ```
 
-## 🔍 性能优化
+## 🔍 Performance Optimization
 
-### Q: 如何优化数据库查询？
+### Q: How to optimize database queries?
 
-A: 使用以下技巧：
+A: Use the following techniques:
 
-1. 使用 `select_related()` 预加载关联数据
-2. 使用 `prefetch_related()` 优化多对多查询
-3. 添加适当的数据库索引
-4. 使用查询分页
+1. Use `select_related()` to preload related data
+2. Use `prefetch_related()` to optimize many-to-many queries
+3. Add appropriate database indexes
+4. Use query pagination
 
 ```python
-# 预加载关联数据
+# Preload related data
 users = await User.all().select_related("roles")
 
-# 批量预加载
+# Batch preload
 users = await User.all().prefetch_related("roles__permissions")
 ```
 
-### Q: 如何添加缓存？
+### Q: How to add caching?
 
-A: 使用Redis缓存：
+A: Use Redis caching:
 
 ```python
 import redis
@@ -406,21 +406,21 @@ def cache_result(expire_time=300):
     return decorator
 ```
 
-## 📞 获取帮助
+## 📞 Get Help
 
-如果以上FAQ没有解决您的问题，您可以：
+If the above FAQ doesn't solve your problem, you can:
 
-1. 访问 [官网](http://fastapi.infyai.cn/) 获取最新文档
-2. 查看 [GitHub Issues](https://github.com/JiayuXu0/FastAPI-Template/issues)
-3. 创建新的 [Issue](https://github.com/JiayuXu0/FastAPI-Template/issues/new)
-4. 查看项目文档的其他部分
+1. Visit [Official Website](http://fastapi.infyai.cn/) for the latest documentation
+2. Check [GitHub Issues](https://github.com/JiayuXu0/FastAPI-Template/issues)
+3. Create a new [Issue](https://github.com/JiayuXu0/FastAPI-Template/issues/new)
+4. Check other parts of the project documentation
 
-## 🤝 贡献指南
+## 🤝 Contributing Guide
 
-如果您发现了新的问题或有改进建议，欢迎：
+If you discover new issues or have improvement suggestions, welcome to:
 
-1. 提交Issue报告问题
-2. 提交PR改进文档
-3. 参与讨论和代码审查
+1. Submit Issue to report problems
+2. Submit PR to improve documentation
+3. Participate in discussions and code reviews
 
-感谢您的贡献！
+Thank you for your contribution!

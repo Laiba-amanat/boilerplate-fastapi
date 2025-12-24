@@ -1,241 +1,241 @@
-# 更新日志
+# Changelog
 
-所有重要的项目更改都会记录在此文件中。
+All notable changes to this project will be documented in this file.
 
-格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
-并且本项目遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [未发布]
+## [Unreleased]
 
-### 新增
-- 完整的MkDocs文档系统
-- API文档自动生成功能
-- 类似vue-element-admin的现代化UI风格
-- 交互式API测试功能
+### Added
+- Complete MkDocs documentation system
+- Automatic API documentation generation
+- Modern UI style similar to vue-element-admin
+- Interactive API testing functionality
 
-### 变更
-- 优化了项目结构和架构文档
-- 改进了开发者体验
+### Changed
+- Optimized project structure and architecture documentation
+- Improved developer experience
 
 ## [1.0.0] - 2024-01-01
 
-### 新增
-- 🎉 首次发布！
-- 企业级三层架构设计
-- 完整的RBAC权限管理系统
-- JWT认证和授权机制
-- 用户管理功能
-- 角色和权限管理
-- 菜单管理系统
-- 文件上传下载功能
-- 审计日志记录
-- 部门管理功能
-- API权限控制
-- 数据库迁移支持
-- 完整的测试覆盖
-- Docker容器化支持
+### Added
+- 🎉 Initial release!
+- Enterprise three-layer architecture design
+- Complete RBAC permission management system
+- JWT authentication and authorization mechanism
+- User management functionality
+- Role and permission management
+- Menu management system
+- File upload and download functionality
+- Audit log recording
+- Department management functionality
+- API permission control
+- Database migration support
+- Complete test coverage
+- Docker containerization support
 - GitHub Actions CI/CD
-- 代码质量检查工具
+- Code quality checking tools
 
-### 架构特性
-- **API层**: FastAPI路由处理
-- **Service层**: 业务逻辑实现
-- **Repository层**: 数据访问抽象
-- **Model层**: Tortoise ORM模型
+### Architecture Features
+- **API Layer**: FastAPI route handling
+- **Service Layer**: Business logic implementation
+- **Repository Layer**: Data access abstraction
+- **Model Layer**: Tortoise ORM models
 
-### 安全特性
-- Argon2密码哈希
-- JWT访问令牌(4小时)
-- 刷新令牌(7天)
-- 登录频率限制
-- CORS跨域配置
-- 输入验证和清理
+### Security Features
+- Argon2 password hashing
+- JWT access token (4 hours)
+- Refresh token (7 days)
+- Login rate limiting
+- CORS cross-origin configuration
+- Input validation and sanitization
 
-### 开发工具
-- UV包管理器
-- Black代码格式化
-- Ruff代码检查
-- MyPy类型检查
-- Pytest测试框架
-- 异步测试支持
+### Development Tools
+- UV package manager
+- Black code formatting
+- Ruff code checking
+- MyPy type checking
+- Pytest testing framework
+- Async test support
 
-### 数据库支持
-- PostgreSQL(生产推荐)
-- SQLite(开发默认)
-- Aerich迁移工具
-- 数据库连接池
+### Database Support
+- PostgreSQL (production recommended)
+- SQLite (development default)
+- Aerich migration tool
+- Database connection pool
 
-### 部署支持
-- Docker多阶段构建
-- 环境变量配置
-- 健康检查端点
-- 生产优化配置
+### Deployment Support
+- Docker multi-stage build
+- Environment variable configuration
+- Health check endpoints
+- Production optimization configuration
 
 ## [0.9.0] - 2023-12-15
 
-### 新增
-- 项目基础架构搭建
-- 核心模型设计
-- 认证系统原型
-- 基础API端点
+### Added
+- Project foundation architecture setup
+- Core model design
+- Authentication system prototype
+- Basic API endpoints
 
-### 变更
-- 优化了数据库设计
-- 改进了错误处理机制
+### Changed
+- Optimized database design
+- Improved error handling mechanism
 
 ## [0.8.0] - 2023-12-01
 
-### 新增
-- 初始项目结构
-- 基础依赖配置
-- 开发环境设置
+### Added
+- Initial project structure
+- Basic dependency configuration
+- Development environment setup
 
-### 技术栈选择
-- FastAPI 作为Web框架
-- Tortoise ORM 作为数据库ORM
-- Pydantic 用于数据验证
-- UV 作为包管理器
+### Technology Stack Selection
+- FastAPI as web framework
+- Tortoise ORM as database ORM
+- Pydantic for data validation
+- UV as package manager
 
-## 发布说明
+## Release Notes
 
-### 版本命名规则
+### Version Naming Rules
 
-我们采用语义化版本控制：
+We adopt semantic versioning:
 
-- **主版本号**: 不兼容的API修改
-- **次版本号**: 向下兼容的功能性新增
-- **修订版本号**: 向下兼容的问题修正
+- **Major version**: Incompatible API changes
+- **Minor version**: Backward-compatible feature additions
+- **Patch version**: Backward-compatible bug fixes
 
-### 发布流程
+### Release Process
 
-1. **开发分支**: 日常开发在 `develop` 分支进行
-2. **功能分支**: 新功能在 `feature/*` 分支开发
-3. **发布分支**: 准备发布时创建 `release/*` 分支
-4. **主分支**: 稳定版本合并到 `main` 分支
-5. **标签**: 每个发布版本都有对应的Git标签
+1. **Development Branch**: Daily development on `develop` branch
+2. **Feature Branch**: New features developed on `feature/*` branches
+3. **Release Branch**: Create `release/*` branch when preparing for release
+4. **Main Branch**: Stable versions merged to `main` branch
+5. **Tags**: Each release version has corresponding Git tags
 
-### 变更分类
+### Change Categories
 
-- **新增**: 新功能
-- **变更**: 现有功能的修改
-- **废弃**: 将在未来版本中移除的功能
-- **移除**: 在此版本中移除的功能
-- **修复**: 错误修复
-- **安全**: 安全相关的修复
+- **Added**: New features
+- **Changed**: Modifications to existing features
+- **Deprecated**: Features that will be removed in future versions
+- **Removed**: Features removed in this version
+- **Fixed**: Bug fixes
+- **Security**: Security-related fixes
 
-### 升级指南
+### Upgrade Guide
 
-#### 从 0.x 升级到 1.0
+#### Upgrading from 0.x to 1.0
 
-1. **数据库迁移**: 运行所有迁移脚本
-2. **配置更新**: 更新环境变量配置
-3. **API变更**: 检查API端点变化
-4. **依赖更新**: 更新到最新依赖版本
+1. **Database Migration**: Run all migration scripts
+2. **Configuration Update**: Update environment variable configuration
+3. **API Changes**: Check API endpoint changes
+4. **Dependency Update**: Update to latest dependency versions
 
 ```bash
-# 备份数据
+# Backup data
 pg_dump your_database > backup.sql
 
-# 更新代码
+# Update code
 git pull origin main
 
-# 更新依赖
+# Update dependencies
 uv sync
 
-# 运行迁移
+# Run migrations
 uv run aerich upgrade
 
-# 重启服务
+# Restart service
 systemctl restart fastapi-template
 ```
 
-### 兼容性说明
+### Compatibility Notes
 
-#### 1.0.0 兼容性
+#### 1.0.0 Compatibility
 - ✅ Python 3.11+
 - ✅ PostgreSQL 12+
 - ✅ SQLite 3.35+
 - ✅ Redis 6.0+
 - ✅ Docker 20.10+
 
-#### 浏览器支持
+#### Browser Support
 - ✅ Chrome 90+
 - ✅ Firefox 88+
 - ✅ Safari 14+
 - ✅ Edge 90+
 
-### 性能改进
+### Performance Improvements
 
-#### 1.0.0 性能指标
-- 🚀 启动时间: < 3秒
-- 📊 并发处理: 1000+ req/s
-- 💾 内存使用: < 100MB
-- 🔄 响应时间: < 100ms (95th percentile)
+#### 1.0.0 Performance Metrics
+- 🚀 Startup time: < 3 seconds
+- 📊 Concurrent processing: 1000+ req/s
+- 💾 Memory usage: < 100MB
+- 🔄 Response time: < 100ms (95th percentile)
 
-### 安全更新
+### Security Updates
 
-#### 1.0.0 安全增强
-- 🔐 密码复杂度要求
-- 🛡️ SQL注入防护
-- 🚫 XSS攻击防护
-- 📝 安全日志记录
-- 🔒 安全HTTP头设置
+#### 1.0.0 Security Enhancements
+- 🔐 Password complexity requirements
+- 🛡️ SQL injection protection
+- 🚫 XSS attack protection
+- 📝 Security log recording
+- 🔒 Secure HTTP header settings
 
-### 已知问题
+### Known Issues
 
-#### 1.0.0 已知限制
-- 暂不支持多租户架构
-- 文件上传大小限制为100MB
-- 同时在线用户数限制为1000
-- 暂不支持实时通知
+#### 1.0.0 Known Limitations
+- Multi-tenant architecture not yet supported
+- File upload size limit: 100MB
+- Concurrent online users limit: 1000
+- Real-time notifications not yet supported
 
-### 路线图
+### Roadmap
 
-#### 1.1.0 计划功能
-- [ ] 多租户支持
-- [ ] 实时通知系统
-- [ ] 高级搜索功能
-- [ ] 数据导入导出
-- [ ] 移动端API优化
+#### 1.1.0 Planned Features
+- [ ] Multi-tenant support
+- [ ] Real-time notification system
+- [ ] Advanced search functionality
+- [ ] Data import/export
+- [ ] Mobile API optimization
 
-#### 1.2.0 计划功能
-- [ ] 微服务架构支持
-- [ ] 消息队列集成
-- [ ] 缓存层优化
-- [ ] 性能监控面板
-- [ ] 自动化部署工具
+#### 1.2.0 Planned Features
+- [ ] Microservice architecture support
+- [ ] Message queue integration
+- [ ] Cache layer optimization
+- [ ] Performance monitoring dashboard
+- [ ] Automated deployment tools
 
-### 社区贡献
+### Community Contributions
 
-我们感谢所有贡献者的努力！
+We thank all contributors for their efforts!
 
-#### 贡献者统计
-- 👥 总贡献者: 5
-- 🎯 已关闭Issue: 45
-- 🔄 已合并PR: 89
-- 📝 代码行数: 15,000+
+#### Contributor Statistics
+- 👥 Total contributors: 5
+- 🎯 Closed issues: 45
+- 🔄 Merged PRs: 89
+- 📝 Lines of code: 15,000+
 
-#### 特别感谢
-- [@contributor1](https://github.com/contributor1) - 核心架构设计
-- [@contributor2](https://github.com/contributor2) - 安全审计
-- [@contributor3](https://github.com/contributor3) - 文档编写
-- [@contributor4](https://github.com/contributor4) - 测试覆盖
-- [@contributor5](https://github.com/contributor5) - 性能优化
+#### Special Thanks
+- [@contributor1](https://github.com/contributor1) - Core architecture design
+- [@contributor2](https://github.com/contributor2) - Security audit
+- [@contributor3](https://github.com/contributor3) - Documentation writing
+- [@contributor4](https://github.com/contributor4) - Test coverage
+- [@contributor5](https://github.com/contributor5) - Performance optimization
 
-### 获取支持
+### Get Support
 
-如果您遇到问题或需要帮助：
+If you encounter issues or need help:
 
-1. 📖 查看[官网文档](http://fastapi.infyai.cn/)
-2. 🔍 搜索[已知问题](https://github.com/JiayuXu0/FastAPI-Template/issues)
-3. 💬 提交[新问题](https://github.com/JiayuXu0/FastAPI-Template/issues/new)
+1. 📖 Visit [Official Documentation](http://fastapi.infyai.cn/)
+2. 🔍 Search [Known Issues](https://github.com/JiayuXu0/FastAPI-Template/issues)
+3. 💬 Submit [New Issue](https://github.com/JiayuXu0/FastAPI-Template/issues/new)
 
-### 许可证
+### License
 
-本项目采用 MIT 许可证 - 详情请参见 [LICENSE](LICENSE) 文件。
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
 <p align="center">
-  <i>由 EvoAI Team 用 ❤️ 制作</i>
+  <i>Made with ❤️ by EvoAI Team</i>
 </p>
