@@ -2,168 +2,168 @@
 
 <div class="grid cards" markdown>
 
--   :material-rocket-launch:{ .lg .middle } **开箱即用**
+-   :material-rocket-launch:{ .lg .middle } **Ready to Use**
 
     ---
 
-    企业级FastAPI后端模板，内置三层架构设计，提供完整的RBAC权限管理系统
+    Enterprise FastAPI backend template with built-in three-layer architecture design, providing complete RBAC permission management system
 
-    [:octicons-arrow-right-24: 快速开始](guide/)
+    [:octicons-arrow-right-24: Quick Start](guide/)
 
--   :material-account-group:{ .lg .middle } **用户管理**
-
-    ---
-
-    完整的用户管理系统，支持用户注册、登录、权限控制等功能
-
-    [:octicons-arrow-right-24: 用户管理](api/users.md)
-
--   :material-shield-check:{ .lg .middle } **权限控制**
+-   :material-account-group:{ .lg .middle } **User Management**
 
     ---
 
-    基于角色的访问控制(RBAC)，支持细粒度的权限管理
+    Complete user management system, supporting user registration, login, permission control and other functions
 
-    [:octicons-arrow-right-24: 权限系统](api/roles.md)
+    [:octicons-arrow-right-24: User Management](api/users.md)
 
--   :material-database:{ .lg .middle } **数据库**
+-   :material-shield-check:{ .lg .middle } **Permission Control**
 
     ---
 
-    基于Tortoise ORM，支持PostgreSQL和SQLite，包含完整的迁移系统
+    Role-based access control (RBAC), supporting fine-grained permission management
 
-    [:octicons-arrow-right-24: 数据库设计](architecture/database.md)
+    [:octicons-arrow-right-24: Permission System](api/roles.md)
+
+-   :material-database:{ .lg .middle } **Database**
+
+    ---
+
+    Based on Tortoise ORM, supporting PostgreSQL and SQLite, including complete migration system
+
+    [:octicons-arrow-right-24: Database Design](architecture/database.md)
 
 </div>
 
-## 项目特性
+## Project Features
 
-### 🏗️ 架构设计
+### 🏗️ Architecture Design
 
-- **三层架构**: API → Service → Repository → Model
-- **依赖注入**: 基于FastAPI的依赖系统
-- **异步支持**: 全异步设计，支持高并发
-- **类型安全**: 完整的Python类型标注
+- **Three-Layer Architecture**: API → Service → Repository → Model
+- **Dependency Injection**: Based on FastAPI dependency system
+- **Async Support**: Fully asynchronous design, supporting high concurrency
+- **Type Safety**: Complete Python type annotations
 
-### 🔐 安全特性
+### 🔐 Security Features
 
-- **JWT认证**: 访问令牌(4小时) + 刷新令牌(7天)
-- **RBAC权限**: 基于角色的访问控制
-- **密码安全**: Argon2哈希算法
-- **限流保护**: 登录频率限制
+- **JWT Authentication**: Access token (4 hours) + Refresh token (7 days)
+- **RBAC Permissions**: Role-based access control
+- **Password Security**: Argon2 hashing algorithm
+- **Rate Limiting**: Login frequency limiting
 
-### 📁 核心功能
+### 📁 Core Features
 
-- **用户管理**: 用户CRUD、密码重置、状态管理
-- **角色管理**: 角色分配、权限绑定
-- **菜单管理**: 动态菜单配置
-- **文件管理**: 安全的文件上传下载
-- **审计日志**: 完整的操作记录
-- **部门管理**: 组织架构管理
+- **User Management**: User CRUD, password reset, status management
+- **Role Management**: Role assignment, permission binding
+- **Menu Management**: Dynamic menu configuration
+- **File Management**: Secure file upload and download
+- **Audit Logging**: Complete operation records
+- **Department Management**: Organizational structure management
 
-### 🛠️ 开发工具
+### 🛠️ Development Tools
 
-- **UV包管理**: 快速的Python包管理器
-- **代码规范**: Black + Ruff + MyPy
-- **测试覆盖**: Pytest + 异步测试
-- **数据库迁移**: Aerich迁移工具
-- **API文档**: 自动生成OpenAPI文档
+- **UV Package Management**: Fast Python package manager
+- **Code Standards**: Black + Ruff + MyPy
+- **Test Coverage**: Pytest + async testing
+- **Database Migration**: Aerich migration tool
+- **API Documentation**: Auto-generated OpenAPI documentation
 
-## 技术栈
+## Tech Stack
 
-=== "后端框架"
+=== "Backend Framework"
 
-    - **FastAPI**: 现代、高性能的Web框架
-    - **Tortoise ORM**: 异步ORM框架
-    - **Pydantic**: 数据验证和设置管理
-    - **JWT**: JSON Web Token认证
+    - **FastAPI**: Modern, high-performance web framework
+    - **Tortoise ORM**: Asynchronous ORM framework
+    - **Pydantic**: Data validation and settings management
+    - **JWT**: JSON Web Token authentication
 
-=== "数据库"
+=== "Database"
 
-    - **PostgreSQL**: 生产环境推荐
-    - **SQLite**: 开发环境默认
-    - **Redis**: 缓存和会话存储
-    - **Aerich**: 数据库迁移工具
+    - **PostgreSQL**: Recommended for production environment
+    - **SQLite**: Default for development environment
+    - **Redis**: Cache and session storage
+    - **Aerich**: Database migration tool
 
-=== "开发工具"
+=== "Development Tools"
 
-    - **UV**: Python包管理器
-    - **Black**: 代码格式化
-    - **Ruff**: 代码检查
-    - **MyPy**: 类型检查
-    - **Pytest**: 测试框架
+    - **UV**: Python package manager
+    - **Black**: Code formatting
+    - **Ruff**: Code checking
+    - **MyPy**: Type checking
+    - **Pytest**: Testing framework
 
-=== "部署运维"
+=== "Deployment & Operations"
 
-    - **Docker**: 容器化部署
-    - **GitHub Actions**: CI/CD自动化
-    - **Uvicorn**: ASGI服务器
-    - **Nginx**: 反向代理
+    - **Docker**: Containerized deployment
+    - **GitHub Actions**: CI/CD automation
+    - **Uvicorn**: ASGI server
+    - **Nginx**: Reverse proxy
 
-## 快速开始
+## Quick Start
 
 ```bash
-# 克隆项目
+# Clone project
 git clone https://github.com/JiayuXu0/FastAPI-Template.git
 cd FastAPI-Template
 
-# 安装依赖
+# Install dependencies
 curl -LsSf https://astral.sh/uv/install.sh | sh
 uv sync
 
-# 初始化数据库
+# Initialize database
 uv run aerich init-db
 
-# 启动开发服务器
+# Start development server
 uv run uvicorn src:app --reload --host 0.0.0.0 --port 8000
 ```
 
-访问 [http://localhost:8000/docs](http://localhost:8000/docs) 查看交互式API文档。
+Visit [http://localhost:8000/docs](http://localhost:8000/docs) to view the interactive API documentation.
 
-## 文档导航
+## Documentation Navigation
 
 <div class="grid cards" markdown>
 
--   [:material-book-open-page-variant:{ .lg .middle } **快速开始**](guide/)
+-   [:material-book-open-page-variant:{ .lg .middle } **Quick Start**](guide/)
 
-    项目安装、配置和运行指南
+    Project installation, configuration and running guide
 
--   [:material-library-outline:{ .lg .middle } **架构设计**](architecture/)
+-   [:material-library-outline:{ .lg .middle } **Architecture Design**](architecture/)
 
-    系统架构、设计模式和最佳实践
+    System architecture, design patterns and best practices
 
--   [:material-api:{ .lg .middle } **API文档**](api/)
+-   [:material-api:{ .lg .middle } **API Documentation**](api/)
 
-    完整的API接口文档和使用示例
+    Complete API interface documentation and usage examples
 
--   [:material-code-braces:{ .lg .middle } **开发指南**](development/)
+-   [:material-code-braces:{ .lg .middle } **Development Guide**](development/)
 
-    开发环境配置和编码规范
+    Development environment configuration and coding standards
 
 </div>
 
-## 贡献指南
+## Contributing
 
-欢迎参与项目建设！请参考以下步骤：
+Welcome to contribute to the project! Please refer to the following steps:
 
-1. Fork 项目仓库
-2. 创建功能分支 (`git checkout -b feature/amazing-feature`)
-3. 提交更改 (`git commit -m 'Add some amazing feature'`)
-4. 推送到分支 (`git push origin feature/amazing-feature`)
-5. 创建 Pull Request
+1. Fork the project repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Create a Pull Request
 
-## 许可证
+## License
 
-本项目采用 MIT 许可证。详情请参阅 [LICENSE](https://github.com/JiayuXu0/FastAPI-Template/blob/main/LICENSE) 文件。
+This project is licensed under the MIT License. For details, please refer to the [LICENSE](https://github.com/JiayuXu0/FastAPI-Template/blob/main/LICENSE) file.
 
-## 联系我们
+## Contact Us
 
-- **🌐 官网**: [http://fastapi.infyai.cn/](http://fastapi.infyai.cn/)
+- **🌐 Official Website**: [http://fastapi.infyai.cn/](http://fastapi.infyai.cn/)
 - **GitHub**: [JiayuXu0/FastAPI-Template](https://github.com/JiayuXu0/FastAPI-Template)
-- **Issues**: [问题反馈](https://github.com/JiayuXu0/FastAPI-Template/issues)
+- **Issues**: [Issue Feedback](https://github.com/JiayuXu0/FastAPI-Template/issues)
 
 ---
 
 <p align="center">
-  <i>由 EvoAI Team 用 ❤️ 制作</i>
+  <i>Made with ❤️ by EvoAI Team</i>
 </p>

@@ -1,113 +1,113 @@
-# Pre-commit Hooks 使用指南
+# Pre-commit Hooks Usage Guide
 
-本项目使用 pre-commit hooks 确保代码质量和一致性。
+This project uses pre-commit hooks to ensure code quality and consistency.
 
-## 🔧 什么是 Pre-commit Hooks？
+## 🔧 What are Pre-commit Hooks?
 
-Pre-commit hooks 是在每次 `git commit` 之前自动运行的脚本，用于：
-- 自动格式化代码
-- 检查代码质量
-- 防止低质量代码提交
+Pre-commit hooks are scripts that automatically run before each `git commit` to:
+- Automatically format code
+- Check code quality
+- Prevent low-quality code commits
 
-## ✅ 启用的检查项
+## ✅ Enabled Checks
 
-### 基础检查
-- **trailing-whitespace**: 移除行尾空格
-- **end-of-file-fixer**: 确保文件以换行符结尾
-- **check-yaml/json/toml/xml**: 检查文件语法
-- **check-added-large-files**: 防止提交大文件 (>10MB)
-- **check-merge-conflict**: 检查合并冲突标记
-- **debug-statements**: 检查调试语句 (如 `pdb.set_trace()`)
-- **mixed-line-ending**: 统一行结束符
-- **check-case-conflict**: 防止文件名大小写冲突
+### Basic Checks
+- **trailing-whitespace**: Remove trailing whitespace
+- **end-of-file-fixer**: Ensure files end with newline
+- **check-yaml/json/toml/xml**: Check file syntax
+- **check-added-large-files**: Prevent committing large files (>10MB)
+- **check-merge-conflict**: Check for merge conflict markers
+- **debug-statements**: Check for debug statements (e.g., `pdb.set_trace()`)
+- **mixed-line-ending**: Unify line endings
+- **check-case-conflict**: Prevent filename case conflicts
 
-### Python 代码检查
-- **ruff**: 代码质量检查和自动修复
-- **ruff-format**: 代码格式化 (替代 black)
+### Python Code Checks
+- **ruff**: Code quality checking and auto-fix
+- **ruff-format**: Code formatting (replaces black)
 
-## 🚀 使用方法
+## 🚀 Usage
 
-### 自动安装 (推荐)
+### Automatic Installation (Recommended)
 ```bash
-# 克隆项目后自动安装
-uv sync  # hooks 会自动安装
+# Automatically installed after cloning project
+uv sync  # hooks will be automatically installed
 ```
 
-### 手动安装
+### Manual Installation
 ```bash
-# 安装 pre-commit
+# Install pre-commit
 uv add --dev pre-commit
 
-# 安装 hooks
+# Install hooks
 uv run pre-commit install
 ```
 
-### 手动运行检查
+### Manual Check
 ```bash
-# 检查所有文件
+# Check all files
 uv run pre-commit run --all-files
 
-# 检查特定文件
+# Check specific file
 uv run pre-commit run --files src/main.py
 
-# 只运行 ruff 检查
+# Only run ruff check
 uv run pre-commit run ruff --all-files
 ```
 
-## 🔄 工作流程
+## 🔄 Workflow
 
-1. **编写代码** - 正常开发
-2. **提交代码** - `git commit -m "your message"`
-3. **自动检查** - pre-commit 自动运行
-4. **如有问题** - 自动修复或提示手动修复
-5. **重新提交** - 修复后重新 commit
+1. **Write Code** - Normal development
+2. **Commit Code** - `git commit -m "your message"`
+3. **Auto Check** - pre-commit automatically runs
+4. **If Issues** - Auto-fix or prompt manual fix
+5. **Re-commit** - Re-commit after fixes
 
-## 🛑 如何禁用 Pre-commit Hooks
+## 🛑 How to Disable Pre-commit Hooks
 
-### 方法1: 完全卸载 (不推荐)
+### Method 1: Complete Uninstall (Not Recommended)
 ```bash
-# 卸载 hooks
+# Uninstall hooks
 uv run pre-commit uninstall
 
-# 重新安装
+# Reinstall
 uv run pre-commit install
 ```
 
-### 方法2: 跳过单次检查
+### Method 2: Skip Single Check
 ```bash
-# 跳过本次检查 (谨慎使用)
+# Skip this check (use with caution)
 git commit --no-verify -m "urgent fix"
 ```
 
-### 方法3: 禁用特定检查
-编辑 `.pre-commit-config.yaml`，注释掉不需要的 hooks：
+### Method 3: Disable Specific Check
+Edit `.pre-commit-config.yaml` and comment out unwanted hooks:
 
 ```yaml
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
     hooks:
       - id: trailing-whitespace
-      # - id: debug-statements    # 注释掉不需要的检查
+      # - id: debug-statements    # Comment out unwanted checks
 ```
 
-### 方法4: 设置环境变量
+### Method 4: Set Environment Variable
 ```bash
-# 临时禁用
+# Temporarily disable
 export SKIP=ruff,ruff-format
 git commit -m "message"
 
-# 或在 .env 中设置
+# Or set in .env
 echo "SKIP=ruff" >> .env
 ```
 
-## 🎯 推荐配置
+## 🎯 Recommended Configuration
 
-### 团队开发 (推荐全部启用)
-适合需要统一代码风格的团队项目。
+### Team Development (Recommended: Enable All)
+Suitable for team projects requiring unified code style.
 
-### 个人项目 (可选择性启用)
+### Personal Project (Selective Enable)
 ```yaml
-# 最小化配置 - 只保留基本检查
+# Minimal configuration - only keep basic checks
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.8.0
@@ -117,27 +117,27 @@ repos:
       - id: ruff-format
 ```
 
-### 严格模式 (取消注释可选项)
-启用 mypy 类型检查和 bandit 安全检查。
+### Strict Mode (Uncomment Optional Items)
+Enable mypy type checking and bandit security checks.
 
-## ❓ 常见问题
+## ❓ Common Questions
 
-### Q: 提交很慢怎么办？
-A: 首次运行会下载工具，后续会很快。可以用 `--no-verify` 跳过紧急提交。
+### Q: Commits are slow?
+A: First run downloads tools, subsequent runs are fast. Use `--no-verify` to skip urgent commits.
 
-### Q: 格式化改动太多？
-A: 先运行 `uv run pre-commit run --all-files` 一次性格式化所有文件。
+### Q: Too many formatting changes?
+A: First run `uv run pre-commit run --all-files` to format all files at once.
 
-### Q: 想自定义规则？
-A: 编辑 `pyproject.toml` 中的 ruff 配置：
+### Q: Want to customize rules?
+A: Edit ruff configuration in `pyproject.toml`:
 
 ```toml
 [tool.ruff]
-extend-ignore = ["E501"]  # 忽略行长度检查
+extend-ignore = ["E501"]  # Ignore line length check
 ```
 
-### Q: CI/CD 中如何使用？
-A: 在 GitHub Actions 中：
+### Q: How to use in CI/CD?
+A: In GitHub Actions:
 
 ```yaml
 - name: Run pre-commit
@@ -146,8 +146,8 @@ A: 在 GitHub Actions 中：
     uv run pre-commit run --all-files
 ```
 
-## 📚 参考资源
+## 📚 Reference Resources
 
-- [Pre-commit 官方文档](https://pre-commit.com/)
-- [Ruff 配置指南](https://docs.astral.sh/ruff/)
-- [项目 CLAUDE.md](../CLAUDE.md) - 完整开发指南
+- [Pre-commit Official Documentation](https://pre-commit.com/)
+- [Ruff Configuration Guide](https://docs.astral.sh/ruff/)
+- [Project CLAUDE.md](../CLAUDE.md) - Complete Development Guide

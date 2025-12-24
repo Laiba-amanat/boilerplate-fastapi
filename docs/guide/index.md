@@ -1,24 +1,24 @@
-# 快速开始
+# Quick Start
 
-欢迎使用FastAPI Backend Template！本指南将帮助您快速搭建并运行项目。
+Welcome to FastAPI Backend Template! This guide will help you quickly set up and run the project.
 
-## 系统要求
+## System Requirements
 
 - **Python**: 3.11+
-- **操作系统**: Windows、macOS、Linux
-- **内存**: 建议4GB以上
-- **存储**: 至少1GB可用空间
+- **Operating System**: Windows, macOS, Linux
+- **Memory**: Recommended 4GB or more
+- **Storage**: At least 1GB available space
 
-## 安装步骤
+## Installation Steps
 
-### 1. 获取项目
+### 1. Get the Project
 
 ```bash
 git clone https://github.com/JiayuXu0/FastAPI-Template.git
 cd FastAPI-Template
 ```
 
-### 2. 安装UV包管理器
+### 2. Install UV Package Manager
 
 === "Linux/macOS"
 
@@ -32,73 +32,73 @@ cd FastAPI-Template
     powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
     ```
 
-=== "使用pip"
+=== "Using pip"
 
     ```bash
     pip install uv
     ```
 
-### 3. 安装依赖
+### 3. Install Dependencies
 
 ```bash
-# 安装项目依赖
+# Install project dependencies
 uv sync
 
-# 安装开发依赖
+# Install development dependencies
 uv sync --dev
 ```
 
-### 4. 环境配置
+### 4. Environment Configuration
 
-复制环境配置文件：
+Copy the environment configuration file:
 
 ```bash
 cp .env.example .env
 ```
 
-编辑 `.env` 文件，配置必要的环境变量：
+Edit the `.env` file and configure necessary environment variables:
 
 ```env
-# 应用配置
+# Application Configuration
 APP_ENV=development
 SECRET_KEY=your-secret-key-here
 DEBUG=True
 
-# 数据库配置
+# Database Configuration
 DB_ENGINE=sqlite
 DB_NAME=fastapi_template.db
 
-# JWT配置
+# JWT Configuration
 JWT_ACCESS_TOKEN_EXPIRE_MINUTES=240
 JWT_REFRESH_TOKEN_EXPIRE_DAYS=7
 
-# CORS配置
+# CORS Configuration
 CORS_ORIGINS=http://localhost:3000,http://localhost:8080
 ```
 
-### 5. 初始化数据库
+### 5. Initialize Database
 
 ```bash
-# 初始化数据库
+# Initialize database
 uv run aerich init-db
 ```
 
-### 6. 启动服务
+### 6. Start Service
 
 ```bash
-# 开发环境启动
+# Start in development environment
 uv run uvicorn src:app --reload --host 0.0.0.0 --port 8000
 ```
 
-## 验证安装
+## Verify Installation
 
-### 1. 检查健康状态
+### 1. Check Health Status
 
 ```bash
 curl http://localhost:8000/api/v1/base/health
 ```
 
-预期响应：
+Expected response:
 
 ```json
 {
@@ -110,16 +110,16 @@ curl http://localhost:8000/api/v1/base/health
 }
 ```
 
-### 2. 访问API文档
+### 2. Access API Documentation
 
-打开浏览器访问以下地址：
+Open your browser and visit the following addresses:
 
 - **Swagger UI**: http://localhost:8000/docs
 - **ReDoc**: http://localhost:8000/redoc
 
-### 3. 测试登录
+### 3. Test Login
 
-使用默认管理员账号登录：
+Login with the default administrator account:
 
 ```bash
 curl -X POST "http://localhost:8000/api/v1/base/access_token" \
@@ -130,41 +130,41 @@ curl -X POST "http://localhost:8000/api/v1/base/access_token" \
   }'
 ```
 
-## 项目结构
+## Project Structure
 
 ```
 FastAPI-Template/
-├── src/                    # 源代码目录
-│   ├── api/               # API路由层
-│   │   └── v1/           # API版本v1
-│   ├── services/         # 业务逻辑层
-│   ├── repositories/     # 数据访问层
-│   ├── models/           # 数据模型
-│   ├── schemas/          # 数据验证模式
-│   ├── core/             # 核心功能
-│   ├── utils/            # 工具函数
-│   └── main.py           # 应用入口
-├── tests/                 # 测试文件
-├── migrations/           # 数据库迁移文件
-├── docs/                 # 文档源文件
-├── .env.example          # 环境变量示例
-├── pyproject.toml        # 项目配置
-└── README.md             # 项目说明
+├── src/                    # Source code directory
+│   ├── api/               # API routing layer
+│   │   └── v1/           # API version v1
+│   ├── services/         # Business logic layer
+│   ├── repositories/     # Data access layer
+│   ├── models/           # Data models
+│   ├── schemas/          # Data validation schemas
+│   ├── core/             # Core functionality
+│   ├── utils/            # Utility functions
+│   └── main.py           # Application entry point
+├── tests/                 # Test files
+├── migrations/           # Database migration files
+├── docs/                 # Documentation source files
+├── .env.example          # Environment variable example
+├── pyproject.toml        # Project configuration
+└── README.md             # Project description
 ```
 
-## 常见问题
+## Common Questions
 
-### Q: 如何更改默认端口？
+### Q: How to change the default port?
 
-A: 在启动命令中指定端口：
+A: Specify the port in the startup command:
 
 ```bash
 uv run uvicorn src:app --reload --host 0.0.0.0 --port 8080
 ```
 
-### Q: 如何切换到PostgreSQL？
+### Q: How to switch to PostgreSQL?
 
-A: 修改 `.env` 文件中的数据库配置：
+A: Modify the database configuration in the `.env` file:
 
 ```env
 DB_ENGINE=postgres
@@ -175,38 +175,38 @@ DB_USER=your_username
 DB_PASSWORD=your_password
 ```
 
-### Q: 如何重置数据库？
+### Q: How to reset the database?
 
-A: 删除数据库文件和迁移记录：
+A: Delete the database file and migration records:
 
 ```bash
 # SQLite
 rm fastapi_template.db
 
-# 重新初始化
+# Re-initialize
 uv run aerich init-db
 ```
 
-### Q: 如何更改默认管理员密码？
+### Q: How to change the default administrator password?
 
-A: 登录后通过用户管理接口修改，或者在首次启动时通过环境变量设置：
+A: Modify it through the user management interface after login, or set it via environment variable on first startup:
 
 ```env
 DEFAULT_ADMIN_PASSWORD=your_new_password
 ```
 
-## 下一步
+## Next Steps
 
-- 📖 阅读 [架构设计](../architecture/) 了解系统架构
-- 🔧 查看 [开发指南](../development/) 了解开发规范
-- 📚 浏览 [API文档](../api/) 了解接口使用
-- 🚀 学习 [部署指南](../development/deployment.md) 进行生产部署
+- 📖 Read [Architecture Design](../architecture/) to understand the system architecture
+- 🔧 Check [Development Guide](../development/) to understand development standards
+- 📚 Browse [API Documentation](../api/) to understand API usage
+- 🚀 Learn [Deployment Guide](../development/deployment.md) for production deployment
 
-## 获取帮助
+## Get Help
 
-如果您在使用过程中遇到问题，可以：
+If you encounter any issues during use, you can:
 
-1. 访问 [官网](http://fastapi.infyai.cn/) 获取最新文档
-2. 查看 [常见问题](../faq.md)
-3. 搜索 [GitHub Issues](https://github.com/JiayuXu0/FastAPI-Template/issues)
-4. 创建新的 [Issue](https://github.com/JiayuXu0/FastAPI-Template/issues/new)
+1. Visit [Official Website](http://fastapi.infyai.cn/) for the latest documentation
+2. Check [FAQ](../faq.md)
+3. Search [GitHub Issues](https://github.com/JiayuXu0/FastAPI-Template/issues)
+4. Create a new [Issue](https://github.com/JiayuXu0/FastAPI-Template/issues/new)

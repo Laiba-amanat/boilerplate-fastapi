@@ -29,7 +29,7 @@ except ImportError as e:
 
 
 def get_model_fields(model: type[BaseModel]) -> list[dict[str, Any]]:
-    """提取Pydantic模型的字段信息"""
+    """Extract Pydantic model field information"""
     fields = []
     if not hasattr(model, "model_fields"):
         return fields
@@ -38,19 +38,19 @@ def get_model_fields(model: type[BaseModel]) -> list[dict[str, Any]]:
         field_type = field_info.annotation
         field_type_str = str(field_type).replace("typing.", "").replace("builtins.", "")
 
-        # 获取字段描述
+        # Get field description
         description = ""
         if hasattr(field_info, "description") and field_info.description:
             description = field_info.description
         elif hasattr(field_info, "title") and field_info.title:
             description = field_info.title
 
-        # 获取默认值
+        # Get default value
         default = None
         if hasattr(field_info, "default") and field_info.default is not None:
             default = field_info.default
 
-        # 获取示例值
+        # Get example value
         example = None
         if hasattr(field_info, "examples") and field_info.examples:
             example = (
@@ -61,7 +61,7 @@ def get_model_fields(model: type[BaseModel]) -> list[dict[str, Any]]:
         elif hasattr(field_info, "example") and field_info.example is not None:
             example = field_info.example
 
-        # 获取约束
+        # Get constraints
         constraints = []
         if hasattr(field_info, "min_length") and field_info.min_length is not None:
             constraints.append(f"Min length: {field_info.min_length}")
@@ -587,14 +587,14 @@ API interface documentation for {module_display_name}.
         content += "\nprint(response.json())\n"
         content += "```\n\n"
 
-        # 添加分隔线
+        # Add separator line
         content += "---\n\n"
 
     return content
 
 
 def extract_route_info(app: FastAPI) -> dict[str, list[Any]]:
-    """提取路由信息，返回原始的APIRoute对象"""
+    """Extract route information, returns raw APIRoute objects"""
     if app is None:
         return {}
 
@@ -602,7 +602,7 @@ def extract_route_info(app: FastAPI) -> dict[str, list[Any]]:
 
     for route in app.routes:
         if isinstance(route, APIRoute):
-            # 提取路径的模块信息
+            # Extract module information from path
             path_parts = route.path.split("/")
             if (
                 len(path_parts) >= 4
@@ -614,7 +614,7 @@ def extract_route_info(app: FastAPI) -> dict[str, list[Any]]:
                 if module not in routes_info:
                     routes_info[module] = []
 
-                # 直接保存APIRoute对象
+                # Directly save APIRoute object
                 routes_info[module].append(route)
 
     return routes_info
@@ -826,7 +826,7 @@ open http://localhost:8000/docs
 
 
 def get_openapi_schema(app: FastAPI) -> dict:
-    """获取OpenAPI模式"""
+    """Get OpenAPI schema"""
     if app is None:
         return {}
 
